@@ -1,75 +1,47 @@
-# Nuxt 3 Minimal Starter
+# LabSynchro
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Techstack
 
-## Setup
+* Fullstack framework: `nuxt`
+* DBMS:
+* Runtime: `bun`
+* Code quality assurance: `eslint`
+* Devops: Github Action, `docker`
 
-Make sure to install the dependencies:
+## Development guide
 
-```bash
-# npm
-npm install
+### Setup
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
+```
 bun install
 ```
 
-## Development Server
+### Development
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
 bun run dev
 ```
 
-## Production
+Linting:
+
+```bash
+bun run lint
+bun run lint:fix
+```
+
+### Production
 
 Build the application for production:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
 bun run build
 ```
 
 Locally preview production build:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
 bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
