@@ -16,3 +16,8 @@ CREATE TABLE device_kinds (
   meta jsonb,
   available_quantity jsonb -- computed using trigger
 );
+
+CREATE TABLE categories (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name jsonb -- format: { [ faculty: string ]: 'Level 1/Level 2/Level 3' }
+);
