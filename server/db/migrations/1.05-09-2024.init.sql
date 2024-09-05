@@ -21,3 +21,19 @@ CREATE TABLE categories (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name jsonb -- format: { [ faculty: string ]: 'Level 1/Level 2/Level 3' }
 );
+
+CREATE TYPE reservation_status as ENUM ('pending', 'approved', 'cancelled');
+
+CREATE TABLE reservations (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  device_quantities jsonb, -- format: { [ device_kind_id: string ]: number }
+  pickup_time_start timestamp with time zone,
+  pickup_time_end timestamp with time zone,
+  return_time_start timestamp with time zone,
+  return_time_end timestamp with time zone,
+  lab_id uuid,
+  status reservation_status,
+  created_at timestamp with time zone,
+  updated_at timestamp with time zone
+);
