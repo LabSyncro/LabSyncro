@@ -46,3 +46,13 @@ CREATE TABLE role_histories (
   effective_start timestamp with time zone,
   effective_end timestamp with time zone
 );
+
+CREATE TABLE lab (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name text CHECK ((char_length(name) <= 256)),
+  faculty text CHECK ((char_length(name) <= 256)),
+  room text CHECK ((char_length(name) <= 256)),
+  branch text CHECK ((char_length(name) <= 256)),
+  timetable jsonb CHECK,
+  admin_id uuid
+);
