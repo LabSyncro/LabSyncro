@@ -69,6 +69,10 @@ CREATE TABLE receipts (
   lab_id uuid
 );
 
+CREATE TYPE device_quality AS ENUM ('healthy', 'needs fixing', 'broken', 'lost');
+
+CREATE TYPE device_borrowable_status AS ENUM ();
+
 CREATE table devices (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   kind uuid,
