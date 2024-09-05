@@ -5,7 +5,7 @@ CREATE TABLE users (
   labs jsonb,
   name text CHECK ((char_length(name) <= 256)),
   meta jsonb,
-  borrowed_devices jsonb,
+  borrowed_devices jsonb, -- computed using trigger; format: { id: string; name: string }[]
   default_role user_role
 );
 
@@ -14,7 +14,7 @@ CREATE TABLE device_kinds (
   category_id uuid,
   name text CHECK ((char_length(name) <= 256)),
   meta jsonb,
-  available_quantity jsonb -- computed using trigger
+  available_quantity jsonb -- computed using trigger; format: { [ location: string ]: number }
 );
 
 CREATE TABLE categories (
