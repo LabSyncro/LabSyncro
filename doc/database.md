@@ -68,7 +68,7 @@ erDiagram
     Reservation {
         UID id PK
         UID userId FK
-        stext devices "A map of device kind to quantity. Note: Devices at different locations will create multiple reservations"
+        stext device_quantities "A map of device kind to quantity. Note: Devices at different locations will create multiple reservations"
         TimeRange pickupTimeRange
         TimeRange returnTimeRange
         UID lab
