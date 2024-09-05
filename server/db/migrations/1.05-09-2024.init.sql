@@ -37,3 +37,12 @@ CREATE TABLE reservations (
   created_at timestamp with time zone,
   updated_at timestamp with time zone
 );
+
+CREATE TABLE role_histories (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  grantee_id uuid,
+  granter_id uuid,
+  permissions jsonb,
+  effective_start timestamp with time zone,
+  effective_end timestamp with time zone
+);
