@@ -31,7 +31,9 @@ CREATE TABLE reservations (
   FOREIGN KEY(user_id)
   REFERENCES users(id),
 
+  -- implicit foreign key
   device_quantities jsonb, -- format: { [ device_kind_id: string ]: number }
+
   pickup_time_start timestamp with time zone NOT NULL,
   pickup_time_end timestamp with time zone NOT NULL,
   return_time_start timestamp with time zone NOT NULL,
@@ -91,7 +93,11 @@ CREATE TYPE device_borrowable_status AS ENUM ();
 
 CREATE table devices (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+
   kind uuid,
+  FOREIGN KEY(kind)
+  REFERENCES users(id),
+
   quantity integer DEFAULT 0,
   unit text CHECK ((char_length(name) <= 32)),
   lab_id uuid,
