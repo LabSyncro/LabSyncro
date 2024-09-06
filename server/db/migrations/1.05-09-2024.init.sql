@@ -8,7 +8,10 @@ CREATE TABLE users (
 
   name text CHECK ((char_length(name) <= 256)),
   meta jsonb NOT NULL,
+
+  -- implicit foreign key
   borrowed_devices jsonb NOT NULL, -- computed using trigger; format: { id: string; name: string }[]
+
   default_role user_role NOT NULL
 );
 
@@ -82,26 +85,6 @@ CREATE TABLE labs (
   REFERENCES users(id)
 );
 
-CREATE TABLE receipts (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  borrower_id uuid NOT NULL,
-  FOREIGN KEY(borrower_id)
-  REFERENCES users(id),
-
-  checker_id uuid,
-  FOREIGN KEY(checker_id)
-  REFERENCES users(id),
-
-  quantity integer NOT NULL,
-  borrowed_at time with time zone NOT NULL,
-  expected_returned_at time with time zone NOT NULL,
-  returned_at time with time zone,
-  device_id uuid NOT NULL,
-
-  lab_id uuid NOT NULL,
-  FOREIGN KEY(lab_id)
-  REFERENCES labs(id),
-);
 
 CREATE TYPE device_quality AS ENUM ('healthy', 'needs fixing', 'broken', 'lost');
 
@@ -130,6 +113,30 @@ CREATE table devices (
   REFERENCES users(id)
 );
 
+CREATE TABLE receipts (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  borrower_id uuid NOT NULL,
+  FOREIGN KEY(borrower_id)
+  REFERENCES users(id),
+
+  checker_id uuid,
+  FOREIGN KEY(checker_id)
+  REFERENCES users(id),
+
+  quantity integer NOT NULL,
+  borrowed_at time with time zone NOT NULL,
+  expected_returned_at time with time zone NOT NULL,
+  returned_at time with time zone,
+
+  device_id uuid NOT NULL,
+  FOREIGN KEY(device_id)
+  REFERENCES devices(id),
+
+  lab_id uuid NOT NULL,
+  FOREIGN KEY(lab_id)
+  REFERENCES labs(id),
+);
+
 CREATE TABLE inventory_assessments (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   finished_at time with time zone,
@@ -142,6 +149,7 @@ CREATE TABLE inventory_assessments (
   FOREIGN KEY(accountant_id)
   REFERENCES users(id),
 
+  -- implicit foreign key
   devices jsonb NOT NULL
 );
 
@@ -149,6 +157,7 @@ CREATE TABLE shipments (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   start_at time with time zone,
   arrive_at time with time zone,
+  -- implicit foreign key
   devices jsonb NOT NULL,
 
   start_lab_id uuid NOT NULL,
