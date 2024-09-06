@@ -166,6 +166,9 @@ CREATE TABLE expiration_extension_requests (
   REFERENCES users(id),
 
   receipt_id uuid,
+  FOREIGN KEY(receipt_id)
+  REFERENCES receipts(id),
+
   status request_status NOT NULL,
   return_at time with time zone NOT NULL,
   PRIMARY KEY(user_id, receipt_id)
