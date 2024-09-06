@@ -26,7 +26,11 @@ CREATE TYPE reservation_status as ENUM ('pending', 'approved', 'cancelled');
 
 CREATE TABLE reservations (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+
   user_id uuid NOT NULL,
+  FOREIGN KEY(user_id)
+  REFERENCES users(id),
+
   device_quantities jsonb, -- format: { [ device_kind_id: string ]: number }
   pickup_time_start timestamp with time zone NOT NULL,
   pickup_time_end timestamp with time zone NOT NULL,
@@ -40,7 +44,13 @@ CREATE TABLE reservations (
 
 CREATE TABLE role_histories (
   grantee_id uuid,
+  FOREIGN KEY(grantee_id)
+  REFERENCES users(id),
+
   granter_id uuid,
+  FOREIGN KEY(granter_id)
+  REFERENCES users(id),
+
   permissions jsonb,
   effective_start timestamp with time zone NOT NULL,
   effective_end timestamp with time zone NOT NULL,
@@ -54,13 +64,19 @@ CREATE TABLE labs (
   room text CHECK ((char_length(name) <= 256)),
   branch text CHECK ((char_length(name) <= 256)),
   timetable jsonb NOT NULL,
-  admin_id uuid
+  admin_id uuid,
+  FOREIGN KEY(admin_id)
+  REFERENCES users(id)
 );
 
 CREATE TABLE receipts (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   borrower_id uuid NOT NULL,
+
   checker_id uuid,
+  FOREIGN KEY(checker_id)
+  REFERENCES users(id),
+
   quantity integer NOT NULL,
   borrowed_at time with time zone NOT NULL,
   expected_returned_at time with time zone NOT NULL,
@@ -83,14 +99,20 @@ CREATE table devices (
   quality device_quality NOT NULL,
   borrowable_status device_borrowable_status NOT NULL,
   meta jsonb NOT NULL,
-  borrower_id uuid
+  borrower_id uuid,
+  FOREIGN KEY(borrower_id)
+  REFERENCES users(id)
 );
 
 CREATE TABLE inventory_assessments (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   finished_at time with time zone,
   lab_id uuid NOT NULL,
+
   accountant_id uuid,
+  FOREIGN KEY(accountant_id)
+  REFERENCES users(id),
+
   devices jsonb NOT NULL
 );
 
@@ -105,6 +127,9 @@ CREATE TABLE shipments (
 
 CREATE TABLE expiration_extension_requests (
   user_id uuid,
+  FOREIGN KEY(user_id)
+  REFERENCES users(id),
+
   receipt_id uuid,
   status request_status NOT NULL,
   return_at time with time zone NOT NULL,
