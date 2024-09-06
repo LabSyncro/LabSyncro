@@ -2,7 +2,7 @@ CREATE TYPE user_role as ENUM ('admin', 'lab_manager', 'user');
 
 CREATE TABLE users (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  labs jsonb,
+  admin_labs jsonb, -- format: { id: string; location: Location }[]
   name text CHECK ((char_length(name) <= 256)),
   meta jsonb,
   borrowed_devices jsonb, -- computed using trigger; format: { id: string; name: string }[]
