@@ -85,6 +85,8 @@ CREATE TABLE labs (
 CREATE TABLE receipts (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   borrower_id uuid NOT NULL,
+  FOREIGN KEY(borrower_id)
+  REFERENCES users(id),
 
   checker_id uuid,
   FOREIGN KEY(checker_id)
