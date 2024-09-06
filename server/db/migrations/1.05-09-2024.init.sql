@@ -9,17 +9,21 @@ CREATE TABLE users (
   default_role user_role NOT NULL
 );
 
-CREATE TABLE device_kinds (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  category_id uuid,
-  name text CHECK ((char_length(name) <= 256)),
-  meta jsonb NOT NULL,
-  available_quantity jsonb NOT NULL -- computed using trigger; format: { [ location: string ]: number }
-);
-
 CREATE TABLE categories (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name jsonb NOT NULL -- format: { [ faculty: string ]: 'Level 1/Level 2/Level 3' }
+);
+
+CREATE TABLE device_kinds (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+  category_id uuid,
+  FOREIGN KEY(category_id)
+  REFERENCES categories(id),
+
+  name text CHECK ((char_length(name) <= 256)),
+  meta jsonb NOT NULL,
+  available_quantity jsonb NOT NULL -- computed using trigger; format: { [ location: string ]: number }
 );
 
 CREATE TYPE reservation_status as ENUM ('pending', 'approved', 'cancelled');
