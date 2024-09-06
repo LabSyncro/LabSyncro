@@ -2,7 +2,10 @@ CREATE TYPE user_role as ENUM ('admin', 'lab_manager', 'user');
 
 CREATE TABLE users (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  
+  -- implicit foreign key
   admin_labs jsonb NOT NULL, -- format: { id: string; location: Location }[]
+
   name text CHECK ((char_length(name) <= 256)),
   meta jsonb NOT NULL,
   borrowed_devices jsonb NOT NULL, -- computed using trigger; format: { id: string; name: string }[]
@@ -42,7 +45,11 @@ CREATE TABLE reservations (
   pickup_time_end timestamp with time zone NOT NULL,
   return_time_start timestamp with time zone NOT NULL,
   return_time_end timestamp with time zone NOT NULL,
+
   lab_id uuid NOT NULL,
+  FOREIGN KEY(lab_id)
+  REFERENCES labs(id),
+
   status reservation_status NOT NULL,
   created_at timestamp with time zone NOT NULL,
   updated_at timestamp with time zone NOT NULL
@@ -88,7 +95,10 @@ CREATE TABLE receipts (
   expected_returned_at time with time zone NOT NULL,
   returned_at time with time zone,
   device_id uuid NOT NULL,
-  lab_id uuid NOT NULL
+
+  lab_id uuid NOT NULL,
+  FOREIGN KEY(lab_id)
+  REFERENCES labs(id),
 );
 
 CREATE TYPE device_quality AS ENUM ('healthy', 'needs fixing', 'broken', 'lost');
@@ -104,7 +114,11 @@ CREATE table devices (
 
   quantity integer DEFAULT 0,
   unit text CHECK ((char_length(name) <= 32)),
+
   lab_id uuid,
+  FOREIGN KEY(lab_id)
+  REFERENCES labs(id),
+
   available_quantity integer NOT NULL, -- computed
   quality device_quality NOT NULL,
   borrowable_status device_borrowable_status NOT NULL,
@@ -117,7 +131,10 @@ CREATE table devices (
 CREATE TABLE inventory_assessments (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   finished_at time with time zone,
+
   lab_id uuid NOT NULL,
+  FOREIGN KEY(lab_id)
+  REFERENCES labs(id),
 
   accountant_id uuid,
   FOREIGN KEY(accountant_id)
@@ -131,8 +148,14 @@ CREATE TABLE shipments (
   start_at time with time zone,
   arrive_at time with time zone,
   devices jsonb NOT NULL,
+
   start_lab_id uuid NOT NULL,
-  arrive_lab_id uuid NOT NULL
+  FOREIGN KEY(start_lab_id)
+  REFERENCES labs(id),
+
+  arrive_lab_id uuid NOT NULL,
+  FOREIGN KEY (arrive_lab_id)
+  REFERENCES labs(id)
 );
 
 CREATE TABLE expiration_extension_requests (
