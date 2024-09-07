@@ -43,9 +43,11 @@ jobs:
             echo "Waiting for PostgreSQL to be ready..."
             sleep 2
           done
+      # TODO: should load cache
       - name: Run PG validation script
         run: |
           echo "Running PG validation script..."
           bun ./bin/validate_tg.ts
         env:
           DATABASE_URL: postgres://postgres:@localhost:5432/postgres
+      # TODO: should persist cache
