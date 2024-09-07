@@ -1,13 +1,13 @@
 import { pickBy } from 'lodash-es';
 import path from 'path';
 import { Client } from 'pg';
-import { CacheHitStatus, getCacheStatus, rootDir } from './utils';
+import { CacheHitStatus, checkSumAndPersist, getCacheStatus, rootDir } from './utils';
 import { readFileIfExists } from './utils/fs';
 
 const migrationDir = path.resolve(rootDir, './server/db/migrations');
 
 async function* loadScripts (): AsyncGenerator<{ path: string; content: string; }> {
-  const migrationStatus = await getCacheStatus(migrationDir, 'migrations_cache.json', { shouldPersist: true });
+  const migrationStatus = await getCacheStatus(migrationDir, 'migrations_cache.json', { });
   const missedScripts = pickBy(migrationStatus, (value) => value === CacheHitStatus.MISS);
 
   for (const relpath of Object.keys(missedScripts)) {
@@ -21,7 +21,7 @@ async function* loadScripts (): AsyncGenerator<{ path: string; content: string; 
 
 async function main() {
   const client = new Client({
-    connectionString: process.env.DATABASE_URL || 'postgres://postgres:@localhost:5432/ci',
+    connectionString: process.env.DATABASE_URL || 'postgres://postgres:secret@localhost:5432/ci',
   });
   await client.connect();
 
@@ -41,6 +41,8 @@ async function main() {
   }
 
   await client.end();
+
+  checkSumAndPersist(migrationDir, 'migrations_cache.json');
 }
 
 main();
