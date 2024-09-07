@@ -19,7 +19,11 @@ async function* loadScripts (): AsyncGenerator<string> {
   }
 }
 
-const scriptIter = loadScripts();
-let scriptContent = undefined;
-while ((scriptContent = (await scriptIter.next()).value) !== undefined) {
+async function main() {
+  const scriptIter = loadScripts();
+  let scriptContent = undefined;
+  while ((scriptContent = (await scriptIter.next()).value) !== undefined) {
+  }
 }
+
+main();
