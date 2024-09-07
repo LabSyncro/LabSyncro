@@ -38,8 +38,9 @@ export const enum CacheHitStatus {
 export type CacheStatus = { [path: string]: CacheHitStatus };
 
 
-export async function getCacheStatus (pathname: string, persistedName: string, { shouldPersist = false }: { shouldPersist: boolean }): Promise<CacheStatus> {
-  const persistedSum = JSON.parse(fs.readFileSync(path.resolve(cacheDir, persistedName), { encoding: 'utf8' })) as Checksum;
+export async function getCacheStatus (pathname: string, persistedName: string, { shouldPersist = false }: { shouldPersist?: boolean }): Promise<CacheStatus> {
+  const persistedDir = path.resolve(cacheDir, persistedName);
+  const persistedSum = fs.existsSync(persistedDir) ? JSON.parse(fs.readFileSync(persistedDir, { encoding: 'utf8' })) as Checksum : {};
   const sum = shouldPersist ? await checkSumAndPersist(pathname, persistedName) : await checksum(pathname);
 
   const res = {} as CacheStatus;
