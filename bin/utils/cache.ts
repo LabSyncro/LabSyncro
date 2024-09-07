@@ -19,7 +19,7 @@ export async function checksum (pathname: string): Promise<Checksum> {
 function traverseHash (basename: string, { name, hash, children }: RawHash): Checksum {
   return {
     [path.relative(basename, name)]: hash,
-    ...children.reduce((acc, cur) => ({ ...acc, ...traverseHash(basename, cur) }), {} as Checksum),
+    ...children?.reduce((acc, cur) => ({ ...acc, ...traverseHash(basename, cur) }), {} as Checksum) || {},
   };
 }
 
