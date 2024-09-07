@@ -1,19 +1,51 @@
 import { hashElement, type HashElementNode } from 'folder-hash';
+import path from 'path';
+import fs from 'fs';
+import { rootDir } from './constants';
+
+export const cacheDir = path.resolve(rootDir, '.cache/');
 
 export type Checksum = { [path: string]: string };
 
 type RawHash = HashElementNode;
 
-export async function checksum (path: string): Promise<Checksum> {
-  const hash = await hashElement(path);
-  const checksum = traverseHash(hash);
+export async function checksum (pathname: string): Promise<Checksum> {
+  const hash = await hashElement(pathname);
+  const res = traverseHash(pathname, hash);
 
-  return checksum;
+  return res;
 }
 
-function traverseHash ({ name, hash, children }: RawHash): Checksum {
+function traverseHash (basename: string, { name, hash, children }: RawHash): Checksum {
   return {
-    [name]: hash,
-    ...children.reduce((acc, cur) => ({ ...acc, ...traverseHash(cur) }), {} as Checksum),
+    [path.relative(basename, name)]: hash,
+    ...children.reduce((acc, cur) => ({ ...acc, ...traverseHash(basename, cur) }), {} as Checksum),
   };
+}
+
+export async function checkSumAndPersist (pathname: string, persistedName: string): Promise<Checksum> {
+  const res = await checksum(pathname);
+  fs.writeFileSync(path.resolve(cacheDir, persistedName), JSON.stringify(res));
+
+  return res;
+}
+
+export const enum CacheHitStatus {
+  HIT,
+  MISS,
+};
+
+export type CacheStatus = { [path: string]: CacheHitStatus };
+
+
+export async function getCacheStatus (pathname: string, persistedName: string, { shouldPersist = false }: { shouldPersist: boolean }): Promise<CacheStatus> {
+  const persistedSum = JSON.parse(fs.readFileSync(path.resolve(cacheDir, persistedName), { encoding: 'utf8' })) as Checksum;
+  const sum = shouldPersist ? await checkSumAndPersist(pathname, persistedName) : await checksum(pathname);
+
+  const res = {} as CacheStatus;
+  Object.keys(sum).forEach((key) => {
+    res[key] = persistedSum[key] === sum[key] ? CacheHitStatus.HIT : CacheHitStatus.MISS;
+  });
+
+  return res;
 }

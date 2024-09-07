@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "lodash-es": "^4.17.21",
     "nuxt": "^3.12.4",
     "vue": "latest"
   },
