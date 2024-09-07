@@ -1,8 +1,8 @@
 import { pickBy } from 'lodash-es';
-import fs from 'fs';
 import path from 'path';
 import { Client } from 'pg';
 import { CacheHitStatus, getCacheStatus, rootDir } from './utils';
+import { readFileIfExists } from './utils/fs';
 
 const migrationDir = path.resolve(rootDir, './server/db/migrations');
 
@@ -12,12 +12,14 @@ async function* loadScripts (): AsyncGenerator<string> {
 
   for (const relpath of Object.keys(missedScripts)) {
     const scriptDir = path.resolve(migrationDir, relpath);
-    try {
-      yield fs.readFileSync(scriptDir, { encoding: 'utf8' });
-    } catch {}
+    const fileContent = readFileIfExists(scriptDir);
+    if (fileContent !== undefined) {
+      yield fileContent;
+    }
   }
 }
 
-const iter = loadScripts();
-const text = await iter.next();
-console.log(text);
+const scriptIter = loadScripts();
+let scriptContent = undefined;
+while ((scriptContent = (await scriptIter.next()).value) !== undefined) {
+}
