@@ -18,10 +18,10 @@ export async function checksum (pathname: string): Promise<Checksum> {
   return res;
 }
 
-function traverseHash (basename: string, { name, hash, children }: RawHash): Checksum {
+function traverseHash (parentname: string, { name, hash, children }: RawHash): Checksum {
   return {
-    [path.relative(basename, name)]: hash,
-    ...children?.reduce((acc, cur) => ({ ...acc, ...traverseHash(basename, cur) }), {} as Checksum) || {},
+    [path.resolve(parentname, name)]: hash,
+    ...children?.reduce((acc, cur) => ({ ...acc, ...traverseHash(parentname, cur) }), {} as Checksum) || {},
   };
 }
 
