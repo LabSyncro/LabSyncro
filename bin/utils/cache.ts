@@ -2,8 +2,10 @@ import { hashElement, type HashElementNode } from 'folder-hash';
 import path from 'path';
 import fs from 'fs';
 import { rootDir } from './constants';
+import { mkdirIfNotExist } from './fs';
 
 export const cacheDir = path.resolve(rootDir, '.cache/');
+mkdirIfNotExist(cacheDir);
 
 export type Checksum = { [path: string]: string };
 
