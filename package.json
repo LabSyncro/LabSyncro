@@ -19,6 +19,7 @@
   "devDependencies": {
     "@nuxt/eslint": "^0.5.0",
     "@types/folder-hash": "^4.0.4",
+    "@types/lodash-es": "^4.17.12",
     "@types/pg": "^8.11.8",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
