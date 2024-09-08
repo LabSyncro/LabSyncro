@@ -46,7 +46,7 @@ CREATE TABLE labs (
   REFERENCES users(id)
 );
 
-CREATE TYPE reservation_status as ENUM ('pending', 'approved', 'cancelled');
+CREATE TYPE reservation_status as ENUM ('pending', 'approved', 'ready', 'cancelled');
 
 CREATE TABLE reservations (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -155,8 +155,21 @@ CREATE TABLE inventory_assessments (
   devices jsonb NOT NULL
 );
 
+CREATE TYPE shipment_status AS ENUM ('pending', 'shipping', 'completed', 'cancelled')
+
 CREATE TABLE shipments (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+  sender_id uuid,
+  FOREIGN KEY(sender_id)
+  REFERENCES users(id),
+
+  receiver_id uuid,
+  FOREIGN KEY(receiver_id)
+  REFERENCES users(id),
+
+  status shipment_status NOT NULL,
+
   start_at time with time zone,
   arrive_at time with time zone,
   -- implicit foreign key
@@ -169,6 +182,24 @@ CREATE TABLE shipments (
   arrive_lab_id uuid NOT NULL,
   FOREIGN KEY (arrive_lab_id)
   REFERENCES labs(id)
+);
+
+CREATE TABLE maintenances (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  status maintenance_status NOT NULL,
+
+  maintainer_id uuid,
+  FOREIGN KEY(maintainer_id)
+  REFERENCES users(id),
+
+  start_at time with time zone,
+  complete_at time with time zone,
+
+  lab_id uuid NOT NULL,
+  FOREIGN KEY(lab_id)
+  REFERENCES labs(id),
+
+  device_ids jsonb
 );
 
 CREATE TYPE request_status as ENUM ();
