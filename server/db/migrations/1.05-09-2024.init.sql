@@ -4,7 +4,7 @@ CREATE TYPE user_role as ENUM ('admin', 'lab_manager', 'user');
 
 CREATE TABLE users (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  
+
   -- implicit foreign key
   admin_labs jsonb NOT NULL, -- format: { id: string; location: Location }[]
 
@@ -32,6 +32,18 @@ CREATE TABLE device_kinds (
   name text CHECK ((char_length(name) <= 256)),
   meta jsonb NOT NULL,
   available_quantity jsonb NOT NULL -- computed using trigger; format: { [ location: string ]: number }
+);
+
+CREATE TABLE labs (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name text CHECK ((char_length(name) <= 256)),
+  faculty text CHECK ((char_length(name) <= 256)),
+  room text CHECK ((char_length(name) <= 256)),
+  branch text CHECK ((char_length(name) <= 256)),
+  timetable jsonb NOT NULL,
+  admin_id uuid,
+  FOREIGN KEY(admin_id)
+  REFERENCES users(id)
 );
 
 CREATE TYPE reservation_status as ENUM ('pending', 'approved', 'cancelled');
@@ -75,18 +87,6 @@ CREATE TABLE role_histories (
   PRIMARY KEY(grantee_id, granter_id)
 );
 
-CREATE TABLE labs (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name text CHECK ((char_length(name) <= 256)),
-  faculty text CHECK ((char_length(name) <= 256)),
-  room text CHECK ((char_length(name) <= 256)),
-  branch text CHECK ((char_length(name) <= 256)),
-  timetable jsonb NOT NULL,
-  admin_id uuid,
-  FOREIGN KEY(admin_id)
-  REFERENCES users(id)
-);
-
 
 CREATE TYPE device_quality AS ENUM ('healthy', 'needs fixing', 'broken', 'lost');
 
@@ -100,7 +100,7 @@ CREATE table devices (
   REFERENCES users(id),
 
   quantity integer DEFAULT 0,
-  unit text CHECK ((char_length(name) <= 32)),
+  unit text CHECK ((char_length(unit) <= 32)),
 
   lab_id uuid,
   FOREIGN KEY(lab_id)
@@ -136,7 +136,7 @@ CREATE TABLE receipts (
 
   lab_id uuid NOT NULL,
   FOREIGN KEY(lab_id)
-  REFERENCES labs(id),
+  REFERENCES labs(id)
 );
 
 CREATE TABLE inventory_assessments (
@@ -170,6 +170,8 @@ CREATE TABLE shipments (
   FOREIGN KEY (arrive_lab_id)
   REFERENCES labs(id)
 );
+
+CREATE TYPE request_status as ENUM ();
 
 CREATE TABLE expiration_extension_requests (
   user_id uuid,
