@@ -1,16 +1,17 @@
 import fs from 'fs';
 
-export function mkdirIfNotExists (path: string) {
+export function mkdirIfNotExists(path: string) {
   try {
-
     fs.mkdirSync(path, { recursive: true });
-  } catch {}
+  }
+  catch {}
 }
 
-export function readFileIfExists (path: string): string | undefined {
+export function readFileIfExists(path: string): string | undefined {
   try {
     return fs.readFileSync(path, { encoding: 'utf8' });
-  } catch {
+  }
+  catch {
     return undefined;
   }
 }

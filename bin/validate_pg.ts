@@ -1,14 +1,14 @@
-import { pickBy } from 'lodash-es';
 import path from 'path';
+import { pickBy } from 'lodash-es';
 import { Client } from 'pg';
 import { CacheHitStatus, checkSumAndPersist, getCacheStatus, rootDir } from './utils';
 import { readFileIfExists } from './utils/fs';
 
 const migrationDir = path.resolve(rootDir, './server/db/migrations');
 
-async function* loadScripts (): AsyncGenerator<{ path: string; content: string; }> {
+async function* loadScripts(): AsyncGenerator<{ path: string, content: string }> {
   const migrationStatus = await getCacheStatus(migrationDir, 'migrations_cache.json', { });
-  const missedScripts = pickBy(migrationStatus, (value) => value === CacheHitStatus.MISS);
+  const missedScripts = pickBy(migrationStatus, value => value === CacheHitStatus.MISS);
 
   for (const relpath of Object.keys(missedScripts)) {
     const scriptDir = path.resolve(migrationDir, relpath);
@@ -33,7 +33,8 @@ async function main() {
       await client.query('BEGIN');
       await client.query(content);
       await client.query('ROLLBACK');
-    } catch (e) {
+    }
+    catch (e) {
       console.error(`PG script at ${path} may be invalid!`);
       console.error('reported error', e);
       process.exit(1);

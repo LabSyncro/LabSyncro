@@ -5,12 +5,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
   ],
-  eslint: {
-    config: {
-      stylistic: true,
-      semi: true,
-    },
-  },
+  eslint: {},
   css: ['~/assets/css/main.css'],
   postcss: {
     plugins: {
@@ -18,4 +13,4 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-})
+});
