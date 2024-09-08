@@ -155,7 +155,7 @@ CREATE TABLE inventory_assessments (
   devices jsonb NOT NULL
 );
 
-CREATE TYPE shipment_status AS ENUM ('pending', 'shipping', 'completed', 'cancelled')
+CREATE TYPE shipment_status AS ENUM ('pending', 'shipping', 'completed', 'cancelled');
 
 CREATE TABLE shipments (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -183,6 +183,8 @@ CREATE TABLE shipments (
   FOREIGN KEY (arrive_lab_id)
   REFERENCES labs(id)
 );
+
+CREATE TYPE maintenance_status AS ENUM ('pending', 'maintaining', 'completed', 'cancelled');
 
 CREATE TABLE maintenances (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
