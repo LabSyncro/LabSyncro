@@ -36,7 +36,8 @@ async function main() {
     }
     catch (e) {
       console.error(`PG script at ${path} may be invalid!`);
-      console.error('reported error', e);
+      console.error('Reported error:');
+      console.error(e);
       process.exit(1);
     }
   }
