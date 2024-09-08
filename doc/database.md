@@ -41,7 +41,7 @@ erDiagram
         int availableQuantity "Computed attribute"
         enum status "[Available, Borrowing, Shipping, Maintaining, Discarded]"
         enum quality "[Healthy, Broken, Lost]"
-        enum allowedBorrowRole []
+        enum allowedBorrowRole "[]"
         bool visibility
         stext metadata
         UID borrowerId FK
