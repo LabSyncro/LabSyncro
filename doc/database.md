@@ -39,9 +39,10 @@ erDiagram
         string unit
         UID lab
         int availableQuantity "Computed attribute"
-        enum status "[]"
-        enum quality "[Healthy, Needs Fixing, Broken, Lost]"
-        enum borrowableStatus ""
+        enum status "[Available, Borrowing, Shipping, Maintaining, Discarded]"
+        enum quality "[Healthy, Broken, Lost]"
+        enum allowedBorrowRole []
+        bool visibility
         stext metadata
         UID borrowerId FK
     }
@@ -72,7 +73,7 @@ erDiagram
         TimeRange pickupTimeRange
         TimeRange returnTimeRange
         UID lab
-        enum status "[Pending, Approved, Cancelled]"
+        enum status "[Pending, Approved, Ready, Cancelled]"
         DateTime createdAt
         DateTime updatedAt                
     }
@@ -87,11 +88,24 @@ erDiagram
 
     Shipment {
         UID id PK
+        enum status "[Pending, Shipping, Completed, Cancelled]"
+        UID sendPersonId FK
+        UID receivePersonId FK
         DateTime startDate
         DateTime arriveDate
-        MUID[] deviceIds
         UID startLocation FK
         UID arriveLocation FK
+        MUID[] deviceIds
+    }
+
+    Maintenance {
+        UID id PK
+        enum status "[Pending, Maintaining, Completed, Cancelled]"
+        UID maintainerId FK
+        DateTime startDate
+        DateTime completeDate
+        UID lab FK
+        MUID[] deviceIds
     }
 
     InventoryAssessment {
@@ -136,6 +150,7 @@ erDiagram
     DeviceKind }|--o{ Reservation: has
     DeviceKind }o--|| Category: in
     Shipment ||--|{ Device: has
+    Maintenance ||--|{ Device: has
     User ||--o{ InventoryAssessment: checks
     ExpirationExtensionRequest }o--|| User: has
     ExpirationExtensionRequest }o--|| Receipt: extends
