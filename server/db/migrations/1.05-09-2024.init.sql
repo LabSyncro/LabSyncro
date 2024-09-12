@@ -37,9 +37,9 @@ CREATE TABLE device_kinds (
 CREATE TABLE labs (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name text CHECK ((char_length(name) <= 256)),
-  faculty text CHECK ((char_length(name) <= 256)),
-  room text CHECK ((char_length(name) <= 256)),
-  branch text CHECK ((char_length(name) <= 256)),
+  faculty text CHECK ((char_length(faculty) <= 256)),
+  room text CHECK ((char_length(room) <= 256)),
+  branch text CHECK ((char_length(branch) <= 256)),
   timetable jsonb NOT NULL,
   admin_id uuid,
   FOREIGN KEY(admin_id)
