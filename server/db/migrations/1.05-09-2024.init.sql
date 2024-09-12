@@ -97,7 +97,7 @@ CREATE table devices (
 
   kind uuid,
   FOREIGN KEY(kind)
-  REFERENCES users(id),
+  REFERENCES device_kinds(id),
 
   quantity integer DEFAULT 0,
   unit text CHECK ((char_length(unit) <= 32)),
