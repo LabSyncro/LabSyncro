@@ -90,7 +90,7 @@ CREATE TABLE role_histories (
 
 CREATE TYPE device_quality AS ENUM ('healthy', 'needs fixing', 'broken', 'lost');
 
-CREATE TYPE device_borrowable_status AS ENUM ();
+CREATE TYPE device_allowed_borrow_role AS ENUM ();
 
 CREATE table devices (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -108,7 +108,7 @@ CREATE table devices (
 
   available_quantity integer NOT NULL, -- computed
   quality device_quality NOT NULL,
-  borrowable_status device_borrowable_status NOT NULL,
+  allowed_borrow_role device_alloed_borrow_role NOT NULL,
   meta jsonb NOT NULL,
   borrower_id uuid,
   FOREIGN KEY(borrower_id)
