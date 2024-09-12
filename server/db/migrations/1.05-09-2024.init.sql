@@ -116,7 +116,7 @@ CREATE table devices (
 
   available_quantity integer NOT NULL, -- computed
   quality device_quality NOT NULL,
-  allowed_borrow_role device_alloed_borrow_role NOT NULL,
+  allowed_borrow_role device_allowed_borrow_role NOT NULL,
   meta jsonb NOT NULL,
   borrower_id uuid,
   CONSTRAINT fk_borrow_user
