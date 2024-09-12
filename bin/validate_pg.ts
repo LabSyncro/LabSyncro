@@ -1,16 +1,16 @@
 import path from 'path';
-import { pickBy } from 'lodash-es';
+import fs from 'fs';
+import { sortBy } from 'lodash-es';
 import { Client } from 'pg';
-import { CacheHitStatus, checkSumAndPersist, getCacheStatus, rootDir } from './utils';
+import { rootDir } from './utils/constants';
 import { readFileIfExists } from './utils/fs';
 
 const migrationDir = path.resolve(rootDir, './server/db/migrations');
 
 async function* loadScripts(): AsyncGenerator<{ path: string, content: string }> {
-  const migrationStatus = await getCacheStatus(migrationDir, 'migrations_cache.json', { });
-  const missedScripts = pickBy(migrationStatus, value => value === CacheHitStatus.MISS);
+  const scriptDirs = sortBy(fs.readdirSync(migrationDir), (dir) => Number.parseInt(dir.split('.')[0]));
 
-  for (const relpath of Object.keys(missedScripts)) {
+  for (const relpath of scriptDirs) {
     const scriptDir = path.resolve(migrationDir, relpath);
     const fileContent = readFileIfExists(scriptDir);
     if (fileContent !== undefined) {
@@ -30,9 +30,7 @@ async function main() {
   while ((script = (await scriptIter.next()).value) !== undefined) {
     const { path, content } = script;
     try {
-      await client.query('BEGIN');
       await client.query(content);
-      await client.query('ROLLBACK');
     }
     catch (e) {
       console.error(`PG script at ${path} may be invalid!`);
@@ -43,8 +41,6 @@ async function main() {
   }
 
   await client.end();
-
-  checkSumAndPersist(migrationDir, 'migrations_cache.json');
 }
 
 main();
