@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@sinclair/typebox": "^0.33.11",
     "dotenv": "^16.4.5",
     "lodash-es": "^4.17.21",
     "nuxt": "^3.12.4",
