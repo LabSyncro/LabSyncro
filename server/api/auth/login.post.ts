@@ -1,25 +1,52 @@
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import {
   BAD_REQUEST_CODE,
   NOT_FOUND_CODE,
   INTERNAL_SERVER_ERROR_CODE,
+  UNAUTHORIZED_CODE,
 } from "~/constants";
+import { cookieOptions } from "~/constants/cookie";
 import { initDbClient } from "~/server/db/connection";
+import type { LoginInputDto } from "~/server/dtos/in/auth.dto";
+import type { LoginOutputDto } from "~/server/dtos/out/auth.dto";
 
-export default defineEventHandler(async (event) => {
+type UserDb = {
+  user_id: string;
+  user_name: string;
+  user_email: string;
+  user_password: string;
+  role_name: string;
+  resource_name: string;
+  action_name: string;
+};
+
+export default defineEventHandler<
+  { body: LoginInputDto },
+  Promise<LoginOutputDto>
+>(async (event) => {
   const body = await readBody(event);
-  const userId: string | undefined = body.id;
+  const { email, password } = body;
 
   const dbClient = await initDbClient();
+  const { jwtSecret } = useRuntimeConfig();
 
-  if (!userId) {
+  if (!email || !password) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
-      message: "Missed user ID!",
+      message: "Email and password are required!",
     });
   }
 
   try {
-    const query = ` SELECT public.user.id AS user_id, public.user.name AS user_name, role_name, resource_name, action_name
+    const query = ` SELECT 
+                      public.user.id AS user_id, 
+                      public.user.name AS user_name, 
+                      public.user.email AS user_email,
+                      public.user.password AS user_password,
+                      role_name, 
+                      resource_name, 
+                      action_name
                     FROM public.user
                     LEFT JOIN (
                       SELECT role.name AS role_name, role.id AS role_id, resource.name AS resource_name, action.name AS action_name
@@ -28,10 +55,9 @@ export default defineEventHandler(async (event) => {
                       JOIN resource ON resource.id = permission.resource_id
                       JOIN action ON action.id = permission.action_id
                     ) AS rbac ON public.user.role_id = rbac.role_id
-                    WHERE public.user.id = $1`;
+                    WHERE public.user.email = $1`;
 
-    const { rows } = await dbClient.query(query, [userId]);
-
+    const { rows } = await dbClient.query<UserDb>(query, [email]);
     if (!rows || rows.length === 0) {
       throw createError({
         statusCode: NOT_FOUND_CODE,
@@ -39,8 +65,22 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    const user = rows[0];
+    const correctPassword = await bcrypt.compare(password, user.user_password);
+    if (!correctPassword) {
+      throw createError({
+        statusCode: UNAUTHORIZED_CODE,
+        message: "Invalid credentials!",
+      });
+    }
+
+    const token = jwt.sign({ userId: user.user_id }, jwtSecret, {
+      expiresIn: "1h",
+    });
+    setCookie(event, "token", token, cookieOptions);
+
     return {
-      userId: rows[0].user_id,
+      id: rows[0].user_id,
       name: rows[0].user_name,
       role: rows[0].role_name,
       permission: rows.map((row) => ({

@@ -17,5 +17,7 @@ export default defineNuxtConfig({
     dbDatabase: process.env.DB_DATABASE,
     dbPassword: process.env.DB_PASSWORD,
     dbPort: process.env.DB_PORT,
+    jwtSecret: process.env.JWT_SECRET,
+    nodeEnv: process.env.NODE_ENV,
   },
 });
