@@ -4,7 +4,6 @@ import {
   INTERNAL_SERVER_ERROR_CODE,
 } from "~/constants";
 import { initDbClient } from "~/server/db/connection";
-//import { UserDto } from "~/server/dtos/out/user.dto";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -13,10 +12,10 @@ export default defineEventHandler(async (event) => {
   const dbClient = await initDbClient();
 
   if (!userId) {
-    return sendError(
-      event,
-      createError({ statusCode: BAD_REQUEST_CODE, message: "Missed user ID!" }),
-    );
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: "Missed user ID!",
+    });
   }
 
   try {
@@ -34,21 +33,25 @@ export default defineEventHandler(async (event) => {
     const { rows } = await dbClient.query(query, [userId]);
 
     if (!rows || rows.length === 0) {
-      return sendError(
-        event,
-        createError({ statusCode: NOT_FOUND_CODE, message: "User not found" }),
-      );
+      throw createError({
+        statusCode: NOT_FOUND_CODE,
+        message: "User not found",
+      });
     }
 
-    return true;
+    return {
+      userId: rows[0].user_id,
+      name: rows[0].user_name,
+      role: rows[0].role_name,
+      permission: rows.map((row) => ({
+        resource: row.resource_name,
+        action: row.action_name,
+      })),
+    };
   } catch (error) {
-    console.log(error);
-    return sendError(
-      event,
-      createError({
-        statusCode: INTERNAL_SERVER_ERROR_CODE,
-        message: "Server error",
-      }),
-    );
+    throw createError({
+      statusCode: INTERNAL_SERVER_ERROR_CODE,
+      message: error as string,
+    });
   }
 });
