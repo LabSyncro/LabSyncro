@@ -7,11 +7,12 @@ const PermissionType = Type.Object({
   action: Type.Union([Type.String(), Type.Null()]),
 });
 
-export const LoginOutputDto = Type.Object({
+export const AuthOutputDto = Type.Object({
   id: ObjectId,
   name: Type.String(),
+  email: Type.String({ format: "email" }),
   role: Type.Union([Type.String(), Type.Null()]),
   permission: Type.Array(PermissionType),
 });
 
-export type LoginOutputDto = Static<typeof LoginOutputDto>;
+export type AuthOutputDto = Static<typeof AuthOutputDto>;

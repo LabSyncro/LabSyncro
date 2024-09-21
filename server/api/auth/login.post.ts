@@ -9,7 +9,7 @@ import {
 import { cookieOptions } from "~/constants/cookie";
 import { initDbClient } from "~/server/db/connection";
 import type { LoginInputDto } from "~/server/dtos/in/auth.dto";
-import type { LoginOutputDto } from "~/server/dtos/out/auth.dto";
+import type { AuthOutputDto } from "~/server/dtos/out/auth.dto";
 
 type UserDb = {
   user_id: string;
@@ -23,7 +23,7 @@ type UserDb = {
 
 export default defineEventHandler<
   { body: LoginInputDto },
-  Promise<LoginOutputDto>
+  Promise<AuthOutputDto>
 >(async (event) => {
   const body = await readBody(event);
   const { email, password } = body;
@@ -82,6 +82,7 @@ export default defineEventHandler<
     return {
       id: rows[0].user_id,
       name: rows[0].user_name,
+      email: rows[0].user_email,
       role: rows[0].role_name,
       permission: rows.map((row) => ({
         resource: row.resource_name,

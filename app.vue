@@ -8,7 +8,8 @@ const message = apiRef({
 const { data } = await useFetch('/api/auth/login', {
   method: 'post',
   body: {
-    id: '2c2ec01b-ea45-4b5b-81ed-0bbbf2a06e28'
+    email: 'phu.nguyen2310@hcmut.edu.vn',
+    password: '123456789'
   }
 });
 
