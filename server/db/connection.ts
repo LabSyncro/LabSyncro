@@ -1,4 +1,4 @@
-import pg from "pg";
+import pg from 'pg';
 
 export const initDbClient = async () => {
   const { Client } = pg;
@@ -10,7 +10,7 @@ export const initDbClient = async () => {
     host: dbHost,
     database: dbDatabase,
     password: dbPassword,
-    port: parseInt(dbPort || "5432"),
+    port: parseInt(dbPort || '5432'),
   });
 
   await dbClient.connect();

@@ -1,15 +1,15 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import {
   BAD_REQUEST_CODE,
   NOT_FOUND_CODE,
   INTERNAL_SERVER_ERROR_CODE,
   UNAUTHORIZED_CODE,
-} from "~/constants";
-import { cookieOptions } from "~/constants/cookie";
-import { initDbClient } from "~/server/db/connection";
-import type { LoginInputDto } from "~/server/dtos/in/auth.dto";
-import type { AuthOutputDto } from "~/server/dtos/out/auth.dto";
+} from '~/constants';
+import { cookieOptions } from '~/constants/cookie';
+import { initDbClient } from '~/server/db/connection';
+import type { LoginInputDto } from '~/server/dtos/in/auth.dto';
+import type { AuthOutputDto } from '~/server/dtos/out/auth.dto';
 
 type UserDb = {
   user_id: string;
@@ -34,7 +34,7 @@ export default defineEventHandler<
   if (!email || !password) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
-      message: "Email and password are required!",
+      message: 'Email and password are required!',
     });
   }
 
@@ -61,7 +61,7 @@ export default defineEventHandler<
     if (!rows || rows.length === 0) {
       throw createError({
         statusCode: NOT_FOUND_CODE,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
@@ -70,14 +70,14 @@ export default defineEventHandler<
     if (!correctPassword) {
       throw createError({
         statusCode: UNAUTHORIZED_CODE,
-        message: "Invalid credentials!",
+        message: 'Invalid credentials!',
       });
     }
 
     const token = jwt.sign({ userId: user.user_id }, jwtSecret, {
-      expiresIn: "1h",
+      expiresIn: '1h',
     });
-    setCookie(event, "token", token, cookieOptions);
+    setCookie(event, 'token', token, cookieOptions);
 
     return {
       id: rows[0].user_id,

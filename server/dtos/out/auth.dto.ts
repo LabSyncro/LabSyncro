@@ -1,6 +1,6 @@
-import { ObjectId } from "../common/objectId.dto";
-import { Type } from "@sinclair/typebox";
-import type { Static } from "@sinclair/typebox";
+import { ObjectId } from '@/server/dtos/common';
+import { Type } from '@sinclair/typebox';
+import type { Static } from '@sinclair/typebox';
 
 const PermissionType = Type.Object({
   resource: Type.Union([Type.String(), Type.Null()]),
@@ -10,7 +10,7 @@ const PermissionType = Type.Object({
 export const AuthOutputDto = Type.Object({
   id: ObjectId,
   name: Type.String(),
-  email: Type.String({ format: "email" }),
+  email: Type.String({ format: 'email' }),
   role: Type.Union([Type.String(), Type.Null()]),
   permission: Type.Array(PermissionType),
 });
