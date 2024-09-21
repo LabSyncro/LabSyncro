@@ -2,18 +2,14 @@
 const message = apiRef({
   route: '/api/auth/login',
   method: 'post',
-  defaultValue: null
+  defaultValue: useFetch('/api/auth/login', {
+    method: 'post',
+    body: {
+      email: 'phu.nguyen2310@hcmut.edu.vn',
+      password: '123456789'
+    }
+  }).data
 });
-
-const { data } = await useFetch('/api/auth/login', {
-  method: 'post',
-  body: {
-    email: 'phu.nguyen2310@hcmut.edu.vn',
-    password: '123456789'
-  }
-});
-
-message.value = data.value;
 
 </script>
 
