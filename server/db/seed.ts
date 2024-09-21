@@ -47,21 +47,36 @@ async function fetchAndInsertCategories() {
       const response = await fetch(categoryLevel3Url);
       const categoryLevel3Data: Category[] = (await response.json()).categories;
 
-      await Promise.all(
-        categoryLevel3Data.map(async (subItem) => {
-          const { id, name, parent_id, number_product } = subItem;
-          const availableQuantity = await distributeProductsToLabs(
-            dbClient,
-            number_product || 0,
-          );
+      try {
+        await Promise.all(
+          categoryLevel3Data.map(async (subItem) => {
+            const { id, name, parent_id, number_product } = subItem;
+            const filterCategoryUrl = `https://www.thegioiic.com/v1/filter-category?category_id=${id}`;
+            const response = await fetch(filterCategoryUrl);
+            const metaData = (await response.json()).properties;
 
-          const query2 = {
-            text: 'INSERT INTO device_kinds (id, name, category_id, available_quantity) VALUES ($1, $2, $3, $4)',
-            values: [id, name, parent_id, availableQuantity],
-          };
-          await dbClient.query(query2);
-        }),
-      );
+            const availableQuantity = await distributeProductsToLabs(
+              dbClient,
+              number_product || 0,
+            );
+
+            const query2 = {
+              text: 'INSERT INTO device_kinds (id, name, category_id, available_quantity, meta) VALUES ($1, $2, $3, $4, $5)',
+              values: [
+                id,
+                name,
+                parent_id,
+                availableQuantity,
+                JSON.stringify(metaData),
+              ],
+            };
+            await dbClient.query(query2);
+          }),
+        );
+      } catch (error) {
+        console.log(rest.name);
+        console.log(error);
+      }
     }),
   );
 
