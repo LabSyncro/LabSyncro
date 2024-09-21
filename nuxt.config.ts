@@ -2,9 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: [
-    '@nuxt/eslint',
-  ],
+  modules: ['@nuxt/eslint'],
   eslint: {},
   css: ['~/assets/css/main.css'],
   postcss: {
@@ -12,5 +10,14 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {},
     },
+  },
+  runtimeConfig: {
+    dbUser: process.env.DB_USER,
+    dbHost: process.env.DB_HOST,
+    dbDatabase: process.env.DB_DATABASE,
+    dbPassword: process.env.DB_PASSWORD,
+    dbPort: process.env.DB_PORT,
+    jwtSecret: process.env.JWT_SECRET,
+    nodeEnv: process.env.NODE_ENV,
   },
 });
