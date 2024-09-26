@@ -3,7 +3,7 @@
 ## Techstack
 
 * Fullstack framework: `nuxt`
-* DBMS:
+* DBMS: `PostgreSQL`
 * Runtime: `bun`
 * Code quality assurance: `eslint`
 * Devops: Github Action, `docker`
@@ -14,6 +14,7 @@
 
 ```
 bun install
+bun db:schema
 ```
 
 ### Development
