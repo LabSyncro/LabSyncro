@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "db:schema": "dbmate create; dotenv -e .env -- zapatos"
+    "db:schema": "dbmate create; dotenv -e .env -- zapatos",
+    "db:migrate": "dbmate migrate"
   },
   "dependencies": {
     "lodash-es": "^4.17.21",
