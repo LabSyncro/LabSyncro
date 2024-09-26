@@ -1,3 +1,4 @@
+-- migrate:up
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE user_role as ENUM ('admin', 'lab_manager', 'user');
@@ -242,3 +243,6 @@ CREATE TABLE expiration_extension_requests (
   return_at time with time zone NOT NULL,
   PRIMARY KEY(user_id, receipt_id)
 );
+
+-- migrate:down
+
