@@ -3,13 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "build": "bun db:schema && nuxt build",
+    "dev": "bun db:schema && nuxt dev",
+    "generate": "bun db:schema && nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "db:schema": "dotenv -e .env -- zapatos"
   },
   "dependencies": {
     "lodash-es": "^4.17.21",
@@ -23,6 +24,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/pg": "^8.11.8",
     "autoprefixer": "^10.4.20",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^9.9.0",
     "folder-hash": "^4.0.4",
     "pg": "^8.12.0",
