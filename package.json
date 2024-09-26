@@ -8,8 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --ignore-pattern \"zapatos/\"",
+    "lint:fix": "eslint . --ignore-pattern \"zapatos/\" --fix",
     "db:schema": "dbmate create; dotenv -e .env -- zapatos",
     "db:migrate": "dbmate migrate"
   },
