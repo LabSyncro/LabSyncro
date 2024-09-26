@@ -3,14 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "build": "bun db:schema && nuxt build",
+    "dev": "bun db:schema && nuxt dev",
+    "generate": "bun db:schema && nuxt generate",
+    "preview": "bun db:schema && nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint . --ignore-pattern \"zapatos/\"",
     "lint:fix": "eslint . --ignore-pattern \"zapatos/\" --fix",
-    "db:schema": "dbmate create; dotenv -e .env -- zapatos",
+    "db:create": "dbmate create",
+    "db:schema": "dotenv -e .env -- zapatos",
     "db:migrate": "dbmate migrate"
   },
   "dependencies": {
