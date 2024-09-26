@@ -14,7 +14,8 @@
   "dependencies": {
     "lodash-es": "^4.17.21",
     "nuxt": "^3.12.4",
-    "vue": "latest"
+    "vue": "latest",
+    "zapatos": "^6.4.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.5.0",
