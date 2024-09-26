@@ -14,7 +14,8 @@
 
 ```
 bun install
-bun db:schema
+bun db:create
+bun db:migrate
 ```
 
 ### Development
