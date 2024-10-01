@@ -1,0 +1,69 @@
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('AeonikPro-Regular'), url("/public/fonts/AeonikPro/AeonikPro-Regular.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: italic;
+  font-weight: 400;
+  src: local('AeonikPro-Italic'), url("/public/fonts/AeonikPro/AeonikPro-RegularItalic.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: normal;
+  font-weight: 700;
+  src: local('AeonikPro-Bold'), url("/public/fonts/AeonikPro/AeonikPro-Bold.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: italic;
+  font-weight: 700;
+  src: local('AeonikPro-BoldItalic'), url("/public/fonts/AeonikPro/AeonikPro-BoldItalic.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: normal;
+  font-weight: 300;
+  src: local('AeonikPro-Light'), url("/public/fonts/AeonikPro/AeonikPro-Light.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: italic;
+  font-weight: 300;
+  src: local('AeonikPro-LightItalic'), url("/public/fonts/AeonikPro/AeonikPro-LightItalic.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: normal;
+  font-weight: 900;
+  src: local('AeonikPro-Black'), url("/public/fonts/AeonikPro/AeonikPro-Black.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: italic;
+  font-weight: 900;
+  src: local('AeonikPro-BlackItalic'), url("/public/fonts/AeonikPro/AeonikPro-BlackItalic.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: normal;
+  font-weight: 500;
+  src: local('AeonikPro-Medium'), url("/public/fonts/AeonikPro/AeonikPro-Medium.otf") format('otf');
+}
+
+@font-face {
+  font-family: 'AeonikPro';
+  font-style: italic;
+  font-weight: 500;
+  src: local('AeonikPro-MediumItalic'), url("/public/fonts/AeonikPro/AeonikPro-MediumItalic.otf") format('otf');
+}
