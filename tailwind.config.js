@@ -9,6 +9,15 @@ export default {
     './error.vue',
   ],
   theme: {
+    fontSize: {
+      'sm': '12px',
+      'normal': '14px',
+      'md': '16px',
+      'lg': '18px',
+      'xl': '20px',
+      '2xl': '24px',
+      '4xl': '32px',
+    },
     extend: {
     },
   },
