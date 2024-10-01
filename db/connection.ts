@@ -1,9 +1,9 @@
-import { Client } from 'pg';
+import pg from 'pg';
 
 export const initDbClient = async () => {
   const { dbHost, dbUser, dbPort, dbDatabase, dbPassword } = useRuntimeConfig();
 
-  const dbClient = new Client({
+  const dbClient = new pg.Client({
     user: dbUser,
     host: dbHost,
     database: dbDatabase,
