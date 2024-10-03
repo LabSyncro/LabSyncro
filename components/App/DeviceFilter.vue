@@ -11,7 +11,7 @@
         as-child
         class="border-gray-lighter border-2 px-5 py-2 pr-8"
       >
-        <button class="h-[100%] m-0 p-0 font-[500]">
+        <button class="h-[100%] m-0 p-0">
           {{ currentFaculty?.name || 'Tất cả các khoa' }}
         </button>
         <Icon
@@ -21,8 +21,6 @@
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56">
-        <DropdownMenuLabel>Tìm thiết bị theo khoa</DropdownMenuLabel>
-        <DropdownMenuSeparator />
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
