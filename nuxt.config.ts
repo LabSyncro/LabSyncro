@@ -10,6 +10,7 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
     '~/assets/css/fonts.css',
+    '@fortawesome/fontawesome-svg-core/styles.css',
   ],
   postcss: {
     plugins: {
