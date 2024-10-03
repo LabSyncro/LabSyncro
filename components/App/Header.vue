@@ -11,7 +11,7 @@
         <AppLogo class="aspect-auto w-48" />
       </div>
       <div class="flex items-stretch justify-between gap-4 grow-[3]">
-        <AppDeviceFilter /> 
+        <AppDeviceFilter class="w-[120px] w-[180px] lg:w-[280px]" /> 
         <AppSearchBox class="flex-1" />
       </div>
       <div class="flex my-auto grow-[2] gap-3 justify-end">

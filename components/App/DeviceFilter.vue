@@ -10,7 +10,7 @@
 <template>
   <div class="relative border-tertiary-lighter border-2 px-5 py-2 pr-8 group" ref="dropdown">
     <div class="h-[100%] m-0 p-0" role="dropdown">
-      <span>{{ currentFacultyName }}</span>
+      <div class="w-[100%] line-clamp-1">{{ currentFacultyName }}</div>
       <ul
         :class="`
           absolute top-[56px] left-[-2px]
