@@ -7,8 +7,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui',
     '@nuxt/image',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
   ],
   eslint: {},
   css: [
