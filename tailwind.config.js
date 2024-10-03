@@ -21,7 +21,7 @@ export default {
     extend: {
       colors: {
         'primary-darker': '#030391',
-        'primary-darker': '#030391BF',
+        'primary-dark': '#030391BF',
         'primary-light': '#03039180',
         'primary-lighter': '#03039140',
         'secondary-darker': '#BFE1FF',
@@ -50,6 +50,11 @@ export default {
         'slate-lighter': '#F8FaFC',
         'white': '#FFFFFF',
       },
+      aspectRatio: {
+        auto: 'auto',
+        square: '1 / 1',
+        video: '16 / 9'
+      }
     },
   },
   plugins: [],

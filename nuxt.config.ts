@@ -5,11 +5,15 @@ env.config();
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/ui'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    '@nuxt/image',
+  ],
   eslint: {},
   css: [
-    '~/assets/css/main.css',
     '~/assets/css/fonts.css',
+    '~/assets/css/main.css',
   ],
   postcss: {
     plugins: {
