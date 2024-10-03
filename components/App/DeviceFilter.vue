@@ -22,7 +22,7 @@
         <li
           v-for="item in dropdownItems"
           :key="item.id"
-          :class="`px-2 py-2 ${ item.id === currentFacultyId ? 'bg-slate-light' : '' }`"
+          :class="`px-2 py-2 ${ item.id === currentFacultyId ? 'bg-slate-light' : '' } hover:bg-slate-light`"
           @click="() => currentFacultyId = item.id"
         >
           {{ item.name }}
