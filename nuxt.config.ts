@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxtjs/tailwindcss',
+    '@nuxt/icon',
     'shadcn-nuxt',
   ],
   eslint: {},

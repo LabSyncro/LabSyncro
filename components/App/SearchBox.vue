@@ -8,9 +8,9 @@
       type="search"
       placeholder="Nhập thiết bị"
     >
-    <UIcon
+    <Icon
       aria-hidden
-      class="absolute left-3 top-3 text-gray-light text-2xl"
+      class="absolute left-3 top-3 text-2xl text-gray-light"
       name="i-heroicons-magnifying-glass"
     />
   </div>
