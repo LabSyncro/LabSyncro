@@ -9,7 +9,7 @@
       placeholder="Nhập thiết bị"
     >
     <UIcon
-      aria-hidden=""
+      aria-hidden
       class="absolute left-3 top-2.5 text-gray-light text-xl"
       name="i-heroicons-magnifying-glass"
     />

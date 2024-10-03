@@ -6,15 +6,15 @@
     class="bg-white p-14 lg:px-32"
     role="banner"
   >
-    <div class="flex gap-16">
-      <div>
+    <div class="flex gap-16 justify-between">
+      <div class="grow-[1]">
         <AppLogo class="aspect-auto w-48" />
       </div>
-      <div class="flex items-stretch gap-2 flex-1">
+      <div class="flex items-stretch justify-between gap-4 grow-[3]">
         <AppDeviceFilter /> 
         <AppSearchBox class="flex-1" />
       </div>
-      <div class="flex my-auto">
+      <div class="flex my-auto grow-[2] gap-3 justify-end">
         <AppAvatar />
         <AppShoppingButton />
       </div>
