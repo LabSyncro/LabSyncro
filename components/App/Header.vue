@@ -7,7 +7,7 @@
     role="banner"
   >
     <div class="flex gap-16 justify-between">
-      <div class="grow-[1]">
+      <div class="grow-[1] flex items-center">
         <AppLogo class="aspect-auto w-48" />
       </div>
       <div class="flex items-stretch justify-between gap-4 grow-[3]">
