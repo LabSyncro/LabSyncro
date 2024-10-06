@@ -1,4 +1,5 @@
 import { Builder, until } from 'selenium-webdriver';
+
 import * as cheerio from 'cheerio';
 import type { AnyNode } from 'domhandler';
 
@@ -35,7 +36,19 @@ const extractProductInfo = ($: cheerio.Cheerio<AnyNode>) => {
       $.find('.image img').attr('src') ||
       '',
   );
-  return { image };
+  const name = normalizeText($.find('.product-name').text() || '');
+  const brand = normalizeText(
+    $.find('.height-item-product-category').parent().find('span i').text() ||
+      '',
+  );
+  const unit = normalizeText(
+    $.find('.price')
+      .contents()
+      .filter((_, el) => el.type === 'text')
+      .text() || '',
+  );
+  const quantity = normalizeText($.find('.stock').text() || '');
+  return { image, name, brand, unit, quantity };
 };
 
 const normalizeText = (text: string) => {

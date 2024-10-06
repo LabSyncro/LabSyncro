@@ -7,7 +7,7 @@ import {
   UNAUTHORIZED_CODE,
 } from '~/constants';
 import { cookieOptions } from '~/constants/cookie';
-import { initDbClient } from '~/server/db/connection';
+import { initDbClient } from '~/server/db';
 import type { LoginInputDto } from '~/server/dtos/in/auth.dto';
 import type { AuthOutputDto } from '~/server/dtos/out/auth.dto';
 

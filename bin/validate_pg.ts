@@ -5,7 +5,7 @@ import { Client } from 'pg';
 import { rootDir } from './utils/constants';
 import { readFileIfExists } from './utils/fs';
 
-const migrationDir = path.resolve(rootDir, './server/db/migrations');
+const migrationDir = path.resolve(rootDir, './db/migrations');
 
 async function* loadScripts(): AsyncGenerator<{ path: string, content: string }> {
   const scriptDirs = sortBy(fs.readdirSync(migrationDir), (dir) => Number.parseInt(dir.split('.')[0]));
