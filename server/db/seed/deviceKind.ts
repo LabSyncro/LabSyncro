@@ -1,7 +1,6 @@
 import { Builder, until } from 'selenium-webdriver';
 
 import * as cheerio from 'cheerio';
-import type { AnyNode } from 'domhandler';
 
 const driver = new Builder()
   .forBrowser('MicrosoftEdge')
@@ -12,43 +11,89 @@ driver
   .get(url)
   .then(() => driver.wait(until.titleContains('IC Vi Điều Khiển'), 10000))
   .then(() => driver.getPageSource())
-  .then((source: string) => {
+  .then(async (source: string) => {
     const $ = cheerio.load(source);
-    getProductElements($).map((ele) => {
-      console.log(extractProductInfo(ele));
-    });
+    const productLinks = getProductLinks($);
+
+    for (const link of productLinks) {
+      await driver.get(link);
+      const productSource = await driver.getPageSource();
+      const $$ = cheerio.load(productSource);
+      const productInfo = extractProductInfo($$);
+      console.log(productInfo);
+      await driver.navigate().back();
+    }
   })
   .then(() => {
     driver.quit();
   });
 
-const getProductElements = ($: cheerio.CheerioAPI) => {
-  const productEles: cheerio.Cheerio<AnyNode>[] = [];
-  $('.box-item').each((_, ele) => {
-    productEles.push($(ele));
+const getProductLinks = ($: cheerio.CheerioAPI) => {
+  const productLinks: string[] = [];
+  $('.box-item .product-name').each((_, ele) => {
+    const href = $(ele).attr('href');
+    if (href) {
+      productLinks.push(href);
+    }
   });
-  return productEles;
+  return productLinks;
 };
 
-const extractProductInfo = ($: cheerio.Cheerio<AnyNode>) => {
-  const image = normalizeText(
-    $.find('.image img').attr('data-src') ||
-      $.find('.image img').attr('src') ||
-      '',
+const extractProductInfo = ($: cheerio.CheerioAPI) => {
+  const mainImage = normalizeText(
+    $('#show-img').attr('data-src') || $('#show-img').attr('src') || '',
   );
-  const name = normalizeText($.find('.product-name').text() || '');
+
+  const subImages: string[] = [];
+  $('#small-img-roll img').each((_, imgEle) => {
+    const subImageSrc = $(imgEle).attr('data-href');
+    if (subImageSrc) {
+      subImages.push(normalizeText(subImageSrc));
+    }
+  });
+
+  const name = normalizeText($('.product-title-show h1').text());
   const brand = normalizeText(
-    $.find('.height-item-product-category').parent().find('span i').text() ||
-      '',
+    $(
+      '.product-title-info-price-show .text-medium-s a[href*="thuong-hieu"]',
+    ).text(),
+  );
+  const manufacturerCode = normalizeText(
+    $('.text-medium-s:contains("Mã nhà sx")').text().split('Mã nhà sx')[1],
+  );
+  const description = normalizeText(
+    $('.text-medium-s:contains("Mô tả")').text().split('Mô tả')[1],
+  );
+  const datasheet = normalizeText(
+    $('.text-medium-s:contains("Datasheet") a').attr('href') || '',
   );
   const unit = normalizeText(
-    $.find('.price')
-      .contents()
-      .filter((_, el) => el.type === 'text')
-      .text() || '',
+    $('.table-price-show .header .td-quantity-price .r')
+      .text()
+      .replace(/\(.*\)/, '')
+      .toLowerCase(),
   );
-  const quantity = normalizeText($.find('.stock').text() || '');
-  return { image, name, brand, unit, quantity };
+  const attributes: Record<string, string> = {};
+  $('.body-tab tbody tr').each((_, row) => {
+    const attributeName = $(row).find('td.first-td p').text().trim();
+    const attributeValue = $(row).find('td:nth-child(2) p').text().trim();
+
+    if (attributeName && attributeValue) {
+      attributes[attributeName] = attributeValue;
+    }
+  });
+
+  return {
+    mainImage,
+    subImages,
+    name,
+    brand,
+    manufacturerCode,
+    description,
+    datasheet,
+    unit,
+    attributes,
+  };
 };
 
 const normalizeText = (text: string) => {
