@@ -82,6 +82,10 @@ const extractProductInfo = ($: cheerio.CheerioAPI) => {
       attributes[attributeName] = attributeValue;
     }
   });
+  const quantityElement = $('.product-info-show .line-26 b');
+  const quantity = quantityElement
+    ? quantityElement.text().match(/\d+/)?.[0]
+    : null;
 
   return {
     mainImage,
@@ -93,6 +97,7 @@ const extractProductInfo = ($: cheerio.CheerioAPI) => {
     datasheet,
     unit,
     attributes,
+    quantity,
   };
 };
 
