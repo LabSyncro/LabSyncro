@@ -1,0 +1,1194 @@
+{
+  "categories": [
+    {
+      "id": 1153,
+      "name": "Trục Vít, Thanh Trượt Tròn",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "truc-vit-thanh-truot-tron"
+    },
+    {
+      "id": 1157,
+      "name": "Khớp Nối Truyền Động",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "khop-noi-truyen-dong"
+    },
+    {
+      "id": 1166,
+      "name": "Vòng Bi Mắt Trâu",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "vong-bi-mat-trau"
+    },
+    {
+      "id": 1170,
+      "name": "Con Trượt, Thanh Trượt Vuông",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "con-truot-thanh-truot-vuong"
+    },
+    {
+      "id": 1174,
+      "name": "Van Khí Nén, Bộ Chia Khí",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "van-khi-nen-bo-chia-khi"
+    },
+    {
+      "id": 1178,
+      "name": "Đầu Nối Khí Nén",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "dau-noi-khi-nen"
+    },
+    {
+      "id": 1190,
+      "name": "Phụ Kiện Khí Nén",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "phu-kien-khi-nen"
+    },
+    {
+      "id": 1316,
+      "name": "Mạch Chức Năng, Mạch Phát Triển, Module Shield",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-chuc-nang-mach-phat-trien-module-shield"
+    },
+    {
+      "id": 1349,
+      "name": "Cảm Biến Quang",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-quang"
+    },
+    {
+      "id": 1597,
+      "name": "Công Tắc",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "cong-tac"
+    },
+    {
+      "id": 1598,
+      "name": "Ổ Cắm",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "o-cam"
+    },
+    {
+      "id": 1693,
+      "name": "Xy Lanh Khí Nén",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "xy-lanh-khi-nen"
+    },
+    {
+      "id": 1725,
+      "name": "Phụ Kiện Cảm Biến",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "phu-kien-cam-bien"
+    },
+    {
+      "id": 1768,
+      "name": "Thiết Bị Báo Động, An Ninh, Cảm Biến",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "thiet-bi-bao-dong-an-ninh-cam-bien"
+    },
+    {
+      "id": 1769,
+      "name": "Phụ Kiện Điện Dân Dụng",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "phu-kien-dien-dan-dung"
+    },
+    {
+      "id": 2,
+      "name": "Mạch Điện, Module, Thiết Bị Nạp",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "mach-dien-module-thiet-bi-nap"
+    },
+    {
+      "id": 124,
+      "name": "Mạch Vi Điều Khiển, Vi Xử Lý",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-vi-dieu-khien-vi-xu-ly"
+    },
+    {
+      "id": 135,
+      "name": "Máy In 3D, Phụ Kiện Máy In 3D",
+      "parent_id": 1116,
+      "level": 2,
+      "slug": "may-in-3d-phu-kien-may-in-3d"
+    },
+    {
+      "id": 160,
+      "name": "Transistors",
+      "parent_id": 7,
+      "level": 2,
+      "slug": "transistors"
+    },
+    {
+      "id": 351,
+      "name": "Dụng Cụ Làm Mạch",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "dung-cu-lam-mach"
+    },
+    {
+      "id": 459,
+      "name": "Terminal Block, Domino",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "terminal-block-domino"
+    },
+    {
+      "id": 945,
+      "name": "Máy Hiện Sóng, Dao Động Ký Oscilloscope",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "may-hien-song-dao-dong-ky-oscilloscope"
+    },
+    {
+      "id": 998,
+      "name": "Dây Bẹ Ribbon, Flat",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "day-be-ribbon-flat"
+    },
+    {
+      "id": 1119,
+      "name": "Băng Keo",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "bang-keo"
+    },
+    {
+      "id": 1262,
+      "name": "Chuyển Đổi Điện DC-DC",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "chuyen-doi-dien-dc-dc"
+    },
+    {
+      "id": 1345,
+      "name": "Encoder",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "encoder"
+    },
+    {
+      "id": 1471,
+      "name": "Thiết Bị Đóng Ngắt, Bảo Vệ Mạch",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "thiet-bi-dong-ngat-bao-ve-mach"
+    },
+    {
+      "id": 1580,
+      "name": "Tem, Nhãn, Bảng Hiệu Chỉ Báo",
+      "parent_id": 1118,
+      "level": 2,
+      "slug": "tem-nhan-bang-hieu-chi-bao"
+    },
+    {
+      "id": 3,
+      "name": "Linh Kiện Điện Tử Thụ Động",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "linh-kien-dien-tu-thu-dong"
+    },
+    {
+      "id": 7,
+      "name": "Diode, Transistor, IGBT, FET, XTAL",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "diode-transistor-igbt-fet-xtal"
+    },
+    {
+      "id": 22,
+      "name": "IC Logic Lập Trình - FPGA",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-logic-lap-trinh-fpga"
+    },
+    {
+      "id": 192,
+      "name": "Đế IC",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "de-ic"
+    },
+    {
+      "id": 726,
+      "name": "PLCs, HMI, Thu Thập Dữ Liệu",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "plcs-hmi-thu-thap-du-lieu"
+    },
+    {
+      "id": 968,
+      "name": "Que Đo Kiểm, Dây Đo Kiểm",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "que-do-kiem-day-do-kiem"
+    },
+    {
+      "id": 991,
+      "name": "Hộp Kỹ Thuật, Hộp Đựng Linh Kiện",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "hop-ky-thuat-hop-dung-linh-kien"
+    },
+    {
+      "id": 1006,
+      "name": "Dây Điện, Cáp Điện",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "day-dien-cap-dien"
+    },
+    {
+      "id": 1024,
+      "name": "Dây Dạng Ống",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "day-dang-ong"
+    },
+    {
+      "id": 1260,
+      "name": "Chuyển Đổi Điện DC-AC",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "chuyen-doi-dien-dc-ac"
+    },
+    {
+      "id": 1305,
+      "name": "Mạch Điều Khiển Động Cơ",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-dieu-khien-dong-co"
+    },
+    {
+      "id": 1342,
+      "name": "Cảm Biến Dòng Điện",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-dong-dien"
+    },
+    {
+      "id": 1500,
+      "name": "Thyristors",
+      "parent_id": 7,
+      "level": 2,
+      "slug": "thyristors"
+    },
+    {
+      "id": 1592,
+      "name": "Máy CNC, Khắc Laser, Phụ Kiện CNC",
+      "parent_id": 1116,
+      "level": 2,
+      "slug": "may-cnc-khac-laser-phu-kien-cnc"
+    },
+    {
+      "id": 27,
+      "name": "IC Nhớ",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-nho"
+    },
+    {
+      "id": 442,
+      "name": "MOSFETs,  FETs",
+      "parent_id": 7,
+      "level": 2,
+      "slug": "mosfets-fets"
+    },
+    {
+      "id": 458,
+      "name": "Mạch RF, WiFi, Bluetooth, RFID",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-rf-wifi-bluetooth-rfid"
+    },
+    {
+      "id": 498,
+      "name": "Nhà Thông Minh",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "nha-thong-minh"
+    },
+    {
+      "id": 869,
+      "name": "Cổng DB, D-Sub",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "cong-db-d-sub"
+    },
+    {
+      "id": 973,
+      "name": "Đầu Nối Banana, Kẹp Cá Sấu, Kim Test",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "dau-noi-banana-kep-ca-sau-kim-test"
+    },
+    {
+      "id": 1010,
+      "name": "Cáp Máy Tính",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "cap-may-tinh"
+    },
+    {
+      "id": 1022,
+      "name": "Dụng Cụ Định Vị, Hút, Gắp, Nam Châm",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "dung-cu-dinh-vi-hut-gap-nam-cham"
+    },
+    {
+      "id": 1203,
+      "name": "Đồ Chơi Điều Khiển RC, Phụ Kiện",
+      "parent_id": 1116,
+      "level": 2,
+      "slug": "do-choi-dieu-khien-rc-phu-kien"
+    },
+    {
+      "id": 1268,
+      "name": "Chuyển Đổi Điện AC-AC",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "chuyen-doi-dien-ac-ac"
+    },
+    {
+      "id": 1297,
+      "name": "Tủ Điện, Bản Lề, Khóa",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "tu-dien-ban-le-khoa"
+    },
+    {
+      "id": 1355,
+      "name": "Cảm Biến Môi Trường",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-moi-truong"
+    },
+    {
+      "id": 4,
+      "name": "LCD, LED, Tấm Cảm Ứng",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "lcd-led-tam-cam-ung"
+    },
+    {
+      "id": 33,
+      "name": "IC Nguồn",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-nguon"
+    },
+    {
+      "id": 161,
+      "name": "IGBTs",
+      "parent_id": 7,
+      "level": 2,
+      "slug": "igbts"
+    },
+    {
+      "id": 209,
+      "name": "GPS, GSM, GPRS Modules",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "gps-gsm-gprs-modules"
+    },
+    {
+      "id": 304,
+      "name": "Ăng Ten GPS, GSM, 3G, 4G, 5G",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "ang-ten-gps-gsm-3g-4g-5g"
+    },
+    {
+      "id": 769,
+      "name": "Kìm Cắt, Kìm Tuốt Dây, Kìm Kẹp",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "kim-cat-kim-tuot-day-kim-kep"
+    },
+    {
+      "id": 864,
+      "name": "Cổng FFC, FPC",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "cong-ffc-fpc"
+    },
+    {
+      "id": 954,
+      "name": "Đo Cường Độ Ánh Sáng",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "do-cuong-do-anh-sang"
+    },
+    {
+      "id": 992,
+      "name": "Cáp Audio Video",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "cap-audio-video"
+    },
+    {
+      "id": 1222,
+      "name": "Robots",
+      "parent_id": 1116,
+      "level": 2,
+      "slug": "robots"
+    },
+    {
+      "id": 1311,
+      "name": "Chiếu Sáng",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "chieu-sang"
+    },
+    {
+      "id": 1356,
+      "name": "Cảm Biến Nhiệt Độ, Độ Ẩm",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-nhiet-do-do-am-8539487d-6188-45e7-8a7b-0c5614979271"
+    },
+    {
+      "id": 1547,
+      "name": "Đèn Hiệu, Còi Báo, Loa",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "den-hieu-coi-bao-loa"
+    },
+    {
+      "id": 1689,
+      "name": "Máy Cấp Nguồn, Tải Điện Tử",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "may-cap-nguon-tai-dien-tu"
+    },
+    {
+      "id": 5,
+      "name": "Cổng Kết Nối, Đầu Nối, Jack Nối",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "cong-ket-noi-dau-noi-jack-noi"
+    },
+    {
+      "id": 62,
+      "name": "IC Giao Tiếp",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-giao-tiep"
+    },
+    {
+      "id": 344,
+      "name": "Pin Sạc",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "pin-sac"
+    },
+    {
+      "id": 833,
+      "name": "Đầu Nối RF Đồng Trục",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "dau-noi-rf-dong-truc"
+    },
+    {
+      "id": 848,
+      "name": "Dao Động Thạch Anh, Oscillator, Resonator",
+      "parent_id": 7,
+      "level": 2,
+      "slug": "dao-dong-thach-anh-oscillator-resonator"
+    },
+    {
+      "id": 855,
+      "name": "Cổng USB, HDMI",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "cong-usb-hdmi"
+    },
+    {
+      "id": 946,
+      "name": "Phân Tích Chất Lỏng",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "phan-tich-chat-long"
+    },
+    {
+      "id": 1011,
+      "name": "Cáp Mạng, Viễn Thông",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "cap-mang-vien-thong"
+    },
+    {
+      "id": 1127,
+      "name": "Động Cơ Điện",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "dong-co-dien"
+    },
+    {
+      "id": 1361,
+      "name": "Cảm Biến Tiệm Cận",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-tiem-can"
+    },
+    {
+      "id": 1562,
+      "name": "Kìm Bấm Dây, Bấm Đầu Cosse",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "kim-bam-day-bam-dau-cosse"
+    },
+    {
+      "id": 6,
+      "name": "Dây Điện, Cáp Điện, Dây Tín Hiệu",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "day-dien-cap-dien-day-tin-hieu"
+    },
+    {
+      "id": 136,
+      "name": "Mạch Giao Tiếp, Bộ Giao Tiếp",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-giao-tiep-bo-giao-tiep"
+    },
+    {
+      "id": 312,
+      "name": "Biến Trở",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "bien-tro"
+    },
+    {
+      "id": 652,
+      "name": "IC Khuếch Đại & So Sánh",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-khuech-dai-so-sanh"
+    },
+    {
+      "id": 767,
+      "name": "Đầu Nối Tròn",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "dau-noi-tron"
+    },
+    {
+      "id": 1078,
+      "name": "Ốc Vít, Bu Lông, Long Đền",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "oc-vit-bu-long-long-den"
+    },
+    {
+      "id": 1194,
+      "name": "Bộ Điều Khiển Động Cơ, Ngoại Vi",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "bo-dieu-khien-dong-co-ngoai-vi"
+    },
+    {
+      "id": 1237,
+      "name": "Pin Không Sạc",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "pin-khong-sac"
+    },
+    {
+      "id": 1364,
+      "name": "Cảm Biến Chuyển Động, Vị Trí",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-chuyen-dong-vi-tri"
+    },
+    {
+      "id": 1447,
+      "name": "LED Đơn",
+      "parent_id": 4,
+      "level": 2,
+      "slug": "led-don"
+    },
+    {
+      "id": 920,
+      "name": "Cảm Biến",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "cam-bien"
+    },
+    {
+      "id": 101,
+      "name": "IC Logic, IC Số",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-logic-ic-so"
+    },
+    {
+      "id": 138,
+      "name": "Tụ Điện",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "tu-dien"
+    },
+    {
+      "id": 370,
+      "name": "Thiết Bị Nạp IC, Programmer, Debugger",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "thiet-bi-nap-ic-programmer-debugger"
+    },
+    {
+      "id": 888,
+      "name": "Đầu Nối Nguồn AC, DC",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "dau-noi-nguon-ac-dc"
+    },
+    {
+      "id": 959,
+      "name": "Thiết Bị Đo - Lấy Dấu",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "thiet-bi-do-lay-dau"
+    },
+    {
+      "id": 1068,
+      "name": "Đồng Hồ Đo Công Nghiệp",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "dong-ho-do-cong-nghiep"
+    },
+    {
+      "id": 1216,
+      "name": "Dây Cáp Nguồn",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "day-cap-nguon"
+    },
+    {
+      "id": 1244,
+      "name": "Hộp Pin, Đế Pin, Phụ Kiện Pin",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "hop-pin-de-pin-phu-kien-pin"
+    },
+    {
+      "id": 1362,
+      "name": "Cảm Biến Từ Trường, Hall Effect",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-tu-truong-hall-effect"
+    },
+    {
+      "id": 966,
+      "name": "Bộ Nguồn Điện, Pin, Biến Áp",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "bo-nguon-dien-pin-bien-ap"
+    },
+    {
+      "id": 117,
+      "name": "IC Opto, IC Cách Ly",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-opto-ic-cach-ly"
+    },
+    {
+      "id": 125,
+      "name": "FPGA Boards",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "fpga-boards"
+    },
+    {
+      "id": 883,
+      "name": "Cổng Mạng, Viễn Thông ",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "cong-mang-vien-thong"
+    },
+    {
+      "id": 936,
+      "name": "Công Tắc, Nút Nhấn Công Nghiệp",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "cong-tac-nut-nhan-cong-nghiep"
+    },
+    {
+      "id": 943,
+      "name": "Đo Nhiệt Độ",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "do-nhiet-do"
+    },
+    {
+      "id": 1027,
+      "name": "Đế Giữ Dây, Kẹp Giữ Dây Cáp",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "de-giu-day-kep-giu-day-cap"
+    },
+    {
+      "id": 1094,
+      "name": "Dụng Cụ Cầm Tay Vặn Ốc Vít",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "dung-cu-cam-tay-van-oc-vit"
+    },
+    {
+      "id": 1249,
+      "name": "Bộ Sạc, Mạch Sạc Pin",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "bo-sac-mach-sac-pin"
+    },
+    {
+      "id": 1367,
+      "name": "Cảm Biến Hình Ảnh, Màu Sắc",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-hinh-anh-mau-sac"
+    },
+    {
+      "id": 1116,
+      "name": "Cơ Điện Tử, Công Tắc, Nút Nhấn",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "co-dien-tu-cong-tac-nut-nhan"
+    },
+    {
+      "id": 202,
+      "name": "IC Chuyển Đổi Dữ Liệu",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-chuyen-doi-du-lieu"
+    },
+    {
+      "id": 412,
+      "name": "Biến Áp",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "bien-ap"
+    },
+    {
+      "id": 732,
+      "name": "Đầu Cosse Bấm Dây, Nối Dây",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "dau-cosse-bam-day-noi-day"
+    },
+    {
+      "id": 941,
+      "name": "Máy Đo Không Khí, Gas",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "may-do-khong-khi-gas"
+    },
+    {
+      "id": 949,
+      "name": "Quạt",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "quat"
+    },
+    {
+      "id": 1012,
+      "name": "Cáp Đồng Trục",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "cap-dong-truc"
+    },
+    {
+      "id": 1300,
+      "name": "Mạch Audio, Video",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-audio-video"
+    },
+    {
+      "id": 1359,
+      "name": "Cảm Biến Lực, Cân Nặng",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-luc-can-nang"
+    },
+    {
+      "id": 1469,
+      "name": "LED 7 Đoạn, LED Ma Trận",
+      "parent_id": 4,
+      "level": 2,
+      "slug": "led-7-doan-led-ma-tran"
+    },
+    {
+      "id": 1719,
+      "name": "Vật Liệu Nhựa & Cao Su",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "vat-lieu-nhua-cao-su"
+    },
+    {
+      "id": 935,
+      "name": "Điện Công Nghiệp, Tự Động Hóa",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "dien-cong-nghiep-tu-dong-hoa"
+    },
+    {
+      "id": 274,
+      "name": "IC Định Thời Gian, Đồng Hồ",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-dinh-thoi-gian-dong-ho"
+    },
+    {
+      "id": 759,
+      "name": "Năng Lượng Mặt Trời",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "nang-luong-mat-troi"
+    },
+    {
+      "id": 905,
+      "name": "Khay Thẻ Nhớ, Khay SIM",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "khay-the-nho-khay-sim"
+    },
+    {
+      "id": 951,
+      "name": "Làm Mát, Làm Nóng Điện Tử",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "lam-mat-lam-nong-dien-tu"
+    },
+    {
+      "id": 1109,
+      "name": "Dao, Kéo, Lưỡi Dao",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "dao-keo-luoi-dao"
+    },
+    {
+      "id": 1301,
+      "name": "Mạch Chuyển Đổi Data",
+      "parent_id": 2,
+      "level": 2,
+      "slug": "mach-chuyen-doi-data"
+    },
+    {
+      "id": 1360,
+      "name": "Cảm Biến Áp Suất",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-ap-suat-0db253bf-3cc4-4a2b-a2bc-9549d343d696"
+    },
+    {
+      "id": 940,
+      "name": "Thiết Bị Đo Kiểm, Đầu Dò",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "thiet-bi-do-kiem-dau-do"
+    },
+    {
+      "id": 77,
+      "name": "IC RF, RFID",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-rf-rfid"
+    },
+    {
+      "id": 895,
+      "name": "Đầu Nối Dây Ô tô, Xe Máy",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "dau-noi-day-o-to-xe-may-f20e62ff-947a-4cc1-b74a-87fdbdfa7e07"
+    },
+    {
+      "id": 1018,
+      "name": "Thiết Bị Thí Nghiệm",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "thiet-bi-thi-nghiem"
+    },
+    {
+      "id": 1104,
+      "name": "Kim Khí, Mũi Khoan, Lưỡi Cắt, Đá Mài",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "kim-khi-mui-khoan-luoi-cat-da-mai"
+    },
+    {
+      "id": 1125,
+      "name": "Khóa Điện Từ, Nam Châm Điện Solenoids",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "khoa-dien-tu-nam-cham-dien-solenoids"
+    },
+    {
+      "id": 1357,
+      "name": "Cảm Biến Chất Lỏng",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-chat-long"
+    },
+    {
+      "id": 1117,
+      "name": "Khí Nén, Thủy Lực, Truyền Động",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "khi-nen-thuy-luc-truyen-dong"
+    },
+    {
+      "id": 139,
+      "name": "Cuộn Cảm",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "cuon-cam"
+    },
+    {
+      "id": 670,
+      "name": "IC Xử Lý Audio & Video",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-xu-ly-audio-video"
+    },
+    {
+      "id": 898,
+      "name": "Cổng Audio, Video",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "cong-audio-video"
+    },
+    {
+      "id": 955,
+      "name": "Cân Nặng, Đo Lực",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "can-nang-do-luc"
+    },
+    {
+      "id": 1112,
+      "name": "Búa, Bấm, Đục",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "bua-bam-duc"
+    },
+    {
+      "id": 1206,
+      "name": "Điều Khiển Nhiệt Độ, Xử Lý Nhiệt",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "dieu-khien-nhiet-do-xu-ly-nhiet"
+    },
+    {
+      "id": 1496,
+      "name": "Phụ Kiện LED",
+      "parent_id": 4,
+      "level": 2,
+      "slug": "phu-kien-led"
+    },
+    {
+      "id": 965,
+      "name": "Dụng Cụ, Kim Khí, Tools",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "dung-cu-kim-khi-tools"
+    },
+    {
+      "id": 690,
+      "name": "IC Driver",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-driver"
+    },
+    {
+      "id": 1041,
+      "name": "Máy Kiểm Tra Lắp Đặt Điện",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "may-kiem-tra-lap-dat-dien"
+    },
+    {
+      "id": 1115,
+      "name": "Mài, Chà Nhám, Đánh Bóng",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "mai-cha-nham-danh-bong"
+    },
+    {
+      "id": 1228,
+      "name": "Timer Định Thời, Bộ Đếm Counter",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "timer-dinh-thoi-bo-dem-counter"
+    },
+    {
+      "id": 1341,
+      "name": "Cảm Biến Sinh Trắc Học",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-sinh-trac-hoc"
+    },
+    {
+      "id": 1388,
+      "name": "Laser Module, Phụ Kiện Laser",
+      "parent_id": 4,
+      "level": 2,
+      "slug": "laser-module-phu-kien-laser"
+    },
+    {
+      "id": 967,
+      "name": "Phụ Kiện Máy Tính, Điện Dân Dụng",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "phu-kien-may-tinh-dien-dan-dung"
+    },
+    {
+      "id": 378,
+      "name": "Máy Phát Xung Sóng, Máy Phân Tích",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "may-tao-xung-song-may-phan-tich"
+    },
+    {
+      "id": 1092,
+      "name": "Máy Cầm Tay, Máy Công Cụ",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "may-cam-tay-may-cong-cu"
+    },
+    {
+      "id": 1340,
+      "name": "Cảm Biến Âm Thanh",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-am-thanh"
+    },
+    {
+      "id": 1698,
+      "name": "Khởi Động Từ & Phụ Kiện Contactor",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "khoi-dong-tu-phu-kien-contactor"
+    },
+    {
+      "id": 1590,
+      "name": "Nút Đệm Chống Rung & Trượt",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "nut-dem-de-chong-rung"
+    },
+    {
+      "id": 1043,
+      "name": "Đo Áp Suất",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "do-ap-suat"
+    },
+    {
+      "id": 1472,
+      "name": "Cầu Chì Công Nghiệp",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "cau-chi-cong-nghiep"
+    },
+    {
+      "id": 1711,
+      "name": "Thiết Bị Nâng & Dụng Cụ Tải",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "thiet-bi-nang-dung-cu-tai"
+    },
+    {
+      "id": 1758,
+      "name": "Cảm Biến Khí Nén & Công Tắc",
+      "parent_id": 920,
+      "level": 2,
+      "slug": "cam-bien-khi-nen-cong-tac"
+    },
+    {
+      "id": 1118,
+      "name": "An Toàn, An Ninh, Phòng Sạch",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "an-toan-an-ninh-phong-sach"
+    },
+    {
+      "id": 1048,
+      "name": "Đo Âm Thanh, Độ Rung",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "do-am-thanh-do-rung"
+    },
+    {
+      "id": 1475,
+      "name": "Cầu Chì Hàn PCB",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "cau-chi-han-pcb"
+    },
+    {
+      "id": 1748,
+      "name": "Dụng Cụ Chốt, Giữ Cố Định",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "dung-cu-chot-giu-co-dinh"
+    },
+    {
+      "id": 1061,
+      "name": "Máy Kiểm Tra Cáp, Mạng Dữ Liệu",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "may-kiem-tra-cap-mang-du-lieu"
+    },
+    {
+      "id": 1650,
+      "name": "Đế & Hộp  Cầu Chì",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "de-hop-cau-chi"
+    },
+    {
+      "id": 282,
+      "name": "Filters, Ferrit",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "filters-ferrit"
+    },
+    {
+      "id": 1064,
+      "name": "Thu Thập Dữ Liệu, Ghi Log",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "thu-thap-du-lieu-ghi-log"
+    },
+    {
+      "id": 1235,
+      "name": "Đo Tốc Độ Quay",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "do-toc-do-quay"
+    },
+    {
+      "id": 1484,
+      "name": "Varistors, MOVs",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "varistors-movs"
+    }
+  ]
+}

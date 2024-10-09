@@ -1,12 +1,31 @@
 import { Builder, until } from 'selenium-webdriver';
-
 import * as cheerio from 'cheerio';
+import { config as configEnv } from 'dotenv';
+
+type ProductInfo = {
+  name: string;
+  brand: string;
+  manufacturer: string;
+  unit: string;
+  available_quantity: number;
+  description: string;
+  datasheet: string;
+  meta: { [key: string]: string | number | boolean | null };
+  image: {
+    main_image: string;
+    sub_images: string[];
+  };
+  price: string;
+};
+
+configEnv();
 
 const driver = new Builder()
   .forBrowser('MicrosoftEdge')
   .usingServer('http://localhost:4444/wd/hub')
   .build();
 const url = 'https://www.thegioiic.com/product/ic-vi-dieu-khien';
+
 driver
   .get(url)
   .then(() => driver.wait(until.titleContains('IC Vi Điều Khiển'), 10000))
@@ -19,8 +38,8 @@ driver
       await driver.get(link);
       const productSource = await driver.getPageSource();
       const $$ = cheerio.load(productSource);
-      const productInfo = extractProductInfo($$);
-      console.log(productInfo);
+      console.log(extractProductInfo($$));
+
       await driver.navigate().back();
     }
   })
@@ -39,16 +58,16 @@ const getProductLinks = ($: cheerio.CheerioAPI) => {
   return productLinks;
 };
 
-const extractProductInfo = ($: cheerio.CheerioAPI) => {
-  const mainImage = normalizeText(
+const extractProductInfo = ($: cheerio.CheerioAPI): ProductInfo => {
+  const main_image = normalizeText(
     $('#show-img').attr('data-src') || $('#show-img').attr('src') || '',
   );
 
-  const subImages: string[] = [];
+  const sub_images: string[] = [];
   $('#small-img-roll img').each((_, imgEle) => {
     const subImageSrc = $(imgEle).attr('data-href');
     if (subImageSrc) {
-      subImages.push(normalizeText(subImageSrc));
+      sub_images.push(normalizeText(subImageSrc));
     }
   });
 
@@ -58,7 +77,7 @@ const extractProductInfo = ($: cheerio.CheerioAPI) => {
       '.product-title-info-price-show .text-medium-s a[href*="thuong-hieu"]',
     ).text(),
   );
-  const manufacturerCode = normalizeText(
+  const manufacturer = normalizeText(
     $('.text-medium-s:contains("Mã nhà sx")').text().split('Mã nhà sx')[1],
   );
   const description = normalizeText(
@@ -68,36 +87,40 @@ const extractProductInfo = ($: cheerio.CheerioAPI) => {
     $('.text-medium-s:contains("Datasheet") a').attr('href') || '',
   );
   const unit = normalizeText(
-    $('.table-price-show .header .td-quantity-price .r')
+    $('.product-price-show .table-price-show .header .td-quantity-price .r')
       .text()
-      .replace(/\(.*\)/, '')
+      .replace(/[()]/g, '')
       .toLowerCase(),
   );
-  const attributes: Record<string, string> = {};
+  const meta: Record<string, string> = {};
   $('.body-tab tbody tr').each((_, row) => {
     const attributeName = $(row).find('td.first-td p').text().trim();
     const attributeValue = $(row).find('td:nth-child(2) p').text().trim();
 
     if (attributeName && attributeValue) {
-      attributes[attributeName] = attributeValue;
+      meta[attributeName] = attributeValue;
     }
   });
   const quantityElement = $('.product-info-show .line-26 b');
-  const quantity = quantityElement
-    ? quantityElement.text().match(/\d+/)?.[0]
-    : null;
+  const available_quantity = quantityElement
+    ? parseInt(quantityElement.text().match(/\d+/)?.[0] || '0', 10)
+    : 0;
+  const price = normalizeText($('.text-price').first().find('td').eq(1).text());
 
   return {
-    mainImage,
-    subImages,
     name,
+    available_quantity,
     brand,
-    manufacturerCode,
+    manufacturer,
     description,
     datasheet,
     unit,
-    attributes,
-    quantity,
+    meta,
+    image: {
+      main_image,
+      sub_images,
+    },
+    price,
   };
 };
 

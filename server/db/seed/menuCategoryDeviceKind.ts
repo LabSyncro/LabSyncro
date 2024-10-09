@@ -1,7 +1,6 @@
 import pg from 'pg';
 import { config as configEnv } from 'dotenv';
-import { Builder, until } from 'selenium-webdriver';
-
+import { Builder } from 'selenium-webdriver';
 import * as cheerio from 'cheerio';
 
 type Category = {
@@ -26,6 +25,7 @@ type ProductInfo = {
     main_image: string;
     sub_images: string[];
   };
+  price: string;
 };
 
 configEnv();
@@ -53,111 +53,105 @@ async function fetchAndInsertCategories() {
 
   await dbClient.connect();
 
-  await Promise.all(
-    data.map(async (item) => {
-      const { slug, ...rest } = item;
-      const query1 = {
-        text: 'INSERT INTO menus (id, name, parent_id, level) VALUES ($1, $2, $3, $4)',
-        values: [rest.id, rest.name, rest.parent_id, rest.level],
+  for (const item of data) {
+    const { slug, ...rest } = item;
+    const query1 = {
+      text: 'INSERT INTO menus (id, name, parent_id, level) VALUES ($1, $2, $3, $4)',
+      values: [rest.id, rest.name, rest.parent_id, rest.level],
+    };
+    await dbClient.query(query1);
+
+    if (rest.parent_id === 0) {
+      continue;
+    }
+
+    const categoryLevel3Url = `https://www.thegioiic.com/v1/get-category?parent_id=${rest.id}&level=3`;
+    const response = await fetch(categoryLevel3Url);
+    const categoryLevel3Data: Category[] = (await response.json()).categories;
+
+    for (const subItem of categoryLevel3Data) {
+      const { id, name, parent_id, number_product, slug } = subItem;
+      const filterCategoryUrl = `https://www.thegioiic.com/v1/filter-category?category_id=${id}`;
+      const response = await fetch(filterCategoryUrl);
+      const metaData = (await response.json()).properties;
+
+      // const availableQuantity = await distributeProductsToLabs(
+      //   dbClient,
+      //   number_product || 0,
+      // );
+
+      const query2 = {
+        text: 'INSERT INTO categories (id, name, menu_id, quantity, meta) VALUES ($1, $2, $3, $4, $5)',
+        values: [id, name, parent_id, number_product, JSON.stringify(metaData)],
       };
-      await dbClient.query(query1);
+      await dbClient.query(query2);
 
-      if (rest.parent_id === 0) {
-        return;
-      }
+      const totalPages = Math.ceil((number_product || 0) / 40);
+      for (let page = 1; page <= totalPages; page++) {
+        const deviceKindUrl = `https://www.thegioiic.com/product/${slug}?page=${page}`;
+        await driver.get(deviceKindUrl);
+        const source = await driver.getPageSource();
+        const $ = cheerio.load(source);
+        const productLinks = getProductLinks($);
+        const categoryDevices = [];
 
-      const categoryLevel3Url = `https://www.thegioiic.com/v1/get-category?parent_id=${rest.id}&level=3`;
-      const response = await fetch(categoryLevel3Url);
-      const categoryLevel3Data: Category[] = (await response.json()).categories;
+        for (const link of productLinks) {
+          await driver.get(link);
+          const productSource = await driver.getPageSource();
+          const $$ = cheerio.load(productSource);
+          const {
+            name,
+            brand,
+            manufacturer,
+            description,
+            datasheet,
+            unit,
+            meta,
+            available_quantity,
+            image,
+            price,
+          } = extractProductInfo($$);
+          const deviceKindData = {
+            name,
+            category_id: id,
+            brand,
+            meta,
+            manufacturer,
+            description,
+            datasheet,
+            unit,
+            available_quantity,
+            image,
+            price,
+          };
+          categoryDevices.push(deviceKindData);
+          await driver.navigate().back();
 
-      await Promise.all(
-        categoryLevel3Data.map(async (subItem) => {
-          const { id, name, parent_id, number_product, slug } = subItem;
-          const filterCategoryUrl = `https://www.thegioiic.com/v1/filter-category?category_id=${id}`;
-          const response = await fetch(filterCategoryUrl);
-          const metaData = (await response.json()).properties;
-
-          // const availableQuantity = await distributeProductsToLabs(
-          //   dbClient,
-          //   number_product || 0,
-          // );
-
-          const query2 = {
-            text: 'INSERT INTO categories (id, name, menu_id, quantity, meta) VALUES ($1, $2, $3, $4, $5)',
+          const deviceKindQuery = {
+            text: 'INSERT INTO device_kinds (name, category_id, brand, meta, manufacturer, description, datasheet, unit, available_quantity, image, price) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
             values: [
-              id,
               name,
-              parent_id,
-              number_product,
-              JSON.stringify(metaData),
+              id,
+              brand,
+              JSON.stringify(meta),
+              manufacturer,
+              description,
+              datasheet,
+              unit,
+              available_quantity,
+              JSON.stringify(image),
+              price,
             ],
           };
-          await dbClient.query(query2);
+          await dbClient.query(deviceKindQuery);
+        }
 
-          const totalPages = Math.ceil((number_product || 0) / 40);
-
-          await Promise.all(
-            Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              async (page) => {
-                const deviceKindUrl = `https://www.thegioiic.com/product/${slug}?page=${page}`;
-                console.log(deviceKindUrl);
-                await driver.get(deviceKindUrl);
-                await driver.wait(until.titleContains(name), 10000);
-                const source = await driver.getPageSource();
-                const $ = cheerio.load(source);
-                const productLinks = getProductLinks($);
-
-                await Promise.all(
-                  productLinks.map(async (link) => {
-                    await driver.get(link);
-                    const productSource = await driver.getPageSource();
-                    const $$ = cheerio.load(productSource);
-                    const {
-                      name,
-                      brand,
-                      manufacturer,
-                      description,
-                      datasheet,
-                      unit,
-                      meta,
-                      available_quantity,
-                    } = extractProductInfo($$);
-                    const deviceKindQuery = {
-                      text: 'INSERT INTO device_kinds (name, category_id, brand, meta, manufacturer, description, datasheet, unit, available_quantity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-                      values: [
-                        name,
-                        id,
-                        brand,
-                        JSON.stringify(meta),
-                        manufacturer,
-                        description,
-                        datasheet,
-                        unit,
-                        available_quantity,
-                      ],
-                    };
-                    try {
-                      await dbClient.query(deviceKindQuery);
-                    } catch (error) {
-                      console.error(
-                        `Error inserting device kind: ${name}`,
-                        error,
-                      );
-                      // Optionally, you could log this error to a file or external logging service
-                    }
-                    await driver.navigate().back();
-                  }),
-                );
-              },
-            ),
-          );
-        }),
-      );
-    }),
-  );
-
-  await driver.quit();
+        await driver.navigate().back();
+      }
+    }
+  }
   await dbClient.end();
+  await driver.quit();
 }
 
 // Helper function to randomly distribute products across labs
@@ -222,7 +216,7 @@ const extractProductInfo = ($: cheerio.CheerioAPI): ProductInfo => {
   const unit = normalizeText(
     $('.table-price-show .header .td-quantity-price .r')
       .text()
-      .replace(/\(.*\)/, '')
+      .replace(/[()]/g, '')
       .toLowerCase(),
   );
   const meta: Record<string, string> = {};
@@ -234,11 +228,11 @@ const extractProductInfo = ($: cheerio.CheerioAPI): ProductInfo => {
       meta[attributeName] = attributeValue;
     }
   });
-
   const quantityElement = $('.product-info-show .line-26 b');
   const available_quantity = quantityElement
     ? parseInt(quantityElement.text().match(/\d+/)?.[0] || '0', 10)
     : 0;
+  const price = normalizeText($('.text-price').first().find('td').eq(1).text());
 
   return {
     name,
@@ -253,11 +247,12 @@ const extractProductInfo = ($: cheerio.CheerioAPI): ProductInfo => {
       main_image,
       sub_images,
     },
+    price,
   };
 };
 
 const normalizeText = (text: string) => {
-  return text.replace(/\\n/g, '').trim();
+  return text ? text.replace(/\\n/g, '').trim() : '';
 };
 
 fetchAndInsertCategories();
