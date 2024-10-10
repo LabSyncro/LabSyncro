@@ -1,6 +1,132 @@
 {
   "categories": [
     {
+      "id": 1,
+      "name": "IC - Mạch Tích Hợp",
+      "parent_id": 0,
+      "level": 1,
+      "slug": "ic-mach-tich-hop"
+    },
+    {
+      "id": 11,
+      "name": "IC Vi Điều Khiển MCU, Vi Xử Lý MPU",
+      "parent_id": 1,
+      "level": 2,
+      "slug": "ic-vi-dieu-khien-mcu-vi-xu-ly-mpu"
+    },
+    {
+      "id": 137,
+      "name": "Điện Trở",
+      "parent_id": 3,
+      "level": 2,
+      "slug": "dien-tro"
+    },
+    {
+      "id": 140,
+      "name": "Màn Hình LCD",
+      "parent_id": 4,
+      "level": 2,
+      "slug": "man-hinh-lcd"
+    },
+    {
+      "id": 159,
+      "name": "Diodes",
+      "parent_id": 7,
+      "level": 2,
+      "slug": "diodes"
+    },
+    {
+      "id": 180,
+      "name": "Hàng Rào, Header, Đầu Bấm Dây",
+      "parent_id": 5,
+      "level": 2,
+      "slug": "hang-rao-header-dau-bam-day"
+    },
+    {
+      "id": 300,
+      "name": "Công Tắc, Nút Nhấn, Bàn Phím",
+      "parent_id": 1116,
+      "level": 2,
+      "slug": "cong-tac-nut-nhan-ban-phim"
+    },
+    {
+      "id": 334,
+      "name": "Chuyển Đổi Điện AC-DC",
+      "parent_id": 966,
+      "level": 2,
+      "slug": "chuyen-doi-dien-ac-dc"
+    },
+    {
+      "id": 431,
+      "name": "Rơ Le, Relay",
+      "parent_id": 935,
+      "level": 2,
+      "slug": "ro-le-relay"
+    },
+    {
+      "id": 512,
+      "name": "Phòng Sạch",
+      "parent_id": 1118,
+      "level": 2,
+      "slug": "phong-sach"
+    },
+    {
+      "id": 518,
+      "name": "Phụ Kiện Máy Tính",
+      "parent_id": 967,
+      "level": 2,
+      "slug": "phu-kien-may-tinh"
+    },
+    {
+      "id": 942,
+      "name": "Đồng Hồ Đo Đa Năng, Thiết Bị Kiểm Tra Điện",
+      "parent_id": 940,
+      "level": 2,
+      "slug": "dong-ho-do-da-nang-thiet-bi-kiem-tra-dien"
+    },
+    {
+      "id": 975,
+      "name": "Máy Hàn, Phụ Kiện Hàn Mạch",
+      "parent_id": 965,
+      "level": 2,
+      "slug": "may-han-phu-kien-han-mach"
+    },
+    {
+      "id": 1026,
+      "name": "Dây Đã Bấm Đầu Nối",
+      "parent_id": 6,
+      "level": 2,
+      "slug": "day-da-bam-dau-noi"
+    },
+    {
+      "id": 1133,
+      "name": "Gối Đỡ Trục, Ổ Bi Trượt",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "goi-do-truc-o-bi-truot"
+    },
+    {
+      "id": 1138,
+      "name": "Vòng Bi, Ổ Bi, Bạc Đạn",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "vong-bi-o-bi-bac-dan"
+    },
+    {
+      "id": 1144,
+      "name": "Bánh Răng, Ròng Rọc",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "banh-rang-rong-roc"
+    },
+    {
+      "id": 1148,
+      "name": "Dây Đai, Dây Curoa, Dây Xích",
+      "parent_id": 1117,
+      "level": 2,
+      "slug": "day-dai-day-curoa-day-xich"
+    },
+    {
       "id": 1153,
       "name": "Trục Vít, Thanh Trượt Tròn",
       "parent_id": 1117,
