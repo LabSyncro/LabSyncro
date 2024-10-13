@@ -12,8 +12,8 @@
 </script>
 
 <template>
-  <div class="relative pl-4 py-3 pr-8 rounded-md bg-white text-primary-light text-normal" ref="dropdown">
-    <div class="h-[100%] m-0 p-0" role="dropdown">
+  <div class="relative pl-4 py-3 pr-8 rounded-md bg-white text-primary-light text-normal">
+    <div class="h-[100%] m-0 p-0" role="dropdown" ref="dropdown">
       <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
     </div>
     <Icon
