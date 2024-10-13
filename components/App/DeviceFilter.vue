@@ -5,34 +5,40 @@
   const dropdownItems = [...allFaculties, { name: 'Tất cả các khoa', id: null }];
   const currentFacultyId = ref<null | string>(null);
   const currentFacultyName = computed(() => dropdownItems.find(({ id }) => id === currentFacultyId.value)?.name || null);
+
+  function setFaculty (id: string) {
+    currentFacultyId.value = id;
+  }
 </script>
 
 <template>
-  <div class="relative pl-4 py-3 rounded-md group bg-white text-primary-light text-normal" ref="dropdown">
+  <div class="relative pl-4 py-3 pr-8 rounded-md bg-white text-primary-light text-normal" ref="dropdown">
     <div class="h-[100%] m-0 p-0" role="dropdown">
-      <div class="h-[100%] w-[100%] flex items-center">{{ currentFacultyName }}</div>
-      <ul
-        :class="`
-          absolute top-[56px] left-[-2px]
-          min-w-56 z-50
-          border-2 border-tertiary-lighter
-          ${ !isDropdownActive ? 'hidden' : 'block' }
-        `"
-      >
-        <li
-          v-for="item in dropdownItems"
-          :key="item.id"
-          :class="`px-2 py-2 ${ item.id === currentFacultyId ? 'bg-slate-light' : '' } hover:bg-slate-light`"
-          @click="() => currentFacultyId = item.id"
-        >
-          {{ item.name }}
-        </li>
-      </ul>
+      <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
     </div>
     <Icon
       aria-hidden
       class="absolute right-[16px] top-[16px] text-primary-dark text-md"
-      name="i-heroicons-chevron-down"
+      :name="`${ !isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up' }`"
     />
+    <div
+      v-if="isDropdownActive"
+      class="fixed top-[113px] py-16 left-0 w-[100vw] h-[100vh] bg-black text-white opacity-95"
+      role="menu"
+    >
+      <p class='text-center mb-5 text-lg'>Chọn Khoa để tìm thiết bị</p>
+      <div class='flex justify-start gap-10 px-5'>
+        <div
+          v-for="(faculty, index) in allFaculties"
+          :key="index"
+          class="flex flex-col gap-5 bg-secondary-lighter py-5"
+          @click="setFaculty(faculty.id)"
+        >
+          <div class="w-[200px] h-[100px] bg-white mx-auto">
+          </div>
+          <p class="text-center text-md w-[230px]"> {{ faculty.name }} </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
