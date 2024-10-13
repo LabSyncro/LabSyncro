@@ -13,14 +13,16 @@
 
 <template>
   <div class="relative pl-4 py-3 pr-8 rounded-md bg-white text-primary-light text-normal">
-    <div class="h-[100%] m-0 p-0" role="dropdown" ref="dropdown">
-      <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
+    <div ref="dropdown" class="cursor-pointer">
+      <div class="h-[100%] m-0 p-0" role="dropdown">
+        <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
+      </div>
+      <Icon
+        aria-hidden
+        class="absolute right-[16px] top-[16px] text-primary-dark text-md"
+        :name="`${ !isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up' }`"
+      />
     </div>
-    <Icon
-      aria-hidden
-      class="absolute right-[16px] top-[16px] text-primary-dark text-md"
-      :name="`${ !isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up' }`"
-    />
     <div
       :class="`${ !isDropdownActive ? 'opacity-0 z-[-1]' : 'opacity-90 z-50' } animate-in animate-out fixed top-[113px] py-16 left-0 w-[100vw] h-[100vh] bg-black text-white`"
       role="menu"
