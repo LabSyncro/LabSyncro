@@ -8,9 +8,9 @@
 </script>
 
 <template>
-  <div class="relative border-tertiary-lighter border-2 px-5 py-2 pr-8 group" ref="dropdown">
+  <div class="relative pl-4 py-3 rounded-lg group bg-white text-primary-light" ref="dropdown">
     <div class="h-[100%] m-0 p-0" role="dropdown">
-      <div class="w-[100%] line-clamp-1">{{ currentFacultyName }}</div>
+      <div class="h-[100%] w-[100%] flex items-center">{{ currentFacultyName }}</div>
       <ul
         :class="`
           absolute top-[56px] left-[-2px]
@@ -31,8 +31,8 @@
     </div>
     <Icon
       aria-hidden
-      class="absolute right-1.5 top-3.5 text-gray-light text-lg"
-      :name="`${ isDropdownActive ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down' }`"
+      class="absolute right-[16px] top-[16px] text-primary-dark text-md"
+      name="i-heroicons-chevron-down"
     />
   </div>
 </template>

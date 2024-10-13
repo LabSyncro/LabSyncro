@@ -4,13 +4,13 @@
 <template>
   <div class="relative">
     <input
-      class="bg-white border-gray-lighter border-2 h-[100%] w-[100%] px-10 text-lg"
+      class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 rounded-lg"
       type="search"
-      placeholder="Nhập thiết bị"
+      placeholder="Nhập tên thiết bị"
     >
     <Icon
       aria-hidden
-      class="absolute left-3 top-3 text-2xl text-gray-light"
+      class="absolute left-3 top-[12px] text-2xl text-primary-dark"
       name="i-heroicons-magnifying-glass"
     />
   </div>
