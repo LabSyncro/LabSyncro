@@ -29,8 +29,9 @@
       <div class='flex justify-start gap-10 px-5'>
         <div
           v-for="(faculty, index) in allFaculties"
+          role="button"
           :key="index"
-          class="flex flex-col gap-5 bg-secondary-lighter py-5"
+          class="flex flex-col gap-5 bg-secondary-lighter py-5 cursor-pointer"
           @click="setFaculty(faculty.id)"
         >
           <div class="w-[200px] h-[100px] bg-white mx-auto">
