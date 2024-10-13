@@ -28,7 +28,7 @@
 </script>
 
 <template>
-  <div role="menu" v-if="props.active" class="fixed top-[180px] text-primary-dark left-0 w-[100vw]" id="menu">
+  <div role="menu" v-if="props.active" class="absolute top-[180px] text-primary-dark left-0 w-[100vw]" id="menu">
     <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-32">
       <div>
         <a
