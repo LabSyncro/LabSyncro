@@ -22,8 +22,7 @@
       :name="`${ !isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up' }`"
     />
     <div
-      v-if="isDropdownActive"
-      class="fixed top-[113px] py-16 left-0 w-[100vw] h-[100vh] bg-black text-white opacity-95"
+      :class="`${ !isDropdownActive ? 'opacity-0' : 'opacity-90' } animate-in animate-out fixed top-[113px] py-16 left-0 w-[100vw] h-[100vh] bg-black text-white`"
       role="menu"
     >
       <p class='text-center mb-5 text-lg'>Chọn Khoa để tìm thiết bị</p>
