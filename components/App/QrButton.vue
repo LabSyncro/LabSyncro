@@ -5,6 +5,5 @@
       class="absolute left-3 top-[12px] text-xl"
       name="i-heroicons-qr-code"
     />
-    &nbsp;
   </button>
 </template>
