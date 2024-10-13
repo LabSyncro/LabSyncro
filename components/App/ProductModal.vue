@@ -29,7 +29,7 @@
 
 <template>
   <div role="menu" v-if="props.active" class="fixed top-[180px] text-primary-dark left-0 w-[100vw]" id="menu">
-    <div class="p-5 md:pl-8 shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16">
+    <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-44">
       <div>
         <a
           v-for="(category, index) in categories"
@@ -51,7 +51,7 @@
       <div class="flex-1">
         <div v-if="curCategory" class="relative">
           <h2
-            class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-5 pb-1">
+            class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-8 pb-2">
             <span>
               {{ curCategory.name }}
             </span>
