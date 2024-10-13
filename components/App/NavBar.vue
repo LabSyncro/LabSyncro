@@ -17,6 +17,7 @@
         class="absolute text-white text-md top-[26px] right-[26px]"
         :name="`${ !isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up' }`"
       />
+      <AppProductModal :active="isDropdownActive" />
     </button>
     <button class="cursor-pointer h-16 px-5 hover:bg-primary-darker"> Phòng thí nghiệm </button>
     <button class="cursor-pointer h-16 px-5 hover:bg-primary-darker"> Bài viết </button>
