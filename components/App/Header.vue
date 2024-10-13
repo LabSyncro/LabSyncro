@@ -3,7 +3,7 @@
 
 <template>
   <div
-    class="bg-primary-darker px-14 py-6 lg:px-32"
+    class="bg-primary-darker px-14 py-9 lg:px-32"
     role="banner"
   >
     <div class="flex gap-16 justify-between">

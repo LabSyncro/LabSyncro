@@ -8,7 +8,7 @@
 </script>
 
 <template>
-  <div class="relative pl-4 py-3 rounded-lg group bg-white text-primary-light" ref="dropdown">
+  <div class="relative pl-4 py-3 rounded-md group bg-white text-primary-light text-normal" ref="dropdown">
     <div class="h-[100%] m-0 p-0" role="dropdown">
       <div class="h-[100%] w-[100%] flex items-center">{{ currentFacultyName }}</div>
       <ul
