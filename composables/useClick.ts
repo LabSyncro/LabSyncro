@@ -1,8 +1,8 @@
-export function useClick (refName: string) {
+export function useClick (triggerRef: string) {
   const isActive = ref(false);
   const eventListener = ref(undefined);
 
-  const elementRef = useTemplateRef(refName);
+  const elementRef = useTemplateRef(triggerRef);
 
   function toggleActive (event: MouseEvent) {
     isActive.value = !isActive.value;
