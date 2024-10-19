@@ -15,49 +15,60 @@ async function insertAvailableQuantityIntoDeviceKind() {
 
   await dbClient.connect();
 
-  const labs = await dbClient.query<{ name: string }>('SELECT name from labs');
-
   const deviceKindsQuery = await dbClient.query<{
     id: number;
-    total_quantity: number;
-  }>('SELECT id, total_quantity FROM device_kinds');
+  }>('SELECT id FROM device_kinds');
 
   await Promise.all(
     deviceKindsQuery.rows.map(async (deviceKind) => {
-      const distribution = await distributeProductsToLabs(
-        labs.rows,
-        deviceKind.total_quantity || 0,
+      const quantityQuery = await dbClient.query<{
+        lab_name: string;
+        available_quantity: number;
+        total_quantity: number;
+      }>(
+        `WITH
+          lab_quantities AS (
+          SELECT
+          labs.name as lab_name,
+          SUM(devices.available_quantity)::integer as available_quantity,
+          SUM(devices.quantity)::integer as quantity
+        FROM
+          devices
+          JOIN labs ON devices.lab_id = labs.id
+        WHERE
+          devices.kind = $1
+        GROUP BY
+          labs.name
+        )
+        SELECT
+          lab_name,
+          available_quantity,
+          SUM(quantity) OVER () as total_quantity
+          FROM
+          lab_quantities
+        `,
+        [deviceKind.id],
       );
-      const availableQuantityJson = JSON.stringify(distribution);
+
+      const availableQuantity = quantityQuery.rows.reduce(
+        (acc, row) => {
+          acc[row.lab_name] = row.available_quantity;
+          return acc;
+        },
+        {} as { [labName: string]: number },
+      );
+
+      const totalQuantity = quantityQuery.rows[0]?.total_quantity || 0;
+      const availableQuantityJson = JSON.stringify(availableQuantity);
+
       return dbClient.query(
-        'UPDATE device_kinds SET available_quantity = $1 WHERE id = $2',
-        [availableQuantityJson, deviceKind.id],
+        'UPDATE device_kinds SET available_quantity = $1, total_quantity = $2 WHERE id = $3',
+        [availableQuantityJson, totalQuantity, deviceKind.id],
       );
     }),
   );
 
   await dbClient.end();
 }
-async function distributeProductsToLabs(
-  labs: { name: string }[],
-  totalProducts: number,
-): Promise<{ [lab: string]: number }> {
-  const availableQuantity: { [lab: string]: number } = {};
-  let remainingProducts = totalProducts;
 
-  labs.slice(0, labs.length - 1).forEach((row) => {
-    const randomQuantity = Math.floor(Math.random() * remainingProducts);
-
-    if (randomQuantity > 0) {
-      availableQuantity[row.name] = randomQuantity;
-      remainingProducts -= randomQuantity;
-    }
-  });
-
-  if (remainingProducts > 0) {
-    availableQuantity[labs[labs.length - 1].name] = remainingProducts;
-  }
-
-  return availableQuantity;
-}
 insertAvailableQuantityIntoDeviceKind();
