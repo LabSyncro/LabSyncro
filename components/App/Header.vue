@@ -19,7 +19,6 @@
         <AppShoppingButton />
       </div>
     </div>
-    <nav>
-    </nav>
+    <nav/>
   </div>
 </template>
