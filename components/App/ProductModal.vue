@@ -1,34 +1,34 @@
 <script setup lang="ts">
-  import { categoryService } from '@/services';
-  const props = defineProps<{
+import { categoryService } from '@/services';
+const props = defineProps<{
     active: boolean;
   }>();
 
-  const categories = await categoryService.getCategoriesForProductModal();
-  const selectedCategoryId = ref(null);
-  const hoveredCategoryId = ref(null);
+const categories = await categoryService.getCategoriesForProductModal();
+const selectedCategoryId = ref(null);
+const hoveredCategoryId = ref(null);
 
-  function onSelectedCategory (id: number) {
-    selectedCategoryId.value = id;
-  }
+function onSelectedCategory (id: number) {
+  selectedCategoryId.value = id;
+}
 
-  function onHoveredCategory (id: number) {
-    hoveredCategoryId.value = id;
-  }
+function onHoveredCategory (id: number) {
+  hoveredCategoryId.value = id;
+}
 
-  function onMouseoutCategory (id: number) {
-    if (hoveredCategoryId.value === id) hoveredCategoryId.value = null;
-  }
+function onMouseoutCategory (id: number) {
+  if (hoveredCategoryId.value === id) hoveredCategoryId.value = null;
+}
 
-  const curCategory = computed(() => {
-    const index = hoveredCategoryId.value ?? selectedCategoryId.value;
-    if (index === null) return null;
-    return categories[index];
-  });
+const curCategory = computed(() => {
+  const index = hoveredCategoryId.value ?? selectedCategoryId.value;
+  if (index === null) return null;
+  return categories[index];
+});
 </script>
 
 <template>
-  <div role="menu" v-if="props.active" class="absolute top-[180px] text-primary-dark left-0 w-[100vw]" id="menu">
+  <div v-if="props.active" id="menu" role="menu" class="absolute top-[180px] text-primary-dark left-0 w-[100vw]">
     <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-32">
       <div>
         <a

@@ -4,8 +4,7 @@
       <div class="flex-1">
         <AppLogo class="w-[150px]"/>
       </div>
-      <div class="flex-1">
-      </div>
+      <div class="flex-1"/>
     </div>
   </footer>
 </template>
