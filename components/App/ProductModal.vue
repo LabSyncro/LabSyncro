@@ -21,7 +21,7 @@
   }
 
   const curCategory = computed(() => {
-    const index = hoveredCategoryId.value || selectedCategoryId.value;
+    const index = hoveredCategoryId.value ?? selectedCategoryId.value;
     if (index === null) return null;
     return categories[index];
   });
