@@ -1,6 +1,9 @@
 <template>
   <div class="min-h-[100vh] bg-white text-gray-darker">
     <AppHeader />
-    <slot />
+    <main class="min-h-[80vh]">
+      <slot />
+    </main>
+    <AppFooter />
   </div>
 </template>
