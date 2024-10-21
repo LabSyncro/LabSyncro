@@ -1,14 +1,14 @@
 <script setup lang="ts">
-  import { facultyService, Faculty } from '@/services';
-  const allFaculties = await facultyService.getAllFaculties();
-  const { isActive: isDropdownActive } = useClick('dropdown');
-  const dropdownItems = [...allFaculties, { name: 'Tất cả các khoa', id: null }];
-  const currentFacultyId = ref<null | string>(null);
-  const currentFacultyName = computed(() => dropdownItems.find(({ id }) => id === currentFacultyId.value)?.name || null);
+import { facultyService, Faculty } from '@/services';
+const allFaculties = await facultyService.getAllFaculties();
+const { isActive: isDropdownActive } = useClick('dropdown');
+const dropdownItems = [...allFaculties, { name: 'Tất cả các khoa', id: null }];
+const currentFacultyId = ref<null | string>(null);
+const currentFacultyName = computed(() => dropdownItems.find(({ id }) => id === currentFacultyId.value)?.name || null);
 
-  function setFaculty (id: string) {
-    currentFacultyId.value = id;
-  }
+function setFaculty (id: string) {
+  currentFacultyId.value = id;
+}
 </script>
 
 <template>
@@ -31,13 +31,12 @@
       <div class='flex justify-start gap-10 px-5'>
         <div
           v-for="(faculty, index) in allFaculties"
-          role="button"
           :key="index"
+          role="button"
           class="flex flex-col gap-5 bg-secondary-lighter py-5 cursor-pointer"
           @click="setFaculty(faculty.id)"
         >
-          <div class="w-[200px] h-[100px] bg-white mx-auto">
-          </div>
+          <div class="w-[200px] h-[100px] bg-white mx-auto"/>
           <p class="text-center text-md w-[230px]"> {{ faculty.name }} </p>
         </div>
       </div>

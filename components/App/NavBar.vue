@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  const isDropdownActive = ref(false);
+const isDropdownActive = ref(false);
 
-  function toggleActive () {
-    isDropdownActive.value = !isDropdownActive.value;
-  }
+function toggleActive () {
+  isDropdownActive.value = !isDropdownActive.value;
+}
 </script>
 <template>
   <nav class="bg-tertiary-darker flex justify-center text-white items-stretch">
