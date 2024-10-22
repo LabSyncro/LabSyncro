@@ -21,9 +21,9 @@
         <div class="mt-8 flex gap-2">
           <button class="flex items-center justify-center rounded-full w-8 h-8 border-[1px] text-white">
             <Icon
-                aria-hidden
-                name="i-heroicons-chevron-left"
-              />
+              aria-hidden
+              name="i-heroicons-chevron-left"
+            />
           </button>
           <button class="flex items-center justify-center rounded-full w-8 h-8 border-[1px] text-white">
             <Icon
