@@ -21,8 +21,8 @@ function closeDropdown () {
 
 <template>
   <div class="relative pl-4 py-3 pr-8 rounded-md bg-white text-primary-light text-normal">
-    <div class="cursor-pointer">
-      <div class="h-[100%] m-0 p-0" role="dropdown" @click="toggleDropdown">
+    <div class="cursor-pointer" @click="toggleDropdown">
+      <div class="h-[100%] m-0 p-0" role="dropdown">
         <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
       </div>
       <Icon
