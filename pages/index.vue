@@ -2,5 +2,7 @@
 </script>
 
 <template>
-  <div/>
+  <div>
+    <IntroBanner />
+  </div>
 </template>
