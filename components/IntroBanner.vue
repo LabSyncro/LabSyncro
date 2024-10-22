@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="bg-black text-white">
+  <div class="banner text-white">
     <div class="flex items-center px-10 sm:px-20 md:px-30 lg:px-56 h-[350px]">
       <div class="lg:w-[40vw]">
         <h2 class="text-lg pb-5">
@@ -43,3 +43,9 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.banner {
+  background-image: linear-gradient(0.25turn, #000000, #0000004f), url('/images/mock-intro-banner.png');
+}
+</style>
