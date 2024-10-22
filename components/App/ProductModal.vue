@@ -29,8 +29,8 @@ const curCategory = computed(() => {
 
 <template>
   <div v-if="props.active" id="menu" role="menu" class="absolute top-[180px] text-primary-dark left-0 w-[100vw]">
-    <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-32">
-      <div>
+    <div class="shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-32">
+      <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 self-stretch shadow-[10px_0_10px_rgba(0,0,0,0.1)]">
         <a
           v-for="(category, index) in categories"
           :key="index"
@@ -48,7 +48,7 @@ const curCategory = computed(() => {
           />
         </a>
       </div>
-      <div class="flex-1">
+      <div class="flex-1 p-5 md:pl-8 pb-20 lg:pr-24 pt-10 ">
         <div v-if="curCategory" class="relative">
           <h2
             class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-8 pb-2">
