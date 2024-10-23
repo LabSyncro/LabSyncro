@@ -38,28 +38,6 @@ function closeDropdown () {
       @mouseenter="(e) => e.target.focus()"
       @keydown.esc="closeDropdown"
     >
-      <p class='text-center mb-5 text-lg'>Chọn Khoa để tìm thiết bị</p>
-      <button
-        class="absolute right-[16px] top-[16px] text-white text-md bg-secondary-lighter rounded-full w-8 h-8 m-0 p-0 flex items-center justify-center"
-        @click="closeDropdown"
-      >
-        <Icon
-          aria-hidden
-          name="i-heroicons-x-mark"
-        />
-      </button>
-      <div class='flex justify-start gap-10 px-5'>
-        <div
-          v-for="(faculty, index) in allFaculties"
-          :key="index"
-          role="button"
-          class="flex flex-col gap-5 bg-secondary-lighter py-5 cursor-pointer"
-          @click="setFaculty(faculty.id)"
-        >
-          <div class="w-[200px] h-[100px] bg-white mx-auto"/>
-          <p class="text-center text-md w-[230px]"> {{ faculty.name }} </p>
-        </div>
-      </div>
     </div>
   </div>
 </template>
