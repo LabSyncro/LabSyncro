@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { categoryService } from '@/services';
 const props = defineProps<{
-    active: boolean;
-  }>();
+  active: boolean;
+}>();
 
 const categories = await categoryService.getCategoriesForProductModal();
 const selectedCategoryId = ref(null);
@@ -28,7 +28,7 @@ const curCategory = computed(() => {
 </script>
 
 <template>
-  <div v-if="props.active" id="menu" role="menu" class="absolute top-[180px] text-primary-dark left-0 w-[100vw]">
+  <div v-if="props.active" id="menu" role="menu" class="absolute top-[180px] text-primary-dark left-0 w-[100vw] bg-white">
     <div class="shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-32">
       <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 self-stretch shadow-[10px_0_10px_rgba(0,0,0,0.1)]">
         <a
