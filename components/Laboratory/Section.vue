@@ -1,6 +1,27 @@
 <script setup lang="ts">
 import { facultyService, Faculty } from '@/services';
 const allFaculties = await facultyService.getAllFaculties();
+const selectedFacultyId = ref(null);
+const hoveredFacultyId = ref(null);
+
+function onSelectedCategory (id: number) {
+  selectedFacultyId.value = id;
+}
+
+function onHoveredCategory (id: number) {
+  hoveredFacultyId.value = id;
+}
+
+function onMouseoutCategory (id: number) {
+  if (hoveredFacultyId.value === id) hoveredFacultyId.value = null;
+}
+
+const curFaculty = computed(() => {
+  const index = hoveredFacultyId.value ?? selectedFacultyId.value;
+  if (index === null) return null;
+  return allFaculties[index];
+});
+
 </script>
 
 <template>
