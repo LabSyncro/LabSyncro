@@ -12,5 +12,8 @@
     <div>
       <TechnicalDocumentSection />
     </div>
+    <div>
+      <LaboratorySection />
+    </div>
   </div>
 </template>
