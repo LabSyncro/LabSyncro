@@ -45,31 +45,16 @@ const items = computed(() => {
         />
       </button>
       <div class="flex justify-around gap-2">
-        <div
+        <DeviceItem
           v-for="(item, index) in items"
           :key="index"
-          :class="`w-[${ITEM_WIDTH}px] cursor-pointer border-[1px] rounded-ss`"
-        >
-          <div class="w-[100%] h-32 overflow-hidden">
-            <NuxtImg :src="item.thumbnailUrl" class="object-cover" />
-          </div>
-          <div class="p-2 pt-5 text-ss">
-            <p class="text-slate-dark mb-1">{{ item.manufacturer.toUpperCase() }}</p>
-            <p class="line-clamp-2 mb-3">{{ item.title }}</p>
-            <p class="relative text-slate-dark bg-gray-100 pl-1.5 py-0.5 rounded-sm">
-              <Icon
-                aria-hidden
-                class="absolute text-sm top-1"
-                name="i-heroicons-check"
-              />
-              <span class="ml-4">
-                Hàng còn:
-                <span class="font-semibold">{{ item.quantity }}</span>
-                {{ item.unit }}
-              </span>
-            </p>
-          </div>
-        </div>
+          :class="`w-[${ITEM_WIDTH}px]`"
+          :thumbnailUrl="item.thumbnailUrl"
+          :manufacturer="item.manufacturer"
+          :title="item.title"
+          :quantity="item.quantity"
+          :unit="item.unit"
+        />
       </div>
       <button
         class="bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
