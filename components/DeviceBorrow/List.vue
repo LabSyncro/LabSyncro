@@ -14,7 +14,7 @@ const itemNo = computed(() => {
   if (listWidth.value < 50) {
     return 0;
   }
-  return Math.floor((listWidth.value - 30) / (ITEM_WIDTH + 20));
+  return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
 const items = computed(() => {
   if (!itemNo.value) {
@@ -34,7 +34,7 @@ const items = computed(() => {
   <div class="mt-5">
     <div
       ref="listRef"
-      class="flex justify-center items-center gap-5 w-[80vw]"
+      class="flex justify-center items-center gap-5"
     >
       <button
         class="bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
