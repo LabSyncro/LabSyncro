@@ -45,7 +45,21 @@ const curFaculty = computed(() => {
           />
         </a>
       </div>
-      <div class="bg-white flex-1 my-5 px-5 py-5">
+      <div class="bg-white flex-1 my-5 px-5 py-5 pl-12">
+        <h2>Phòng thí nghiệm</h2>
+        <div v-if="curFaculty" class="relative">
+          <h3
+            class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-8 pb-1 text-normal mt-3">
+            <span>
+              {{ curFaculty.name }}
+            </span>
+            <Icon
+              aria-hidden
+              class="ml-5"
+              name="i-heroicons-chevron-double-right"
+            />
+          </h3>
+        </div>
       </div>
     </div>
   </section>
