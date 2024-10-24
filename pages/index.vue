@@ -2,5 +2,18 @@
 </script>
 
 <template>
-  <div/>
+  <div>
+    <div>
+      <IntroBanner />
+    </div>
+    <div>
+      <DeviceBorrowSection />
+    </div>
+    <div>
+      <TechnicalDocumentSection />
+    </div>
+    <div>
+      <LaboratorySection />
+    </div>
+  </div>
 </template>
