@@ -49,7 +49,7 @@ const items = computed(() => {
           v-for="(item, index) in items"
           :key="index"
           :class="`w-[${ITEM_WIDTH}px]`"
-          :thumbnailUrl="item.thumbnailUrl"
+          :thumbnail-url="item.thumbnailUrl"
           :manufacturer="item.manufacturer"
           :title="item.title"
           :quantity="item.quantity"

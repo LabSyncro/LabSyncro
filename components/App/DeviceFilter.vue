@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { facultyService, Faculty } from '@/services';
+import { facultyService } from '@/services';
 const allFaculties = await facultyService.getAllFaculties();
 const isDropdownActive = ref(false);
 const dropdownItems = [...allFaculties, { name: 'Tất cả các khoa', id: null }];
@@ -37,7 +37,6 @@ function closeDropdown () {
       role="menu"
       @mouseenter="(e) => e.target.focus()"
       @keydown.esc="closeDropdown"
-    >
-    </div>
+    />
   </div>
 </template>

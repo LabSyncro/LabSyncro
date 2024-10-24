@@ -36,9 +36,9 @@ const items = computed(() => {
   <div ref="listRef" class="w-[75vw] flex gap-4 justify-center">
     <TechnicalDocumentItem
       v-for="(item, index) in items"
-      class="min-w-[330px]"
       :key="index"
-      :departmentName="item.departmentName"
+      class="min-w-[330px]"
+      :department-name="item.departmentName"
       :title="item.title"
       :summary="item.summary"
     />

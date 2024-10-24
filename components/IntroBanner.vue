@@ -35,11 +35,11 @@
       </div>
     </div>
     <div class="flex gap-1 pb-5 justify-center">
-      <div class="h-2 w-2 rounded-full bg-white"></div>
-      <div class="h-2 w-2 rounded-full bg-slate-dark"></div>
-      <div class="h-2 w-2 rounded-full bg-slate-dark"></div>
-      <div class="h-2 w-2 rounded-full bg-slate-dark"></div>
-      <div class="h-2 w-2 rounded-full bg-slate-dark"></div>
+      <div class="h-2 w-2 rounded-full bg-white"/>
+      <div class="h-2 w-2 rounded-full bg-slate-dark"/>
+      <div class="h-2 w-2 rounded-full bg-slate-dark"/>
+      <div class="h-2 w-2 rounded-full bg-slate-dark"/>
+      <div class="h-2 w-2 rounded-full bg-slate-dark"/>
     </div>
   </div>
 </template>

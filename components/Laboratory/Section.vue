@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { facultyService, Faculty } from '@/services';
+import { facultyService } from '@/services';
 const allFaculties = await facultyService.getAllFaculties();
 const selectedFacultyId = ref(null);
 const hoveredFacultyId = ref(null);
