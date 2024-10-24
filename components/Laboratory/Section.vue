@@ -4,15 +4,15 @@ const allFaculties = await facultyService.getAllFaculties();
 const selectedFacultyId = ref(null);
 const hoveredFacultyId = ref(null);
 
-function onSelectedCategory (id: number) {
+function onSelectedFaculty (id: number) {
   selectedFacultyId.value = id;
 }
 
-function onHoveredCategory (id: number) {
+function onHoveredFaculty (id: number) {
   hoveredFacultyId.value = id;
 }
 
-function onMouseoutCategory (id: number) {
+function onMouseoutFaculty (id: number) {
   if (hoveredFacultyId.value === id) hoveredFacultyId.value = null;
 }
 
@@ -31,9 +31,18 @@ const curFaculty = computed(() => {
         <a
           v-for="(faculty, index) in allFaculties"
           :key="index"
-          class="text-sm my-2"
+          class="relative inline-block text-sm my-2 cursor-pointer rounded-md hover:bg-secondary-dark p-1 pl-2 pr-8"
+          @mouseenter="onHoveredFaculty(index)"
+          @click="onSelectedFaculty(index)"
+          @mouseout="onMouseoutFaculty(index)"
         >
           {{ faculty.name }}
+          <Icon
+            v-if="index === selectedFacultyId"
+            aria-hidden
+            class="absolute top-[8px] right-[6px]"
+            name="i-heroicons-check"
+          />
         </a>
       </div>
       <div class="bg-white flex-1 my-5 px-5 py-5">
