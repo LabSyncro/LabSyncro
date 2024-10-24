@@ -6,7 +6,7 @@ const dropdownItems = [...allFaculties, { name: 'Tất cả các khoa', id: null
 const currentFacultyId = ref<null | string>(null);
 const currentFacultyName = computed(() => dropdownItems.find(({ id }) => id === currentFacultyId.value)?.name || null);
 
-function setFaculty (id: string) {
+function setFaculty (id: string | null) {
   currentFacultyId.value = id;
 }
 
@@ -20,8 +20,8 @@ function closeDropdown () {
 </script>
 
 <template>
-  <div class="relative pl-4 py-3 pr-8 rounded-md bg-white text-primary-light text-normal">
-    <div class="cursor-pointer" @click="toggleDropdown">
+  <div :class="`${ !isDropdownActive ? 'bg-white' : 'bg-slate-lighter' } relative rounded-md text-primary-light text-normal`">
+    <div class="cursor-pointer pl-4 py-3 pr-8 " @click="toggleDropdown">
       <div class="h-[100%] m-0 p-0" role="dropdown">
         <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
       </div>
@@ -32,11 +32,41 @@ function closeDropdown () {
       />
     </div>
     <div
-      :class="`${ !isDropdownActive ? 'opacity-0 z-[-1]' : 'opacity-90 z-[60]' } animate-in animate-out fixed top-0 py-16 left-0 w-[100vw] h-[100vh] bg-black text-white`"
+      :class="`${ !isDropdownActive ? 'opacity-0 z-[-1]' : 'opacity-100 z-[60]' } animate-in animate-out absolute bg-white top-12 outline-none text-sm w-[250px]`"
       tabindex="1"
       role="menu"
       @mouseenter="(e) => e.target.focus()"
       @keydown.esc="closeDropdown"
-    />
+    >
+      <p class="px-2 py-2 bg-slate-light border-b-[1px]">Tìm tên khoa</p>
+      <div class="flex flex-col items-stretch mb-2 mt-1">
+        <button
+          :class="`${ currentFacultyId === null ? 'bg-secondary-dark' : '' } relative mx-1 my-0.5 px-1 py-1 hover:bg-secondary-dark text-left rounded-sm`"
+          @click="() => { setFaculty(null); closeDropdown() }"
+        >
+          Tất cả các khoa
+          <Icon
+            v-if="currentFacultyId === null"
+            aria-hidden
+            class="absolute top-[8px] right-[6px]"
+            name="i-heroicons-check"
+          />
+        </button>
+        <button
+          v-for="faculty in allFaculties"
+          :key="faculty.id"
+          :class="`${ currentFacultyId === faculty.id ? 'bg-secondary-dark' : '' } relative mx-1 my-0.5 px-1 py-1 text-black hover:bg-secondary-dark text-left rounded-sm line-clamp-1`"
+          @click="() => { setFaculty(faculty.id); closeDropdown() }"
+        >
+          {{ faculty.name }}
+          <Icon
+            v-if="currentFacultyId === faculty.id"
+            aria-hidden
+            class="absolute top-[8px] right-[6px]"
+            name="i-heroicons-check"
+          />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
