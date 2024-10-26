@@ -3,7 +3,7 @@ const router = useRouter();
 
 const navigateToHome = () => {
   router.push('/');
-}
+};
 </script>
 
 <template>

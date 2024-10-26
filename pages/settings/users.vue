@@ -1,5 +1,4 @@
 <script setup lang='ts'>
-import { ref } from 'vue';
 import {
   Check,
   ChevronDown,
@@ -16,13 +15,13 @@ const users = ref([
     id: 1,
     name: 'PHÚ NGUYỄN NG...',
     email: 'phu.nguyen2310@hcmut.edu...',
-    avatar: '/path-to-avatar.jpg',
+    avatar: 'https://avatars.githubusercontent.com/u/111476687?v=4',
     permissions: ['admin', 'All Users'],
-    lastActive: '5 days ago'
+    lastActive: '5 ngày trước'
   }
 ]);
 
-const getUserInitials = (name) => {
+const getUserInitials = (name: string) => {
   return name
     .split(' ')
     .map(word => word[0])
@@ -75,7 +74,7 @@ const getUserInitials = (name) => {
           <Input class="pl-10 w-[250px]" placeholder="Tìm kiếm người dùng" />
         </div>
 
-        <Button>Mời</Button>
+        <Button class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" size="sm">Mời</Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -118,8 +117,10 @@ const getUserInitials = (name) => {
           </TableCell>
           <TableCell>
             <div class="flex gap-2">
-              <Badge variant="secondary">Quản trị viên</Badge>
-              <Badge variant="secondary">Tất cả người dùng</Badge>
+              <Badge class="bg-green-100 text-green-600 hover:bg-green-600 hover:text-white cursor-pointer">Quản trị
+                viên</Badge>
+              <Badge class="bg-gray-200 text-gray-600 hover:bg-gray-600 hover:text-white cursor-pointer">Tất cả người
+                dùng</Badge>
             </div>
           </TableCell>
           <TableCell>{{ user.lastActive }}</TableCell>
