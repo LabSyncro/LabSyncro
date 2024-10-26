@@ -13,15 +13,23 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
   ],
   eslint: {},
-  css: [
-    '~/assets/css/fonts.css',
-    '~/assets/css/main.css',
-  ],
+  css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
+  },
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui',
   },
   runtimeConfig: {
     DATABASE_USER: process.env.DATABASE_USER,

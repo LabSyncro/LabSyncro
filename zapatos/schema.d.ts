@@ -10,7 +10,6 @@ Released under the MIT licence: see LICENCE file
 declare module 'zapatos/schema' {
 
   import type * as db from 'zapatos/db';
-  import type * as c from 'zapatos/custom';
 
   // got a type error on schemaVersionCanary below? update by running `npx zapatos`
   export interface schemaVersionCanary extends db.SchemaVersionCanary { version: 104 }
@@ -20,13 +19,25 @@ declare module 'zapatos/schema' {
 
   /* --- enums --- */
 
-  export type device_quality = 'broken' | 'healthy' | 'lost' | 'needs fixing';
+  export type assessment_status = 'assessing' | 'cancelled' | 'completed' | 'pending';
   export namespace every {
-    export type device_quality = ['broken', 'healthy', 'lost', 'needs fixing'];
+    export type assessment_status = ['assessing', 'cancelled', 'completed', 'pending'];
+  }
+  export type device_quality = 'broken' | 'healthy' | 'lost' | 'needs_fixing';
+  export namespace every {
+    export type device_quality = ['broken', 'healthy', 'lost', 'needs_fixing'];
+  }
+  export type device_status = 'assessing' | 'available' | 'borrowing' | 'discarded' | 'maintaining' | 'shipping';
+  export namespace every {
+    export type device_status = ['assessing', 'available', 'borrowing', 'discarded', 'maintaining', 'shipping'];
   }
   export type maintenance_status = 'cancelled' | 'completed' | 'maintaining' | 'pending';
   export namespace every {
     export type maintenance_status = ['cancelled', 'completed', 'maintaining', 'pending'];
+  }
+  export type request_status = 'approved' | 'cancelled' | 'pending' | 'rejected';
+  export namespace every {
+    export type request_status = ['approved', 'cancelled', 'pending', 'rejected'];
   }
   export type reservation_status = 'approved' | 'cancelled' | 'pending' | 'ready';
   export namespace every {
@@ -36,12 +47,121 @@ declare module 'zapatos/schema' {
   export namespace every {
     export type shipment_status = ['cancelled', 'completed', 'pending', 'shipping'];
   }
-  export type user_role = 'admin' | 'lab_manager' | 'user';
-  export namespace every {
-    export type user_role = ['admin', 'lab_manager', 'user'];
-  }
 
   /* --- tables --- */
+
+  /**
+   * **action**
+   * - Table in database
+   */
+  export namespace action {
+    export type Table = 'action';
+    export interface Selectable {
+      /**
+      * **action.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **action.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: db.Int8String;
+      /**
+      * **action.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+    }
+    export interface JSONSelectable {
+      /**
+      * **action.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **action.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: number;
+      /**
+      * **action.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+    }
+    export interface Whereable {
+      /**
+      * **action.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **action.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **action.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **action.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **action.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **action.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string | db.Parameter<string> | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **action.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **action.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **action.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'action_name_key' | 'action_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
 
   /**
    * **categories**
@@ -51,75 +171,195 @@ declare module 'zapatos/schema' {
     export type Table = 'categories';
     export interface Selectable {
       /**
-      * **categories.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * **categories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      id: string;
+      created_at: Date;
+      /**
+      * **categories.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: db.Int8String;
+      /**
+      * **categories.menu_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      menu_id: db.Int8String | null;
+      /**
+      * **categories.meta**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      meta: db.JSONValue | null;
       /**
       * **categories.name**
-      * - `jsonb` in database
-      * - `NOT NULL`, no default
+      * - `text` in database
+      * - Nullable, no default
       */
-      name: db.JSONValue;
+      name: string | null;
+      /**
+      * **categories.quantity**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      quantity: db.Int8String | null;
     }
     export interface JSONSelectable {
       /**
-      * **categories.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * **categories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      id: string;
+      created_at: db.TimestampTzString;
+      /**
+      * **categories.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: number;
+      /**
+      * **categories.menu_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      menu_id: number | null;
+      /**
+      * **categories.meta**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      meta: db.JSONValue | null;
       /**
       * **categories.name**
-      * - `jsonb` in database
-      * - `NOT NULL`, no default
+      * - `text` in database
+      * - Nullable, no default
       */
-      name: db.JSONValue;
+      name: string | null;
+      /**
+      * **categories.quantity**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      quantity: number | null;
     }
     export interface Whereable {
       /**
-      * **categories.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * **categories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **categories.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **categories.menu_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      menu_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **categories.meta**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      meta?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
       * **categories.name**
-      * - `jsonb` in database
-      * - `NOT NULL`, no default
+      * - `text` in database
+      * - Nullable, no default
       */
-      name?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **categories.quantity**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-      * **categories.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * **categories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **categories.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **categories.menu_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      menu_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **categories.meta**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      meta?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
       /**
       * **categories.name**
-      * - `jsonb` in database
-      * - `NOT NULL`, no default
+      * - `text` in database
+      * - Nullable, no default
       */
-      name: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
+      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **categories.quantity**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-      * **categories.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * **categories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **categories.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **categories.menu_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      menu_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **categories.meta**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      meta?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **categories.name**
-      * - `jsonb` in database
-      * - `NOT NULL`, no default
+      * - `text` in database
+      * - Nullable, no default
       */
-      name?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
+      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **categories.quantity**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'categories_pkey';
+    export type UniqueIndex = 'device_kinds_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -136,21 +376,57 @@ declare module 'zapatos/schema' {
       /**
       * **device_kinds.available_quantity**
       * - `jsonb` in database
-      * - `NOT NULL`, no default
-      */
-      available_quantity: db.JSONValue;
-      /**
-      * **device_kinds.category_id**
-      * - `uuid` in database
       * - Nullable, no default
       */
-      category_id: string | null;
+      available_quantity: db.JSONValue | null;
+      /**
+      * **device_kinds.brand**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      brand: string | null;
+      /**
+      * **device_kinds.category_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      category_id: db.Int8String | null;
+      /**
+      * **device_kinds.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **device_kinds.datasheet**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      datasheet: string | null;
+      /**
+      * **device_kinds.description**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      description: string | null;
       /**
       * **device_kinds.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `int8` in database
+      * - `NOT NULL`, identity column
       */
-      id: string;
+      id: db.Int8String;
+      /**
+      * **device_kinds.image**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      image: db.JSONValue | null;
+      /**
+      * **device_kinds.manufacturer**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      manufacturer: string | null;
       /**
       * **device_kinds.meta**
       * - `jsonb` in database
@@ -163,26 +439,80 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       name: string | null;
+      /**
+      * **device_kinds.price**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      price: string | null;
+      /**
+      * **device_kinds.total_quantity**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      total_quantity: db.Int8String;
+      /**
+      * **device_kinds.unit**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      unit: string | null;
     }
     export interface JSONSelectable {
       /**
       * **device_kinds.available_quantity**
       * - `jsonb` in database
-      * - `NOT NULL`, no default
-      */
-      available_quantity: db.JSONValue;
-      /**
-      * **device_kinds.category_id**
-      * - `uuid` in database
       * - Nullable, no default
       */
-      category_id: string | null;
+      available_quantity: db.JSONValue | null;
+      /**
+      * **device_kinds.brand**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      brand: string | null;
+      /**
+      * **device_kinds.category_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      category_id: number | null;
+      /**
+      * **device_kinds.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **device_kinds.datasheet**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      datasheet: string | null;
+      /**
+      * **device_kinds.description**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      description: string | null;
       /**
       * **device_kinds.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `int8` in database
+      * - `NOT NULL`, identity column
       */
-      id: string;
+      id: number;
+      /**
+      * **device_kinds.image**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      image: db.JSONValue | null;
+      /**
+      * **device_kinds.manufacturer**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      manufacturer: string | null;
       /**
       * **device_kinds.meta**
       * - `jsonb` in database
@@ -195,26 +525,80 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       name: string | null;
+      /**
+      * **device_kinds.price**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      price: string | null;
+      /**
+      * **device_kinds.total_quantity**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      total_quantity: number;
+      /**
+      * **device_kinds.unit**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      unit: string | null;
     }
     export interface Whereable {
       /**
       * **device_kinds.available_quantity**
       * - `jsonb` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       available_quantity?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **device_kinds.category_id**
-      * - `uuid` in database
+      * **device_kinds.brand**
+      * - `text` in database
       * - Nullable, no default
       */
-      category_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      brand?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.category_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      category_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.datasheet**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      datasheet?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.description**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      description?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **device_kinds.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `int8` in database
+      * - `NOT NULL`, identity column
       */
-      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.image**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      image?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.manufacturer**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      manufacturer?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **device_kinds.meta**
       * - `jsonb` in database
@@ -227,26 +611,80 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.price**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      price?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.total_quantity**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      total_quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **device_kinds.unit**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      unit?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
       * **device_kinds.available_quantity**
       * - `jsonb` in database
-      * - `NOT NULL`, no default
-      */
-      available_quantity: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
-      /**
-      * **device_kinds.category_id**
-      * - `uuid` in database
       * - Nullable, no default
       */
-      category_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      available_quantity?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.brand**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      brand?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.category_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      category_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.datasheet**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      datasheet?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.description**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      description?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **device_kinds.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `int8` in database
+      * - `NOT NULL`, identity column
       */
-      id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.image**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      image?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.manufacturer**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      manufacturer?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **device_kinds.meta**
       * - `jsonb` in database
@@ -259,26 +697,80 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.price**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      price?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **device_kinds.total_quantity**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      total_quantity: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
+      /**
+      * **device_kinds.unit**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      unit?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
       * **device_kinds.available_quantity**
       * - `jsonb` in database
-      * - `NOT NULL`, no default
-      */
-      available_quantity?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
-      /**
-      * **device_kinds.category_id**
-      * - `uuid` in database
       * - Nullable, no default
       */
-      category_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      available_quantity?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.brand**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      brand?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.category_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      category_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.datasheet**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      datasheet?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.description**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      description?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **device_kinds.id**
-      * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `int8` in database
+      * - `NOT NULL`, identity column
       */
-      id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.image**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      image?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.manufacturer**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      manufacturer?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **device_kinds.meta**
       * - `jsonb` in database
@@ -291,8 +783,26 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.price**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      price?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **device_kinds.total_quantity**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      total_quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
+      /**
+      * **device_kinds.unit**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      unit?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'device_kinds_pkey';
+    export type UniqueIndex = 'device_kinds_pkey1';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -308,16 +818,16 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **devices.allowed_borrow_role**
-      * - `device_allowed_borrow_role` in database
-      * - `NOT NULL`, no default
+      * - `int8` in database
+      * - Nullable, no default
       */
-      allowed_borrow_role: c.PgDevice_allowed_borrow_role;
+      allowed_borrow_role: db.Int8String | null;
       /**
       * **devices.available_quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      available_quantity: number;
+      available_quantity: db.Int8String;
       /**
       * **devices.borrower_id**
       * - `uuid` in database
@@ -325,17 +835,23 @@ declare module 'zapatos/schema' {
       */
       borrower_id: string | null;
       /**
+      * **devices.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
       * **devices.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
       * **devices.kind**
-      * - `uuid` in database
+      * - `int8` in database
       * - Nullable, no default
       */
-      kind: string | null;
+      kind: db.Int8String | null;
       /**
       * **devices.lab_id**
       * - `uuid` in database
@@ -356,27 +872,27 @@ declare module 'zapatos/schema' {
       quality: device_quality;
       /**
       * **devices.quantity**
-      * - `int4` in database
-      * - Nullable, default: `0`
+      * - `int8` in database
+      * - Nullable, default: `'0'::bigint`
       */
-      quantity: number | null;
+      quantity: db.Int8String | null;
       /**
-      * **devices.unit**
-      * - `text` in database
-      * - Nullable, no default
+      * **devices.status**
+      * - `device_status` in database
+      * - `NOT NULL`, default: `'available'::device_status`
       */
-      unit: string | null;
+      status: device_status;
     }
     export interface JSONSelectable {
       /**
       * **devices.allowed_borrow_role**
-      * - `device_allowed_borrow_role` in database
-      * - `NOT NULL`, no default
+      * - `int8` in database
+      * - Nullable, no default
       */
-      allowed_borrow_role: c.PgDevice_allowed_borrow_role;
+      allowed_borrow_role: number | null;
       /**
       * **devices.available_quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
       available_quantity: number;
@@ -387,17 +903,23 @@ declare module 'zapatos/schema' {
       */
       borrower_id: string | null;
       /**
+      * **devices.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
       * **devices.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
       * **devices.kind**
-      * - `uuid` in database
+      * - `int8` in database
       * - Nullable, no default
       */
-      kind: string | null;
+      kind: number | null;
       /**
       * **devices.lab_id**
       * - `uuid` in database
@@ -418,30 +940,30 @@ declare module 'zapatos/schema' {
       quality: device_quality;
       /**
       * **devices.quantity**
-      * - `int4` in database
-      * - Nullable, default: `0`
+      * - `int8` in database
+      * - Nullable, default: `'0'::bigint`
       */
       quantity: number | null;
       /**
-      * **devices.unit**
-      * - `text` in database
-      * - Nullable, no default
+      * **devices.status**
+      * - `device_status` in database
+      * - `NOT NULL`, default: `'available'::device_status`
       */
-      unit: string | null;
+      status: device_status;
     }
     export interface Whereable {
       /**
       * **devices.allowed_borrow_role**
-      * - `device_allowed_borrow_role` in database
-      * - `NOT NULL`, no default
+      * - `int8` in database
+      * - Nullable, no default
       */
-      allowed_borrow_role?: c.PgDevice_allowed_borrow_role | db.Parameter<c.PgDevice_allowed_borrow_role> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, c.PgDevice_allowed_borrow_role | db.Parameter<c.PgDevice_allowed_borrow_role> | db.SQLFragment | db.ParentColumn>;
+      allowed_borrow_role?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **devices.available_quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      available_quantity?: number | db.Parameter<number> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment | db.ParentColumn>;
+      available_quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **devices.borrower_id**
       * - `uuid` in database
@@ -449,17 +971,23 @@ declare module 'zapatos/schema' {
       */
       borrower_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **devices.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **devices.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **devices.kind**
-      * - `uuid` in database
+      * - `int8` in database
       * - Nullable, no default
       */
-      kind?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      kind?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **devices.lab_id**
       * - `uuid` in database
@@ -480,30 +1008,30 @@ declare module 'zapatos/schema' {
       quality?: device_quality | db.Parameter<device_quality> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, device_quality | db.Parameter<device_quality> | db.SQLFragment | db.ParentColumn>;
       /**
       * **devices.quantity**
-      * - `int4` in database
-      * - Nullable, default: `0`
+      * - `int8` in database
+      * - Nullable, default: `'0'::bigint`
       */
-      quantity?: number | db.Parameter<number> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment | db.ParentColumn>;
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **devices.unit**
-      * - `text` in database
-      * - Nullable, no default
+      * **devices.status**
+      * - `device_status` in database
+      * - `NOT NULL`, default: `'available'::device_status`
       */
-      unit?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      status?: device_status | db.Parameter<device_status> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, device_status | db.Parameter<device_status> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
       * **devices.allowed_borrow_role**
-      * - `device_allowed_borrow_role` in database
-      * - `NOT NULL`, no default
+      * - `int8` in database
+      * - Nullable, no default
       */
-      allowed_borrow_role: c.PgDevice_allowed_borrow_role | db.Parameter<c.PgDevice_allowed_borrow_role> | db.SQLFragment;
+      allowed_borrow_role?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **devices.available_quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      available_quantity: number | db.Parameter<number> | db.SQLFragment;
+      available_quantity: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
       /**
       * **devices.borrower_id**
       * - `uuid` in database
@@ -511,17 +1039,23 @@ declare module 'zapatos/schema' {
       */
       borrower_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **devices.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **devices.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
       * **devices.kind**
-      * - `uuid` in database
+      * - `int8` in database
       * - Nullable, no default
       */
-      kind?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      kind?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **devices.lab_id**
       * - `uuid` in database
@@ -542,30 +1076,30 @@ declare module 'zapatos/schema' {
       quality: device_quality | db.Parameter<device_quality> | db.SQLFragment;
       /**
       * **devices.quantity**
-      * - `int4` in database
-      * - Nullable, default: `0`
+      * - `int8` in database
+      * - Nullable, default: `'0'::bigint`
       */
-      quantity?: number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment;
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **devices.unit**
-      * - `text` in database
-      * - Nullable, no default
+      * **devices.status**
+      * - `device_status` in database
+      * - `NOT NULL`, default: `'available'::device_status`
       */
-      unit?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      status?: device_status | db.Parameter<device_status> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
       * **devices.allowed_borrow_role**
-      * - `device_allowed_borrow_role` in database
-      * - `NOT NULL`, no default
+      * - `int8` in database
+      * - Nullable, no default
       */
-      allowed_borrow_role?: c.PgDevice_allowed_borrow_role | db.Parameter<c.PgDevice_allowed_borrow_role> | db.SQLFragment | db.SQLFragment<any, c.PgDevice_allowed_borrow_role | db.Parameter<c.PgDevice_allowed_borrow_role> | db.SQLFragment>;
+      allowed_borrow_role?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **devices.available_quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      available_quantity?: number | db.Parameter<number> | db.SQLFragment | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment>;
+      available_quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
       /**
       * **devices.borrower_id**
       * - `uuid` in database
@@ -573,17 +1107,23 @@ declare module 'zapatos/schema' {
       */
       borrower_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **devices.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **devices.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
       * **devices.kind**
-      * - `uuid` in database
+      * - `int8` in database
       * - Nullable, no default
       */
-      kind?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      kind?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **devices.lab_id**
       * - `uuid` in database
@@ -604,16 +1144,16 @@ declare module 'zapatos/schema' {
       quality?: device_quality | db.Parameter<device_quality> | db.SQLFragment | db.SQLFragment<any, device_quality | db.Parameter<device_quality> | db.SQLFragment>;
       /**
       * **devices.quantity**
-      * - `int4` in database
-      * - Nullable, default: `0`
+      * - `int8` in database
+      * - Nullable, default: `'0'::bigint`
       */
-      quantity?: number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment>;
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **devices.unit**
-      * - `text` in database
-      * - Nullable, no default
+      * **devices.status**
+      * - `device_status` in database
+      * - `NOT NULL`, default: `'available'::device_status`
       */
-      unit?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      status?: device_status | db.Parameter<device_status> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, device_status | db.Parameter<device_status> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'devices_pkey';
     export type Column = keyof Selectable;
@@ -630,6 +1170,12 @@ declare module 'zapatos/schema' {
     export type Table = 'expiration_extension_requests';
     export interface Selectable {
       /**
+      * **expiration_extension_requests.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
       * **expiration_extension_requests.receipt_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -637,16 +1183,16 @@ declare module 'zapatos/schema' {
       receipt_id: string;
       /**
       * **expiration_extension_requests.return_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      return_at: db.TimeTzString;
+      return_at: Date;
       /**
       * **expiration_extension_requests.status**
       * - `request_status` in database
       * - `NOT NULL`, no default
       */
-      status: c.PgRequest_status;
+      status: request_status;
       /**
       * **expiration_extension_requests.user_id**
       * - `uuid` in database
@@ -656,6 +1202,12 @@ declare module 'zapatos/schema' {
     }
     export interface JSONSelectable {
       /**
+      * **expiration_extension_requests.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
       * **expiration_extension_requests.receipt_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -663,16 +1215,16 @@ declare module 'zapatos/schema' {
       receipt_id: string;
       /**
       * **expiration_extension_requests.return_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      return_at: db.TimeTzString;
+      return_at: db.TimestampTzString;
       /**
       * **expiration_extension_requests.status**
       * - `request_status` in database
       * - `NOT NULL`, no default
       */
-      status: c.PgRequest_status;
+      status: request_status;
       /**
       * **expiration_extension_requests.user_id**
       * - `uuid` in database
@@ -682,6 +1234,12 @@ declare module 'zapatos/schema' {
     }
     export interface Whereable {
       /**
+      * **expiration_extension_requests.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **expiration_extension_requests.receipt_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -689,16 +1247,16 @@ declare module 'zapatos/schema' {
       receipt_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **expiration_extension_requests.return_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      return_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      return_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **expiration_extension_requests.status**
       * - `request_status` in database
       * - `NOT NULL`, no default
       */
-      status?: c.PgRequest_status | db.Parameter<c.PgRequest_status> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, c.PgRequest_status | db.Parameter<c.PgRequest_status> | db.SQLFragment | db.ParentColumn>;
+      status?: request_status | db.Parameter<request_status> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, request_status | db.Parameter<request_status> | db.SQLFragment | db.ParentColumn>;
       /**
       * **expiration_extension_requests.user_id**
       * - `uuid` in database
@@ -708,6 +1266,12 @@ declare module 'zapatos/schema' {
     }
     export interface Insertable {
       /**
+      * **expiration_extension_requests.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **expiration_extension_requests.receipt_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -715,16 +1279,16 @@ declare module 'zapatos/schema' {
       receipt_id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **expiration_extension_requests.return_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      return_at: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment;
+      return_at: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment;
       /**
       * **expiration_extension_requests.status**
       * - `request_status` in database
       * - `NOT NULL`, no default
       */
-      status: c.PgRequest_status | db.Parameter<c.PgRequest_status> | db.SQLFragment;
+      status: request_status | db.Parameter<request_status> | db.SQLFragment;
       /**
       * **expiration_extension_requests.user_id**
       * - `uuid` in database
@@ -734,6 +1298,12 @@ declare module 'zapatos/schema' {
     }
     export interface Updatable {
       /**
+      * **expiration_extension_requests.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **expiration_extension_requests.receipt_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -741,16 +1311,16 @@ declare module 'zapatos/schema' {
       receipt_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **expiration_extension_requests.return_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      return_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment>;
+      return_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment>;
       /**
       * **expiration_extension_requests.status**
       * - `request_status` in database
       * - `NOT NULL`, no default
       */
-      status?: c.PgRequest_status | db.Parameter<c.PgRequest_status> | db.SQLFragment | db.SQLFragment<any, c.PgRequest_status | db.Parameter<c.PgRequest_status> | db.SQLFragment>;
+      status?: request_status | db.Parameter<request_status> | db.SQLFragment | db.SQLFragment<any, request_status | db.Parameter<request_status> | db.SQLFragment>;
       /**
       * **expiration_extension_requests.user_id**
       * - `uuid` in database
@@ -779,6 +1349,12 @@ declare module 'zapatos/schema' {
       */
       accountant_id: string | null;
       /**
+      * **inventory_assessments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
       * **inventory_assessments.devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -786,14 +1362,14 @@ declare module 'zapatos/schema' {
       devices: db.JSONValue;
       /**
       * **inventory_assessments.finished_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      finished_at: db.TimeTzString | null;
+      finished_at: Date | null;
       /**
       * **inventory_assessments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -802,6 +1378,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lab_id: string;
+      /**
+      * **inventory_assessments.status**
+      * - `assessment_status` in database
+      * - `NOT NULL`, default: `'pending'::assessment_status`
+      */
+      status: assessment_status;
     }
     export interface JSONSelectable {
       /**
@@ -811,6 +1393,12 @@ declare module 'zapatos/schema' {
       */
       accountant_id: string | null;
       /**
+      * **inventory_assessments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
       * **inventory_assessments.devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -818,14 +1406,14 @@ declare module 'zapatos/schema' {
       devices: db.JSONValue;
       /**
       * **inventory_assessments.finished_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      finished_at: db.TimeTzString | null;
+      finished_at: db.TimestampTzString | null;
       /**
       * **inventory_assessments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -834,6 +1422,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lab_id: string;
+      /**
+      * **inventory_assessments.status**
+      * - `assessment_status` in database
+      * - `NOT NULL`, default: `'pending'::assessment_status`
+      */
+      status: assessment_status;
     }
     export interface Whereable {
       /**
@@ -843,6 +1437,12 @@ declare module 'zapatos/schema' {
       */
       accountant_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **inventory_assessments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **inventory_assessments.devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -850,14 +1450,14 @@ declare module 'zapatos/schema' {
       devices?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
       * **inventory_assessments.finished_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      finished_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      finished_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **inventory_assessments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -866,6 +1466,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lab_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **inventory_assessments.status**
+      * - `assessment_status` in database
+      * - `NOT NULL`, default: `'pending'::assessment_status`
+      */
+      status?: assessment_status | db.Parameter<assessment_status> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, assessment_status | db.Parameter<assessment_status> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -875,6 +1481,12 @@ declare module 'zapatos/schema' {
       */
       accountant_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **inventory_assessments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **inventory_assessments.devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -882,14 +1494,14 @@ declare module 'zapatos/schema' {
       devices: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
       /**
       * **inventory_assessments.finished_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      finished_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      finished_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **inventory_assessments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
@@ -898,6 +1510,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lab_id: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **inventory_assessments.status**
+      * - `assessment_status` in database
+      * - `NOT NULL`, default: `'pending'::assessment_status`
+      */
+      status?: assessment_status | db.Parameter<assessment_status> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -907,6 +1525,12 @@ declare module 'zapatos/schema' {
       */
       accountant_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **inventory_assessments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **inventory_assessments.devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -914,14 +1538,14 @@ declare module 'zapatos/schema' {
       devices?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
       /**
       * **inventory_assessments.finished_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      finished_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      finished_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **inventory_assessments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
@@ -930,6 +1554,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lab_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **inventory_assessments.status**
+      * - `assessment_status` in database
+      * - `NOT NULL`, default: `'pending'::assessment_status`
+      */
+      status?: assessment_status | db.Parameter<assessment_status> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, assessment_status | db.Parameter<assessment_status> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'inventory_assessments_pkey';
     export type Column = keyof Selectable;
@@ -958,6 +1588,12 @@ declare module 'zapatos/schema' {
       */
       branch: string | null;
       /**
+      * **labs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
       * **labs.faculty**
       * - `text` in database
       * - Nullable, no default
@@ -966,7 +1602,7 @@ declare module 'zapatos/schema' {
       /**
       * **labs.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1002,6 +1638,12 @@ declare module 'zapatos/schema' {
       */
       branch: string | null;
       /**
+      * **labs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
       * **labs.faculty**
       * - `text` in database
       * - Nullable, no default
@@ -1010,7 +1652,7 @@ declare module 'zapatos/schema' {
       /**
       * **labs.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1046,6 +1688,12 @@ declare module 'zapatos/schema' {
       */
       branch?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **labs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **labs.faculty**
       * - `text` in database
       * - Nullable, no default
@@ -1054,7 +1702,7 @@ declare module 'zapatos/schema' {
       /**
       * **labs.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -1090,6 +1738,12 @@ declare module 'zapatos/schema' {
       */
       branch?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **labs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **labs.faculty**
       * - `text` in database
       * - Nullable, no default
@@ -1098,7 +1752,7 @@ declare module 'zapatos/schema' {
       /**
       * **labs.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
@@ -1134,6 +1788,12 @@ declare module 'zapatos/schema' {
       */
       branch?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **labs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **labs.faculty**
       * - `text` in database
       * - Nullable, no default
@@ -1142,7 +1802,7 @@ declare module 'zapatos/schema' {
       /**
       * **labs.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
@@ -1180,10 +1840,16 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **maintenances.complete_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      complete_at: db.TimeTzString | null;
+      complete_at: Date | null;
+      /**
+      * **maintenances.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
       /**
       * **maintenances.device_ids**
       * - `jsonb` in database
@@ -1193,7 +1859,7 @@ declare module 'zapatos/schema' {
       /**
       * **maintenances.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1210,10 +1876,10 @@ declare module 'zapatos/schema' {
       maintainer_id: string | null;
       /**
       * **maintenances.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at: db.TimeTzString | null;
+      start_at: Date | null;
       /**
       * **maintenances.status**
       * - `maintenance_status` in database
@@ -1224,10 +1890,16 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **maintenances.complete_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      complete_at: db.TimeTzString | null;
+      complete_at: db.TimestampTzString | null;
+      /**
+      * **maintenances.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
       /**
       * **maintenances.device_ids**
       * - `jsonb` in database
@@ -1237,7 +1909,7 @@ declare module 'zapatos/schema' {
       /**
       * **maintenances.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1254,10 +1926,10 @@ declare module 'zapatos/schema' {
       maintainer_id: string | null;
       /**
       * **maintenances.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at: db.TimeTzString | null;
+      start_at: db.TimestampTzString | null;
       /**
       * **maintenances.status**
       * - `maintenance_status` in database
@@ -1268,10 +1940,16 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **maintenances.complete_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      complete_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      complete_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **maintenances.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **maintenances.device_ids**
       * - `jsonb` in database
@@ -1281,7 +1959,7 @@ declare module 'zapatos/schema' {
       /**
       * **maintenances.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -1298,10 +1976,10 @@ declare module 'zapatos/schema' {
       maintainer_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **maintenances.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      start_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **maintenances.status**
       * - `maintenance_status` in database
@@ -1312,10 +1990,16 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **maintenances.complete_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      complete_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      complete_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **maintenances.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **maintenances.device_ids**
       * - `jsonb` in database
@@ -1325,7 +2009,7 @@ declare module 'zapatos/schema' {
       /**
       * **maintenances.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
@@ -1342,10 +2026,10 @@ declare module 'zapatos/schema' {
       maintainer_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **maintenances.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      start_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **maintenances.status**
       * - `maintenance_status` in database
@@ -1356,10 +2040,16 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **maintenances.complete_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      complete_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      complete_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **maintenances.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **maintenances.device_ids**
       * - `jsonb` in database
@@ -1369,7 +2059,7 @@ declare module 'zapatos/schema' {
       /**
       * **maintenances.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
@@ -1386,10 +2076,10 @@ declare module 'zapatos/schema' {
       maintainer_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **maintenances.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      start_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **maintenances.status**
       * - `maintenance_status` in database
@@ -1405,6 +2095,495 @@ declare module 'zapatos/schema' {
   }
 
   /**
+   * **menus**
+   * - Table in database
+   */
+  export namespace menus {
+    export type Table = 'menus';
+    export interface Selectable {
+      /**
+      * **menus.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **menus.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: db.Int8String;
+      /**
+      * **menus.level**
+      * - `int2` in database
+      * - Nullable, no default
+      */
+      level: number | null;
+      /**
+      * **menus.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+      /**
+      * **menus.parent_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parent_id: db.Int8String | null;
+    }
+    export interface JSONSelectable {
+      /**
+      * **menus.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **menus.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: number;
+      /**
+      * **menus.level**
+      * - `int2` in database
+      * - Nullable, no default
+      */
+      level: number | null;
+      /**
+      * **menus.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+      /**
+      * **menus.parent_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parent_id: number | null;
+    }
+    export interface Whereable {
+      /**
+      * **menus.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **menus.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **menus.level**
+      * - `int2` in database
+      * - Nullable, no default
+      */
+      level?: number | db.Parameter<number> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **menus.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **menus.parent_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parent_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **menus.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **menus.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **menus.level**
+      * - `int2` in database
+      * - Nullable, no default
+      */
+      level?: number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **menus.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **menus.parent_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parent_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **menus.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **menus.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **menus.level**
+      * - `int2` in database
+      * - Nullable, no default
+      */
+      level?: number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **menus.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **menus.parent_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parent_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'categories_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **permission**
+   * - Table in database
+   */
+  export namespace permission {
+    export type Table = 'permission';
+    export interface Selectable {
+      /**
+      * **permission.action_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      action_id: db.Int8String;
+      /**
+      * **permission.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **permission.resource_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      resource_id: db.Int8String;
+      /**
+      * **permission.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id: db.Int8String;
+    }
+    export interface JSONSelectable {
+      /**
+      * **permission.action_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      action_id: number;
+      /**
+      * **permission.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **permission.resource_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      resource_id: number;
+      /**
+      * **permission.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id: number;
+    }
+    export interface Whereable {
+      /**
+      * **permission.action_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      action_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **permission.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **permission.resource_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      resource_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **permission.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **permission.action_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      action_id: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
+      /**
+      * **permission.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **permission.resource_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      resource_id: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
+      /**
+      * **permission.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **permission.action_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      action_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
+      /**
+      * **permission.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **permission.resource_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      resource_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
+      /**
+      * **permission.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'permission_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **purchase_order**
+   * - Table in database
+   */
+  export namespace purchase_order {
+    export type Table = 'purchase_order';
+    export interface Selectable {
+      /**
+      * **purchase_order.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **purchase_order.id**
+      * - `uuid` in database
+      * - `NOT NULL`, default: `gen_random_uuid()`
+      */
+      id: string;
+      /**
+      * **purchase_order.kind**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      kind: db.Int8String | null;
+      /**
+      * **purchase_order.place**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      place: string | null;
+      /**
+      * **purchase_order.price**
+      * - `numeric` in database
+      * - Nullable, no default
+      */
+      price: db.NumericString | null;
+    }
+    export interface JSONSelectable {
+      /**
+      * **purchase_order.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **purchase_order.id**
+      * - `uuid` in database
+      * - `NOT NULL`, default: `gen_random_uuid()`
+      */
+      id: string;
+      /**
+      * **purchase_order.kind**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      kind: number | null;
+      /**
+      * **purchase_order.place**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      place: string | null;
+      /**
+      * **purchase_order.price**
+      * - `numeric` in database
+      * - Nullable, no default
+      */
+      price: number | null;
+    }
+    export interface Whereable {
+      /**
+      * **purchase_order.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **purchase_order.id**
+      * - `uuid` in database
+      * - `NOT NULL`, default: `gen_random_uuid()`
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **purchase_order.kind**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      kind?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **purchase_order.place**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      place?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **purchase_order.price**
+      * - `numeric` in database
+      * - Nullable, no default
+      */
+      price?: (number | db.NumericString) | db.Parameter<(number | db.NumericString)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.NumericString) | db.Parameter<(number | db.NumericString)> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **purchase_order.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **purchase_order.id**
+      * - `uuid` in database
+      * - `NOT NULL`, default: `gen_random_uuid()`
+      */
+      id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
+      /**
+      * **purchase_order.kind**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      kind?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **purchase_order.place**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      place?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **purchase_order.price**
+      * - `numeric` in database
+      * - Nullable, no default
+      */
+      price?: (number | db.NumericString) | db.Parameter<(number | db.NumericString)> | null | db.DefaultType | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **purchase_order.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **purchase_order.id**
+      * - `uuid` in database
+      * - `NOT NULL`, default: `gen_random_uuid()`
+      */
+      id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **purchase_order.kind**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      kind?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **purchase_order.place**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      place?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **purchase_order.price**
+      * - `numeric` in database
+      * - Nullable, no default
+      */
+      price?: (number | db.NumericString) | db.Parameter<(number | db.NumericString)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.NumericString) | db.Parameter<(number | db.NumericString)> | null | db.DefaultType | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'purchase_order_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
    * **receipts**
    * - Table in database
    */
@@ -1413,10 +2592,10 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **receipts.borrowed_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      borrowed_at: db.TimeTzString;
+      borrowed_at: Date;
       /**
       * **receipts.borrower_id**
       * - `uuid` in database
@@ -1430,6 +2609,12 @@ declare module 'zapatos/schema' {
       */
       checker_id: string | null;
       /**
+      * **receipts.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
       * **receipts.device_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -1437,14 +2622,14 @@ declare module 'zapatos/schema' {
       device_id: string;
       /**
       * **receipts.expected_returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      expected_returned_at: db.TimeTzString;
+      expected_returned_at: Date;
       /**
       * **receipts.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1455,24 +2640,24 @@ declare module 'zapatos/schema' {
       lab_id: string;
       /**
       * **receipts.quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      quantity: number;
+      quantity: db.Int8String;
       /**
       * **receipts.returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      returned_at: db.TimeTzString | null;
+      returned_at: Date | null;
     }
     export interface JSONSelectable {
       /**
       * **receipts.borrowed_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      borrowed_at: db.TimeTzString;
+      borrowed_at: db.TimestampTzString;
       /**
       * **receipts.borrower_id**
       * - `uuid` in database
@@ -1486,6 +2671,12 @@ declare module 'zapatos/schema' {
       */
       checker_id: string | null;
       /**
+      * **receipts.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
       * **receipts.device_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -1493,14 +2684,14 @@ declare module 'zapatos/schema' {
       device_id: string;
       /**
       * **receipts.expected_returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      expected_returned_at: db.TimeTzString;
+      expected_returned_at: db.TimestampTzString;
       /**
       * **receipts.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1511,24 +2702,24 @@ declare module 'zapatos/schema' {
       lab_id: string;
       /**
       * **receipts.quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
       quantity: number;
       /**
       * **receipts.returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      returned_at: db.TimeTzString | null;
+      returned_at: db.TimestampTzString | null;
     }
     export interface Whereable {
       /**
       * **receipts.borrowed_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      borrowed_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      borrowed_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **receipts.borrower_id**
       * - `uuid` in database
@@ -1542,6 +2733,12 @@ declare module 'zapatos/schema' {
       */
       checker_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **receipts.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **receipts.device_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -1549,14 +2746,14 @@ declare module 'zapatos/schema' {
       device_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **receipts.expected_returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      expected_returned_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      expected_returned_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **receipts.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -1567,24 +2764,24 @@ declare module 'zapatos/schema' {
       lab_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **receipts.quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      quantity?: number | db.Parameter<number> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment | db.ParentColumn>;
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **receipts.returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      returned_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      returned_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
       * **receipts.borrowed_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      borrowed_at: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment;
+      borrowed_at: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment;
       /**
       * **receipts.borrower_id**
       * - `uuid` in database
@@ -1598,6 +2795,12 @@ declare module 'zapatos/schema' {
       */
       checker_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **receipts.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **receipts.device_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -1605,14 +2808,14 @@ declare module 'zapatos/schema' {
       device_id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **receipts.expected_returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      expected_returned_at: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment;
+      expected_returned_at: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment;
       /**
       * **receipts.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
@@ -1623,24 +2826,24 @@ declare module 'zapatos/schema' {
       lab_id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **receipts.quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      quantity: number | db.Parameter<number> | db.SQLFragment;
+      quantity: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
       /**
       * **receipts.returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      returned_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      returned_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
       * **receipts.borrowed_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      borrowed_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment>;
+      borrowed_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment>;
       /**
       * **receipts.borrower_id**
       * - `uuid` in database
@@ -1654,6 +2857,12 @@ declare module 'zapatos/schema' {
       */
       checker_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **receipts.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **receipts.device_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
@@ -1661,14 +2870,14 @@ declare module 'zapatos/schema' {
       device_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **receipts.expected_returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - `NOT NULL`, no default
       */
-      expected_returned_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment>;
+      expected_returned_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment>;
       /**
       * **receipts.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
@@ -1679,16 +2888,16 @@ declare module 'zapatos/schema' {
       lab_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **receipts.quantity**
-      * - `int4` in database
+      * - `int8` in database
       * - `NOT NULL`, no default
       */
-      quantity?: number | db.Parameter<number> | db.SQLFragment | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment>;
+      quantity?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
       /**
       * **receipts.returned_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      returned_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      returned_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'receipts_pkey';
     export type Column = keyof Selectable;
@@ -1705,9 +2914,15 @@ declare module 'zapatos/schema' {
     export type Table = 'reservations';
     export interface Selectable {
       /**
+      * **reservations.borrower_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      borrower_id: string;
+      /**
       * **reservations.created_at**
       * - `timestamptz` in database
-      * - `NOT NULL`, no default
+      * - `NOT NULL`, default: `now()`
       */
       created_at: Date;
       /**
@@ -1719,7 +2934,7 @@ declare module 'zapatos/schema' {
       /**
       * **reservations.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1764,18 +2979,18 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       updated_at: Date;
-      /**
-      * **reservations.user_id**
-      * - `uuid` in database
-      * - `NOT NULL`, no default
-      */
-      user_id: string;
     }
     export interface JSONSelectable {
       /**
+      * **reservations.borrower_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      borrower_id: string;
+      /**
       * **reservations.created_at**
       * - `timestamptz` in database
-      * - `NOT NULL`, no default
+      * - `NOT NULL`, default: `now()`
       */
       created_at: db.TimestampTzString;
       /**
@@ -1787,7 +3002,7 @@ declare module 'zapatos/schema' {
       /**
       * **reservations.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -1832,18 +3047,18 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       updated_at: db.TimestampTzString;
-      /**
-      * **reservations.user_id**
-      * - `uuid` in database
-      * - `NOT NULL`, no default
-      */
-      user_id: string;
     }
     export interface Whereable {
       /**
+      * **reservations.borrower_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      borrower_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **reservations.created_at**
       * - `timestamptz` in database
-      * - `NOT NULL`, no default
+      * - `NOT NULL`, default: `now()`
       */
       created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -1855,7 +3070,7 @@ declare module 'zapatos/schema' {
       /**
       * **reservations.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -1900,20 +3115,20 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **reservations.user_id**
-      * - `uuid` in database
-      * - `NOT NULL`, no default
-      */
-      user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-      * **reservations.created_at**
-      * - `timestamptz` in database
+      * **reservations.borrower_id**
+      * - `uuid` in database
       * - `NOT NULL`, no default
       */
-      created_at: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment;
+      borrower_id: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **reservations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **reservations.device_quantities**
       * - `jsonb` in database
@@ -1923,7 +3138,7 @@ declare module 'zapatos/schema' {
       /**
       * **reservations.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
@@ -1968,20 +3183,20 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       updated_at: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment;
-      /**
-      * **reservations.user_id**
-      * - `uuid` in database
-      * - `NOT NULL`, no default
-      */
-      user_id: string | db.Parameter<string> | db.SQLFragment;
     }
     export interface Updatable {
       /**
-      * **reservations.created_at**
-      * - `timestamptz` in database
+      * **reservations.borrower_id**
+      * - `uuid` in database
       * - `NOT NULL`, no default
       */
-      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment>;
+      borrower_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **reservations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **reservations.device_quantities**
       * - `jsonb` in database
@@ -1991,7 +3206,7 @@ declare module 'zapatos/schema' {
       /**
       * **reservations.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
@@ -2036,14 +3251,234 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment>;
-      /**
-      * **reservations.user_id**
-      * - `uuid` in database
-      * - `NOT NULL`, no default
-      */
-      user_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
     }
     export type UniqueIndex = 'reservations_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **resource**
+   * - Table in database
+   */
+  export namespace resource {
+    export type Table = 'resource';
+    export interface Selectable {
+      /**
+      * **resource.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **resource.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: db.Int8String;
+      /**
+      * **resource.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+    }
+    export interface JSONSelectable {
+      /**
+      * **resource.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **resource.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: number;
+      /**
+      * **resource.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+    }
+    export interface Whereable {
+      /**
+      * **resource.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **resource.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **resource.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **resource.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **resource.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **resource.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string | db.Parameter<string> | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **resource.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **resource.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **resource.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'resource_name_key' | 'resource_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **role**
+   * - Table in database
+   */
+  export namespace role {
+    export type Table = 'role';
+    export interface Selectable {
+      /**
+      * **role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **role.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: db.Int8String;
+      /**
+      * **role.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+    }
+    export interface JSONSelectable {
+      /**
+      * **role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **role.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: number;
+      /**
+      * **role.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+    }
+    export interface Whereable {
+      /**
+      * **role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **role.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **role.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **role.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **role.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string | db.Parameter<string> | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **role.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **role.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'role_name_key' | 'role_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2057,6 +3492,12 @@ declare module 'zapatos/schema' {
   export namespace role_histories {
     export type Table = 'role_histories';
     export interface Selectable {
+      /**
+      * **role_histories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
       /**
       * **role_histories.effective_end**
       * - `timestamptz` in database
@@ -2090,6 +3531,12 @@ declare module 'zapatos/schema' {
     }
     export interface JSONSelectable {
       /**
+      * **role_histories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
       * **role_histories.effective_end**
       * - `timestamptz` in database
       * - `NOT NULL`, no default
@@ -2121,6 +3568,12 @@ declare module 'zapatos/schema' {
       permissions: db.JSONValue | null;
     }
     export interface Whereable {
+      /**
+      * **role_histories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **role_histories.effective_end**
       * - `timestamptz` in database
@@ -2154,6 +3607,12 @@ declare module 'zapatos/schema' {
     }
     export interface Insertable {
       /**
+      * **role_histories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **role_histories.effective_end**
       * - `timestamptz` in database
       * - `NOT NULL`, no default
@@ -2185,6 +3644,12 @@ declare module 'zapatos/schema' {
       permissions?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
+      /**
+      * **role_histories.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **role_histories.effective_end**
       * - `timestamptz` in database
@@ -2224,59 +3689,6 @@ declare module 'zapatos/schema' {
   }
 
   /**
-   * **schema_migrations**
-   * - Table in database
-   */
-  export namespace schema_migrations {
-    export type Table = 'schema_migrations';
-    export interface Selectable {
-      /**
-      * **schema_migrations.version**
-      * - `varchar` in database
-      * - `NOT NULL`, no default
-      */
-      version: string;
-    }
-    export interface JSONSelectable {
-      /**
-      * **schema_migrations.version**
-      * - `varchar` in database
-      * - `NOT NULL`, no default
-      */
-      version: string;
-    }
-    export interface Whereable {
-      /**
-      * **schema_migrations.version**
-      * - `varchar` in database
-      * - `NOT NULL`, no default
-      */
-      version?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
-    }
-    export interface Insertable {
-      /**
-      * **schema_migrations.version**
-      * - `varchar` in database
-      * - `NOT NULL`, no default
-      */
-      version: string | db.Parameter<string> | db.SQLFragment;
-    }
-    export interface Updatable {
-      /**
-      * **schema_migrations.version**
-      * - `varchar` in database
-      * - `NOT NULL`, no default
-      */
-      version?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
-    }
-    export type UniqueIndex = 'schema_migrations_pkey';
-    export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
-    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
-    export type SQL = SQLExpression | SQLExpression[];
-  }
-
-  /**
    * **shipments**
    * - Table in database
    */
@@ -2285,16 +3697,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **shipments.arrive_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      arrive_at: db.TimeTzString | null;
+      arrive_at: Date | null;
       /**
       * **shipments.arrive_lab_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
       */
       arrive_lab_id: string;
+      /**
+      * **shipments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
       /**
       * **shipments.devices**
       * - `jsonb` in database
@@ -2304,7 +3722,7 @@ declare module 'zapatos/schema' {
       /**
       * **shipments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -2321,10 +3739,10 @@ declare module 'zapatos/schema' {
       sender_id: string | null;
       /**
       * **shipments.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at: db.TimeTzString | null;
+      start_at: Date | null;
       /**
       * **shipments.start_lab_id**
       * - `uuid` in database
@@ -2341,16 +3759,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **shipments.arrive_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      arrive_at: db.TimeTzString | null;
+      arrive_at: db.TimestampTzString | null;
       /**
       * **shipments.arrive_lab_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
       */
       arrive_lab_id: string;
+      /**
+      * **shipments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
       /**
       * **shipments.devices**
       * - `jsonb` in database
@@ -2360,7 +3784,7 @@ declare module 'zapatos/schema' {
       /**
       * **shipments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
@@ -2377,10 +3801,10 @@ declare module 'zapatos/schema' {
       sender_id: string | null;
       /**
       * **shipments.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at: db.TimeTzString | null;
+      start_at: db.TimestampTzString | null;
       /**
       * **shipments.start_lab_id**
       * - `uuid` in database
@@ -2397,16 +3821,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **shipments.arrive_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      arrive_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      arrive_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **shipments.arrive_lab_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
       */
       arrive_lab_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **shipments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **shipments.devices**
       * - `jsonb` in database
@@ -2416,7 +3846,7 @@ declare module 'zapatos/schema' {
       /**
       * **shipments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -2433,10 +3863,10 @@ declare module 'zapatos/schema' {
       sender_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **shipments.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      start_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **shipments.start_lab_id**
       * - `uuid` in database
@@ -2453,16 +3883,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **shipments.arrive_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      arrive_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      arrive_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **shipments.arrive_lab_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
       */
       arrive_lab_id: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **shipments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **shipments.devices**
       * - `jsonb` in database
@@ -2472,7 +3908,7 @@ declare module 'zapatos/schema' {
       /**
       * **shipments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
@@ -2489,10 +3925,10 @@ declare module 'zapatos/schema' {
       sender_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **shipments.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      start_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **shipments.start_lab_id**
       * - `uuid` in database
@@ -2509,16 +3945,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **shipments.arrive_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      arrive_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      arrive_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **shipments.arrive_lab_id**
       * - `uuid` in database
       * - `NOT NULL`, no default
       */
       arrive_lab_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **shipments.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **shipments.devices**
       * - `jsonb` in database
@@ -2528,7 +3970,7 @@ declare module 'zapatos/schema' {
       /**
       * **shipments.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
@@ -2545,10 +3987,10 @@ declare module 'zapatos/schema' {
       sender_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **shipments.start_at**
-      * - `timetz` in database
+      * - `timestamptz` in database
       * - Nullable, no default
       */
-      start_at?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      start_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **shipments.start_lab_id**
       * - `uuid` in database
@@ -2570,202 +4012,292 @@ declare module 'zapatos/schema' {
   }
 
   /**
-   * **users**
+   * **user**
    * - Table in database
    */
-  export namespace users {
-    export type Table = 'users';
+  export namespace user {
+    export type Table = 'user';
     export interface Selectable {
       /**
-      * **users.admin_labs**
+      * **user.admin_labs**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       admin_labs: db.JSONValue;
       /**
-      * **users.borrowed_devices**
+      * **user.borrowed_devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       borrowed_devices: db.JSONValue;
       /**
-      * **users.default_role**
-      * - `user_role` in database
-      * - `NOT NULL`, no default
+      * **user.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      default_role: user_role;
+      created_at: Date;
       /**
-      * **users.id**
+      * **user.email**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      email: string | null;
+      /**
+      * **user.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
-      * **users.meta**
+      * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       meta: db.JSONValue;
       /**
-      * **users.name**
+      * **user.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+      /**
+      * **user.password**
       * - `text` in database
       * - Nullable, no default
       */
-      name: string | null;
+      password: string | null;
+      /**
+      * **user.role_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      role_id: db.Int8String | null;
     }
     export interface JSONSelectable {
       /**
-      * **users.admin_labs**
+      * **user.admin_labs**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       admin_labs: db.JSONValue;
       /**
-      * **users.borrowed_devices**
+      * **user.borrowed_devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       borrowed_devices: db.JSONValue;
       /**
-      * **users.default_role**
-      * - `user_role` in database
-      * - `NOT NULL`, no default
+      * **user.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      default_role: user_role;
+      created_at: db.TimestampTzString;
       /**
-      * **users.id**
+      * **user.email**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      email: string | null;
+      /**
+      * **user.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
       /**
-      * **users.meta**
+      * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       meta: db.JSONValue;
       /**
-      * **users.name**
+      * **user.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string;
+      /**
+      * **user.password**
       * - `text` in database
       * - Nullable, no default
       */
-      name: string | null;
+      password: string | null;
+      /**
+      * **user.role_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      role_id: number | null;
     }
     export interface Whereable {
       /**
-      * **users.admin_labs**
+      * **user.admin_labs**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       admin_labs?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **users.borrowed_devices**
+      * **user.borrowed_devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       borrowed_devices?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **users.default_role**
-      * - `user_role` in database
-      * - `NOT NULL`, no default
+      * **user.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      default_role?: user_role | db.Parameter<user_role> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, user_role | db.Parameter<user_role> | db.SQLFragment | db.ParentColumn>;
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **users.id**
+      * **user.email**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      email?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **user.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **users.meta**
+      * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       meta?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **users.name**
+      * **user.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **user.password**
       * - `text` in database
       * - Nullable, no default
       */
-      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      password?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **user.role_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-      * **users.admin_labs**
+      * **user.admin_labs**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       admin_labs: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
       /**
-      * **users.borrowed_devices**
+      * **user.borrowed_devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       borrowed_devices: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
       /**
-      * **users.default_role**
-      * - `user_role` in database
-      * - `NOT NULL`, no default
+      * **user.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      default_role: user_role | db.Parameter<user_role> | db.SQLFragment;
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-      * **users.id**
+      * **user.email**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      email?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **user.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
-      * **users.meta**
+      * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       meta: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
       /**
-      * **users.name**
+      * **user.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **user.password**
       * - `text` in database
       * - Nullable, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      password?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **user.role_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-      * **users.admin_labs**
+      * **user.admin_labs**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       admin_labs?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
       /**
-      * **users.borrowed_devices**
+      * **user.borrowed_devices**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       borrowed_devices?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
       /**
-      * **users.default_role**
-      * - `user_role` in database
-      * - `NOT NULL`, no default
+      * **user.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
       */
-      default_role?: user_role | db.Parameter<user_role> | db.SQLFragment | db.SQLFragment<any, user_role | db.Parameter<user_role> | db.SQLFragment>;
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-      * **users.id**
+      * **user.email**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      email?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **user.id**
       * - `uuid` in database
-      * - `NOT NULL`, default: `uuid_generate_v4()`
+      * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
       /**
-      * **users.meta**
+      * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
       */
       meta?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
       /**
-      * **users.name**
+      * **user.name**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **user.password**
       * - `text` in database
       * - Nullable, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      password?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **user.role_id**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'users_pkey';
+    export type UniqueIndex = 'user_email_key' | 'user_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2775,20 +4307,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = categories.Table | device_kinds.Table | devices.Table | expiration_extension_requests.Table | inventory_assessments.Table | labs.Table | maintenances.Table | receipts.Table | reservations.Table | role_histories.Table | schema_migrations.Table | shipments.Table | users.Table;
-    export type Selectable = categories.Selectable | device_kinds.Selectable | devices.Selectable | expiration_extension_requests.Selectable | inventory_assessments.Selectable | labs.Selectable | maintenances.Selectable | receipts.Selectable | reservations.Selectable | role_histories.Selectable | schema_migrations.Selectable | shipments.Selectable | users.Selectable;
-    export type JSONSelectable = categories.JSONSelectable | device_kinds.JSONSelectable | devices.JSONSelectable | expiration_extension_requests.JSONSelectable | inventory_assessments.JSONSelectable | labs.JSONSelectable | maintenances.JSONSelectable | receipts.JSONSelectable | reservations.JSONSelectable | role_histories.JSONSelectable | schema_migrations.JSONSelectable | shipments.JSONSelectable | users.JSONSelectable;
-    export type Whereable = categories.Whereable | device_kinds.Whereable | devices.Whereable | expiration_extension_requests.Whereable | inventory_assessments.Whereable | labs.Whereable | maintenances.Whereable | receipts.Whereable | reservations.Whereable | role_histories.Whereable | schema_migrations.Whereable | shipments.Whereable | users.Whereable;
-    export type Insertable = categories.Insertable | device_kinds.Insertable | devices.Insertable | expiration_extension_requests.Insertable | inventory_assessments.Insertable | labs.Insertable | maintenances.Insertable | receipts.Insertable | reservations.Insertable | role_histories.Insertable | schema_migrations.Insertable | shipments.Insertable | users.Insertable;
-    export type Updatable = categories.Updatable | device_kinds.Updatable | devices.Updatable | expiration_extension_requests.Updatable | inventory_assessments.Updatable | labs.Updatable | maintenances.Updatable | receipts.Updatable | reservations.Updatable | role_histories.Updatable | schema_migrations.Updatable | shipments.Updatable | users.Updatable;
-    export type UniqueIndex = categories.UniqueIndex | device_kinds.UniqueIndex | devices.UniqueIndex | expiration_extension_requests.UniqueIndex | inventory_assessments.UniqueIndex | labs.UniqueIndex | maintenances.UniqueIndex | receipts.UniqueIndex | reservations.UniqueIndex | role_histories.UniqueIndex | schema_migrations.UniqueIndex | shipments.UniqueIndex | users.UniqueIndex;
-    export type Column = categories.Column | device_kinds.Column | devices.Column | expiration_extension_requests.Column | inventory_assessments.Column | labs.Column | maintenances.Column | receipts.Column | reservations.Column | role_histories.Column | schema_migrations.Column | shipments.Column | users.Column;
+    export type Table = action.Table | categories.Table | device_kinds.Table | devices.Table | expiration_extension_requests.Table | inventory_assessments.Table | labs.Table | maintenances.Table | menus.Table | permission.Table | purchase_order.Table | receipts.Table | reservations.Table | resource.Table | role.Table | role_histories.Table | shipments.Table | user.Table;
+    export type Selectable = action.Selectable | categories.Selectable | device_kinds.Selectable | devices.Selectable | expiration_extension_requests.Selectable | inventory_assessments.Selectable | labs.Selectable | maintenances.Selectable | menus.Selectable | permission.Selectable | purchase_order.Selectable | receipts.Selectable | reservations.Selectable | resource.Selectable | role.Selectable | role_histories.Selectable | shipments.Selectable | user.Selectable;
+    export type JSONSelectable = action.JSONSelectable | categories.JSONSelectable | device_kinds.JSONSelectable | devices.JSONSelectable | expiration_extension_requests.JSONSelectable | inventory_assessments.JSONSelectable | labs.JSONSelectable | maintenances.JSONSelectable | menus.JSONSelectable | permission.JSONSelectable | purchase_order.JSONSelectable | receipts.JSONSelectable | reservations.JSONSelectable | resource.JSONSelectable | role.JSONSelectable | role_histories.JSONSelectable | shipments.JSONSelectable | user.JSONSelectable;
+    export type Whereable = action.Whereable | categories.Whereable | device_kinds.Whereable | devices.Whereable | expiration_extension_requests.Whereable | inventory_assessments.Whereable | labs.Whereable | maintenances.Whereable | menus.Whereable | permission.Whereable | purchase_order.Whereable | receipts.Whereable | reservations.Whereable | resource.Whereable | role.Whereable | role_histories.Whereable | shipments.Whereable | user.Whereable;
+    export type Insertable = action.Insertable | categories.Insertable | device_kinds.Insertable | devices.Insertable | expiration_extension_requests.Insertable | inventory_assessments.Insertable | labs.Insertable | maintenances.Insertable | menus.Insertable | permission.Insertable | purchase_order.Insertable | receipts.Insertable | reservations.Insertable | resource.Insertable | role.Insertable | role_histories.Insertable | shipments.Insertable | user.Insertable;
+    export type Updatable = action.Updatable | categories.Updatable | device_kinds.Updatable | devices.Updatable | expiration_extension_requests.Updatable | inventory_assessments.Updatable | labs.Updatable | maintenances.Updatable | menus.Updatable | permission.Updatable | purchase_order.Updatable | receipts.Updatable | reservations.Updatable | resource.Updatable | role.Updatable | role_histories.Updatable | shipments.Updatable | user.Updatable;
+    export type UniqueIndex = action.UniqueIndex | categories.UniqueIndex | device_kinds.UniqueIndex | devices.UniqueIndex | expiration_extension_requests.UniqueIndex | inventory_assessments.UniqueIndex | labs.UniqueIndex | maintenances.UniqueIndex | menus.UniqueIndex | permission.UniqueIndex | purchase_order.UniqueIndex | receipts.UniqueIndex | reservations.UniqueIndex | resource.UniqueIndex | role.UniqueIndex | role_histories.UniqueIndex | shipments.UniqueIndex | user.UniqueIndex;
+    export type Column = action.Column | categories.Column | device_kinds.Column | devices.Column | expiration_extension_requests.Column | inventory_assessments.Column | labs.Column | maintenances.Column | menus.Column | permission.Column | purchase_order.Column | receipts.Column | reservations.Column | resource.Column | role.Column | role_histories.Column | shipments.Column | user.Column;
   
-    export type AllBaseTables = [categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, receipts.Table, reservations.Table, role_histories.Table, schema_migrations.Table, shipments.Table, users.Table];
+    export type AllBaseTables = [action.Table, categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, menus.Table, permission.Table, purchase_order.Table, receipts.Table, reservations.Table, resource.Table, role.Table, role_histories.Table, shipments.Table, user.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, receipts.Table, reservations.Table, role_histories.Table, schema_migrations.Table, shipments.Table, users.Table];
+    export type AllTablesAndViews = [action.Table, categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, menus.Table, permission.Table, purchase_order.Table, receipts.Table, reservations.Table, resource.Table, role.Table, role_histories.Table, shipments.Table, user.Table];
   }
 
 
@@ -2816,6 +4348,7 @@ declare module 'zapatos/schema' {
   /* === lookups === */
 
   export type SelectableForTable<T extends Table> = {
+    "action": action.Selectable;
     "categories": categories.Selectable;
     "device_kinds": device_kinds.Selectable;
     "devices": devices.Selectable;
@@ -2823,15 +4356,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.Selectable;
     "labs": labs.Selectable;
     "maintenances": maintenances.Selectable;
+    "menus": menus.Selectable;
+    "permission": permission.Selectable;
+    "purchase_order": purchase_order.Selectable;
     "receipts": receipts.Selectable;
     "reservations": reservations.Selectable;
+    "resource": resource.Selectable;
+    "role": role.Selectable;
     "role_histories": role_histories.Selectable;
-    "schema_migrations": schema_migrations.Selectable;
     "shipments": shipments.Selectable;
-    "users": users.Selectable;
+    "user": user.Selectable;
   }[T];
 
   export type JSONSelectableForTable<T extends Table> = {
+    "action": action.JSONSelectable;
     "categories": categories.JSONSelectable;
     "device_kinds": device_kinds.JSONSelectable;
     "devices": devices.JSONSelectable;
@@ -2839,15 +4377,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.JSONSelectable;
     "labs": labs.JSONSelectable;
     "maintenances": maintenances.JSONSelectable;
+    "menus": menus.JSONSelectable;
+    "permission": permission.JSONSelectable;
+    "purchase_order": purchase_order.JSONSelectable;
     "receipts": receipts.JSONSelectable;
     "reservations": reservations.JSONSelectable;
+    "resource": resource.JSONSelectable;
+    "role": role.JSONSelectable;
     "role_histories": role_histories.JSONSelectable;
-    "schema_migrations": schema_migrations.JSONSelectable;
     "shipments": shipments.JSONSelectable;
-    "users": users.JSONSelectable;
+    "user": user.JSONSelectable;
   }[T];
 
   export type WhereableForTable<T extends Table> = {
+    "action": action.Whereable;
     "categories": categories.Whereable;
     "device_kinds": device_kinds.Whereable;
     "devices": devices.Whereable;
@@ -2855,15 +4398,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.Whereable;
     "labs": labs.Whereable;
     "maintenances": maintenances.Whereable;
+    "menus": menus.Whereable;
+    "permission": permission.Whereable;
+    "purchase_order": purchase_order.Whereable;
     "receipts": receipts.Whereable;
     "reservations": reservations.Whereable;
+    "resource": resource.Whereable;
+    "role": role.Whereable;
     "role_histories": role_histories.Whereable;
-    "schema_migrations": schema_migrations.Whereable;
     "shipments": shipments.Whereable;
-    "users": users.Whereable;
+    "user": user.Whereable;
   }[T];
 
   export type InsertableForTable<T extends Table> = {
+    "action": action.Insertable;
     "categories": categories.Insertable;
     "device_kinds": device_kinds.Insertable;
     "devices": devices.Insertable;
@@ -2871,15 +4419,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.Insertable;
     "labs": labs.Insertable;
     "maintenances": maintenances.Insertable;
+    "menus": menus.Insertable;
+    "permission": permission.Insertable;
+    "purchase_order": purchase_order.Insertable;
     "receipts": receipts.Insertable;
     "reservations": reservations.Insertable;
+    "resource": resource.Insertable;
+    "role": role.Insertable;
     "role_histories": role_histories.Insertable;
-    "schema_migrations": schema_migrations.Insertable;
     "shipments": shipments.Insertable;
-    "users": users.Insertable;
+    "user": user.Insertable;
   }[T];
 
   export type UpdatableForTable<T extends Table> = {
+    "action": action.Updatable;
     "categories": categories.Updatable;
     "device_kinds": device_kinds.Updatable;
     "devices": devices.Updatable;
@@ -2887,15 +4440,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.Updatable;
     "labs": labs.Updatable;
     "maintenances": maintenances.Updatable;
+    "menus": menus.Updatable;
+    "permission": permission.Updatable;
+    "purchase_order": purchase_order.Updatable;
     "receipts": receipts.Updatable;
     "reservations": reservations.Updatable;
+    "resource": resource.Updatable;
+    "role": role.Updatable;
     "role_histories": role_histories.Updatable;
-    "schema_migrations": schema_migrations.Updatable;
     "shipments": shipments.Updatable;
-    "users": users.Updatable;
+    "user": user.Updatable;
   }[T];
 
   export type UniqueIndexForTable<T extends Table> = {
+    "action": action.UniqueIndex;
     "categories": categories.UniqueIndex;
     "device_kinds": device_kinds.UniqueIndex;
     "devices": devices.UniqueIndex;
@@ -2903,15 +4461,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.UniqueIndex;
     "labs": labs.UniqueIndex;
     "maintenances": maintenances.UniqueIndex;
+    "menus": menus.UniqueIndex;
+    "permission": permission.UniqueIndex;
+    "purchase_order": purchase_order.UniqueIndex;
     "receipts": receipts.UniqueIndex;
     "reservations": reservations.UniqueIndex;
+    "resource": resource.UniqueIndex;
+    "role": role.UniqueIndex;
     "role_histories": role_histories.UniqueIndex;
-    "schema_migrations": schema_migrations.UniqueIndex;
     "shipments": shipments.UniqueIndex;
-    "users": users.UniqueIndex;
+    "user": user.UniqueIndex;
   }[T];
 
   export type ColumnForTable<T extends Table> = {
+    "action": action.Column;
     "categories": categories.Column;
     "device_kinds": device_kinds.Column;
     "devices": devices.Column;
@@ -2919,15 +4482,20 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.Column;
     "labs": labs.Column;
     "maintenances": maintenances.Column;
+    "menus": menus.Column;
+    "permission": permission.Column;
+    "purchase_order": purchase_order.Column;
     "receipts": receipts.Column;
     "reservations": reservations.Column;
+    "resource": resource.Column;
+    "role": role.Column;
     "role_histories": role_histories.Column;
-    "schema_migrations": schema_migrations.Column;
     "shipments": shipments.Column;
-    "users": users.Column;
+    "user": user.Column;
   }[T];
 
   export type SQLForTable<T extends Table> = {
+    "action": action.SQL;
     "categories": categories.SQL;
     "device_kinds": device_kinds.SQL;
     "devices": devices.SQL;
@@ -2935,12 +4503,16 @@ declare module 'zapatos/schema' {
     "inventory_assessments": inventory_assessments.SQL;
     "labs": labs.SQL;
     "maintenances": maintenances.SQL;
+    "menus": menus.SQL;
+    "permission": permission.SQL;
+    "purchase_order": purchase_order.SQL;
     "receipts": receipts.SQL;
     "reservations": reservations.SQL;
+    "resource": resource.SQL;
+    "role": role.SQL;
     "role_histories": role_histories.SQL;
-    "schema_migrations": schema_migrations.SQL;
     "shipments": shipments.SQL;
-    "users": users.SQL;
+    "user": user.SQL;
   }[T];
 
 }
