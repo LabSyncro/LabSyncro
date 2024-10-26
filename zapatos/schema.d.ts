@@ -4049,6 +4049,12 @@ declare module 'zapatos/schema' {
       */
       id: string;
       /**
+      * **user.image**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      image: string | null;
+      /**
       * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -4104,6 +4110,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id: string;
+      /**
+      * **user.image**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      image: string | null;
       /**
       * **user.meta**
       * - `jsonb` in database
@@ -4161,6 +4173,12 @@ declare module 'zapatos/schema' {
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **user.image**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      image?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -4217,6 +4235,12 @@ declare module 'zapatos/schema' {
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment;
       /**
+      * **user.image**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      image?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **user.meta**
       * - `jsonb` in database
       * - `NOT NULL`, no default
@@ -4272,6 +4296,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, default: `gen_random_uuid()`
       */
       id?: string | db.Parameter<string> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **user.image**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      image?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **user.meta**
       * - `jsonb` in database

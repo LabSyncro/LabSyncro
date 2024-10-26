@@ -20,14 +20,22 @@ const permissions = ref([
     avatarUrl: 'https://avatars.githubusercontent.com/u/111476687?v=4'
   }
 ]);
+
+const { toggleSidebar } = useSidebar();
+const handleRowClick = () => {
+  toggleSidebar();
+};
 </script>
 <template>
   <div class="p-8">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-semibold">Nhóm Quyền truy cập</h1>
-      <div class="relative">
-        <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-        <Input class="pl-10 w-[300px]" placeholder="Tìm kiếm người dùng" />
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input class="pl-10 w-[300px]" placeholder="Tìm kiếm người dùng" />
+        </div>
+        <Button class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" size="sm">Tạo mới</Button>
       </div>
     </div>
     <Table>
@@ -40,7 +48,7 @@ const permissions = ref([
       </TableHeader>
       <TableBody>
         <TableRow v-for="row in permissions" :key="row.name">
-          <TableCell class="font-medium">
+          <TableCell class="font-medium cursor-pointer hover:text-tertiary-darker" @click="handleRowClick">
             <div class="flex items-center space-x-2">
               <span>{{ row.name }}</span>
               <Lock class="h-4 w-4 text-muted-foreground" />
