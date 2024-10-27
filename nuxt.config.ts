@@ -3,6 +3,7 @@ env.config();
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: [
@@ -13,15 +14,23 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
   ],
   eslint: {},
-  css: [
-    '~/assets/css/fonts.css',
-    '~/assets/css/main.css',
-  ],
+  css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
+  },
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui',
   },
   runtimeConfig: {
     DATABASE_USER: process.env.DATABASE_USER,
