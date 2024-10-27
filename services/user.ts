@@ -1,6 +1,6 @@
 export const userService = {
   // TODO: replace with a real implementation
-  getAvatar (): string {
-    return 'https://api.dicebear.com/9.x/adventurer/svg?seed=Chase';
-  }
+  getAvatar(): string {
+    return 'https://avatars.githubusercontent.com/u/139191192?v=4';
+  },
 };

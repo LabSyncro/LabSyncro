@@ -1,11 +1,39 @@
 <script setup lang="ts">
-const { activeSidebar, toggleSidebar, activeSection } = useSidebar();
+import { ChevronLeft, Lock } from 'lucide-vue-next';
 
-const sections = ['Tất cả người dùng', 'Quản trị viên'];
+const { activeSidebar, activeSection } = useSidebar();
+
+const sections = [{ name: 'Tất cả người dùng', key: 'all-users' }, { name: 'Quản trị viên', key: 'admin' }];
+const router = useRouter();
+const route = useRoute();
+
+const activeSidebarType = computed(() => {
+  const simplePaths = ['/settings/users', '/settings/permissions', '/settings/account'];
+  const path = route.path;
+
+  if (simplePaths.includes(path)) {
+    return 'simple';
+  } else if (path.startsWith('/settings/permissions/group/')) {
+    return 'detailed';
+  }
+  return 'simple';
+});
+
+watchEffect(() => {
+  activeSidebar.value = activeSidebarType.value;
+  activeSection.value = route.params?.role?.toString() || '';
+});
 
 const setActiveSection = (section: string) => {
   activeSection.value = section;
+  router.push(`/settings/permissions/group/${section}`);
 };
+
+const handleBackToSimpleSidebar = () => {
+  activeSidebar.value = 'simple';
+  router.push('/settings/permissions');
+};
+
 </script>
 <template>
   <div>
@@ -22,37 +50,23 @@ const setActiveSection = (section: string) => {
       </div>
     </div>
 
-    <div v-else class="w-64 border-r bg-background p-4 space-y-4">
+    <div v-else class="w-64 border-r bg-background p-4 space-y-4 min-h-screen">
       <div class="flex items-center space-x-2 mb-6">
-        <Button variant="ghost" class="w-full justify-start" @click="toggleSidebar">
+        <Button variant="ghost" class="w-full justify-start" @click="handleBackToSimpleSidebar">
           <ChevronLeft class="mr-2 h-4 w-4" />
-          Back
+          <span class="text-md">Back</span>
         </Button>
       </div>
-
-      <div class="space-y-2">
-        <div class="relative">
-          <Input placeholder="Search" class="mb-4">
-          <template #prefix>
-            <Search class="h-4 w-4 text-muted-foreground" />
-          </template>
-          </Input>
-        </div>
-
-        <div v-for="section in sections" :key="section" class="w-full">
-          <Button variant="ghost" :class="['w-full justify-start', activeSection === section ? 'bg-accent' : '']"
-            @click="setActiveSection(section)">
-            <span class="flex items-center">
-              {{ section }}
-              <Lock class="ml-2 h-3 w-3 text-muted-foreground" />
-            </span>
-          </Button>
-        </div>
+      <div v-for="section in sections" :key="section.key" class="w-full">
+        <Button
+variant="ghost" :class="['w-full justify-start', activeSection === section.key ? 'bg-accent' : '']"
+          @click="setActiveSection(section.key)">
+          <span class="flex items-center text-normal">
+            {{ section.name }}
+            <Lock class="ml-2 h-3 w-3 text-muted-foreground" />
+          </span>
+        </Button>
       </div>
     </div>
-
-    <Button @click="toggleSidebar" class="mt-4">
-      Switch Sidebar
-    </Button>
   </div>
 </template>

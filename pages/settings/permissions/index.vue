@@ -1,31 +1,38 @@
 <script setup lang="ts">
 import { Lock, Search } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 definePageMeta({
   layout: 'setting'
 });
 
-
 const permissions = ref([
   {
     name: 'Tất cả người dùng',
+    key: 'all-users',
     resources: '21 (Tất cả)',
     users: 1,
     avatarUrl: 'https://avatars.githubusercontent.com/u/111476687?v=4'
   },
   {
-    name: 'Admin',
+    name: 'Quản trị viên',
+    key: 'admin',
     resources: '21 (Tất cả)',
     users: 1,
     avatarUrl: 'https://avatars.githubusercontent.com/u/111476687?v=4'
   }
 ]);
 
-const { toggleSidebar } = useSidebar();
-const handleRowClick = () => {
-  toggleSidebar();
+const { activeSection, activeSidebar } = useSidebar();
+const router = useRouter();
+
+const handleRowClick = (rowKey: string) => {
+  activeSection.value = rowKey;
+  activeSidebar.value = 'detailed';
+  router.push(`/settings/permissions/group/${rowKey}`);
 };
 </script>
+
 <template>
   <div class="p-8">
     <div class="flex justify-between items-center mb-6">
@@ -35,7 +42,9 @@ const handleRowClick = () => {
           <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input class="pl-10 w-[300px]" placeholder="Tìm kiếm người dùng" />
         </div>
-        <Button class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" size="sm">Tạo mới</Button>
+        <Button class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" size="sm">
+          Tạo mới
+        </Button>
       </div>
     </div>
     <Table>
@@ -48,7 +57,7 @@ const handleRowClick = () => {
       </TableHeader>
       <TableBody>
         <TableRow v-for="row in permissions" :key="row.name">
-          <TableCell class="font-medium cursor-pointer hover:text-tertiary-darker" @click="handleRowClick">
+          <TableCell class="font-medium cursor-pointer hover:text-tertiary-darker" @click="handleRowClick(row.key)">
             <div class="flex items-center space-x-2">
               <span>{{ row.name }}</span>
               <Lock class="h-4 w-4 text-muted-foreground" />
