@@ -28,13 +28,7 @@ function onMouseoutCategory (id: number) {
           @mouseenter="onHoveredCategory(index)"
           @mouseleave="onMouseoutCategory(index)"
         >
-          {{ category }}
-          <Icon
-            v-if="index === selectedCategoryId"
-            aria-hidden
-            class="absolute top-[8px] right-[6px]"
-            name="i-heroicons-check"
-          />
+          {{ category.name }}
         </a>
       </div>
     </div>
