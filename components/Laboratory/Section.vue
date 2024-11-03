@@ -4,15 +4,15 @@ const allFaculties = await facultyService.getAllFaculties();
 const selectedFacultyId = ref(0);
 const hoveredFacultyId = ref(null);
 
-function onSelectedFaculty (id: number) {
+function onSelectedFaculty(id: number) {
   selectedFacultyId.value = id;
 }
 
-function onHoveredFaculty (id: number) {
+function onHoveredFaculty(id: number) {
   hoveredFacultyId.value = id;
 }
 
-function onMouseoutFaculty (id: number) {
+function onMouseoutFaculty(id: number) {
   if (hoveredFacultyId.value === id) hoveredFacultyId.value = null;
 }
 
@@ -28,21 +28,12 @@ const curFaculty = computed(() => {
   <section class="bg-gray-100 py-16">
     <div class="flex">
       <div class="relative bg-white py-5 pl-12 pr-2 lg:pl-24 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
-        <a
-          v-for="(faculty, index) in allFaculties"
-          :key="index"
+        <a v-for="(faculty, index) in allFaculties" :key="index"
           class="relative inline-block text-sm my-2 cursor-pointer rounded-md hover:bg-secondary-dark p-1 pl-2 pr-8"
-          @mouseenter="onHoveredFaculty(index)"
-          @click="onSelectedFaculty(index)"
-          @mouseout="onMouseoutFaculty(index)"
-        >
+          @mouseenter="onHoveredFaculty(index)" @click="onSelectedFaculty(index)" @mouseout="onMouseoutFaculty(index)">
           {{ faculty.name }}
-          <Icon
-            v-if="index === selectedFacultyId"
-            aria-hidden
-            class="absolute top-[8px] right-[6px]"
-            name="i-heroicons-check"
-          />
+          <Icon v-if="index === selectedFacultyId" aria-hidden class="absolute top-[8px] right-[6px]"
+            name="i-heroicons-check" />
         </a>
       </div>
       <div class="bg-white flex-1 my-5 px-5 py-5 pl-12">
@@ -53,11 +44,7 @@ const curFaculty = computed(() => {
             <span>
               {{ curFaculty.name }}
             </span>
-            <Icon
-              aria-hidden
-              class="ml-5"
-              name="i-heroicons-chevron-double-right"
-            />
+            <Icon aria-hidden class="ml-5" name="i-heroicons-chevron-double-right" />
           </h3>
           <div class="flex gap-5">
             <div class="flex-1">

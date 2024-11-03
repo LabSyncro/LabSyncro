@@ -49,7 +49,7 @@ watch(itemNo, async () => {
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2">
-        <DeviceItem v-for="(item, index) in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
+        <DeviceItem v-for="item in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
           :thumbnail-url="item.thumbnailUrl" :manufacturer="item.manufacturer" :title="item.title"
           :quantity="item.quantity" :unit="item.unit" />
       </div>
