@@ -64,19 +64,18 @@ function pageRight() {
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
         :class="`opacity-0 group-hover:${currentPage === 0 ? 'opacity-0' : 'opacity-100'} bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark`"
-        @click="pageLeft"
-      >
+        @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2">
-        <DeviceItem v-for="item in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
+        <DeviceItem
+          v-for="item in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
           :thumbnail-url="item.thumbnailUrl" :manufacturer="item.manufacturer" :title="item.title"
           :quantity="item.quantity" :unit="item.unit" />
       </div>
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
-        @click="pageRight"
-      >
+        @click="pageRight">
         <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
     </div>
