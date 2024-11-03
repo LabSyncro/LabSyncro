@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { facultyService } from '@/services';
 const allFaculties = await facultyService.getAllFaculties();
-const selectedFacultyId = ref(null);
+const selectedFacultyId = ref(0);
 const hoveredFacultyId = ref(null);
 
 function onSelectedFaculty (id: number) {
@@ -59,6 +59,14 @@ const curFaculty = computed(() => {
               name="i-heroicons-chevron-double-right"
             />
           </h3>
+          <div class="flex gap-5">
+            <div class="flex-1">
+              <p>Cơ sở 1: Lý Thường Kiệt</p>
+            </div>
+            <div>
+              <p>Cơ sở 2: Lý Thường Kiệt</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

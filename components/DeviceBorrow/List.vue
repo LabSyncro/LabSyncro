@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { deviceKindService } from '~/services';
 const props = defineProps<{
   category: { id: number; name: string };
 }>();
@@ -23,54 +24,38 @@ const itemNo = computed(() => {
   }
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
-const items = computed(() => {
+const items = ref([]);
+watch(itemNo, async () => {
   if (!itemNo.value) {
     return [];
   }
-  return [...Array(itemNo.value).keys()].map(() => ({
-    thumbnailUrl: '/images/mock-device.png',
-    manufacturer: 'Texas instrument',
-    title: 'Vinasemi 938BD+ II Máy Hàn Khò Tự Ngắt 810W, 220VAC, 100-480ºC',
-    quantity: 3,
-    unit: 'cái'
+  items.value = (await deviceKindService.getDeviceKindsByCategoryId(props.category.id, 0, itemNo.value)).map((deviceKind) => ({
+    thumbnailUrl: deviceKind.mainImage,
+    manufacturer: deviceKind.manufacturer,
+    title: deviceKind.name,
+    quantity: deviceKind.quantity,
+    unit: deviceKind.unit,
+    id: deviceKind.id,
   }));
 });
 </script>
 
 <template>
   <div class="mt-5">
-    <h3 class="pl-16 md:pl-32 mb-3 font-bold">{{ props.category.name }}</h3>
-    <div
-      ref="listRef"
-      class="group flex justify-center items-center gap-5"
-    >
+    <h3 class="pl-16 lg:pl-28 mb-3 font-bold">{{ props.category.name }}</h3>
+    <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
-      >
-        <Icon
-          aria-hidden
-          name="i-heroicons-chevron-left"
-        />
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
+        <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2">
-        <DeviceItem
-          v-for="(item, index) in items"
-          :key="index"
-          :class="`w-[${ITEM_WIDTH}px]`"
-          :thumbnail-url="item.thumbnailUrl"
-          :manufacturer="item.manufacturer"
-          :title="item.title"
-          :quantity="item.quantity"
-          :unit="item.unit"
-        />
+        <DeviceItem v-for="(item, index) in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
+          :thumbnail-url="item.thumbnailUrl" :manufacturer="item.manufacturer" :title="item.title"
+          :quantity="item.quantity" :unit="item.unit" />
       </div>
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
-      >
-        <Icon
-          aria-hidden
-          name="i-heroicons-chevron-right"
-        />
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
+        <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
     </div>
   </div>
