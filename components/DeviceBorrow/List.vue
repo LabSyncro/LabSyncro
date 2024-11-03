@@ -50,7 +50,7 @@ watch(itemNo, async () => {
     <h3 class="pl-16 lg:pl-28 mb-3 font-bold">{{ props.category.name }}</h3>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
+        :class="`opacity-0 group-hover:${currentPage === 0 ? 'opacity-0' : 'opacity-100'} bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark`">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2">
