@@ -12,8 +12,7 @@ const isActive = computed(() => props.active || route.path === props.to);
 </script>
 
 <template>
-  <router-link
-:to="props.to" :class="[
+  <router-link :to="props.to" :class="[
     'flex items-center px-3 py-2 text-normal rounded-md transition-colors',
     isActive
       ? 'bg-blue-100 text-blue-900'

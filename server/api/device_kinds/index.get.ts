@@ -13,6 +13,8 @@ const DeviceKindOutputDto = Type.Object({
     subImages: Type.Array(Type.String()),
     quantity: Type.String(),
   })),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
 });
 
 type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
@@ -36,8 +38,19 @@ export default defineEventHandler<
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
       `).run(dbPool);
+    const [{ quantity: totalRecords }] = await (db.sql`
+      SELECT count(*) as quantity
+      FROM ${'device_kinds'}
+        JOIN ${'menus'}
+        ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
+      WHERE ${'menu_id'} = ${db.param(Number.parseInt(categoryId))}
+      `).run(dbPool);
+    const totalPages = Math.ceil(totalRecords / length);
+    const currentPage = Math.floor(offset / length);
     return {
       deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit })),
+      totalPages,
+      currentPage,
     };
   }
   const deviceKinds = await (db.sql`
@@ -52,7 +65,12 @@ export default defineEventHandler<
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
     `).run(dbPool);
+  const totalRecords = await db.count('device_kinds', {}).run(dbPool);
+  const totalPages = Math.ceil(totalRecords / length);
+  const currentPage = Math.floor(offset / length);
   return {
     deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit })),
+    totalPages,
+    currentPage,
   };
 });

@@ -6,6 +6,6 @@ export const deviceKindService = {
         offset,
         length,
       },
-    })).deviceKinds;
+    }));
   },
 };

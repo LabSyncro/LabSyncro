@@ -25,11 +25,16 @@ const itemNo = computed(() => {
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
 const items = ref([]);
-watch(itemNo, async () => {
+const totalPages = ref(0);
+const currentPage = ref(0);
+watch([itemNo, currentPage], async () => {
   if (!itemNo.value) {
     return [];
   }
-  items.value = (await deviceKindService.getDeviceKindsByCategoryId(props.category.id, 0, itemNo.value)).map((deviceKind) => ({
+  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, currentPage.value * itemNo.value, itemNo.value);
+  totalPages.value = res.totalPages;
+  currentPage.value = res.currentPage;
+  items.value = res.deviceKinds.map((deviceKind) => ({
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
     title: deviceKind.name,
@@ -38,6 +43,14 @@ watch(itemNo, async () => {
     id: deviceKind.id,
   }));
 });
+
+function pageLeft() {
+  currentPage.value = (currentPage.value - 1 + totalPages.value) % totalPages.value;
+}
+
+function pageRight() {
+  currentPage.value = (currentPage.value + 1) % totalPages.value;
+}
 </script>
 
 <template>
@@ -45,16 +58,20 @@ watch(itemNo, async () => {
     <h3 class="pl-16 lg:pl-28 mb-3 font-bold">{{ props.category.name }}</h3>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
+        :class="`opacity-0 group-hover:${currentPage === 0 ? 'opacity-0' : 'opacity-100'} bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark`"
+        @click="pageLeft"
+      >
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2">
-        <DeviceItem v-for="(item, index) in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
+        <DeviceItem v-for="item in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
           :thumbnail-url="item.thumbnailUrl" :manufacturer="item.manufacturer" :title="item.title"
           :quantity="item.quantity" :unit="item.unit" />
       </div>
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        @click="pageRight"
+      >
         <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
     </div>
