@@ -45,8 +45,8 @@ export default defineEventHandler<
         ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
       WHERE ${'menu_id'} = ${db.param(Number.parseInt(categoryId))}
       `).run(dbPool);
-    const totalPages = totalRecords / length;
-    const currentPage = offset / length;
+    const totalPages = Math.ceil(totalRecords / length);
+    const currentPage = Math.floor(offset / length);
     return {
       deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit })),
       totalPages,
@@ -66,8 +66,8 @@ export default defineEventHandler<
       OFFSET ${db.param(offset)}
     `).run(dbPool);
   const totalRecords = await db.count('device_kinds', {}).run(dbPool);
-  const totalPages = totalRecords / length;
-  const currentPage = offset / length;
+  const totalPages = Math.ceil(totalRecords / length);
+  const currentPage = Math.floor(offset / length);
   return {
     deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit })),
     totalPages,
