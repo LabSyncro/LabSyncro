@@ -1,11 +1,18 @@
 <script setup lang="ts">
+const props = defineProps<{
+  categoryName: string,
+}>();
 const listRef = ref(null);
-const listWidth = computed(() => {
+const listWidth = ref(null);
+function updateListWidth() {
   if (!listRef.value) {
-    return null;
+    listWidth.value = null;
   }
-  return listRef.value.offsetWidth;
-});
+  listWidth.value = listRef.value.offsetWidth;
+}
+onMounted(() => updateListWidth());
+onMounted(() => document.defaultView.addEventListener('resize', updateListWidth));
+onUnmounted(() => document.defaultView.removeEventListener('resize', updateListWidth));
 const ITEM_WIDTH = 180;
 const itemNo = computed(() => {
   if (!listWidth.value) {
@@ -32,12 +39,13 @@ const items = computed(() => {
 
 <template>
   <div class="mt-5">
+    <h3 class="pl-16 md:pl-32 mb-3 font-bold">{{ props.categoryName }}</h3>
     <div
       ref="listRef"
-      class="flex justify-center items-center gap-5"
+      class="group flex justify-center items-center gap-5"
     >
       <button
-        class="bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
       >
         <Icon
           aria-hidden
@@ -57,7 +65,7 @@ const items = computed(() => {
         />
       </div>
       <button
-        class="bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
       >
         <Icon
           aria-hidden

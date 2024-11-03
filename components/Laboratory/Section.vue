@@ -25,9 +25,9 @@ const curFaculty = computed(() => {
 </script>
 
 <template>
-  <section class="bg-gray-200 py-6">
+  <section class="bg-gray-100 py-16">
     <div class="flex">
-      <div class="relative bg-white py-5 pl-12 pr-8 lg:pl-24 lg:pr-16 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
+      <div class="relative bg-white py-5 pl-12 pr-2 lg:pl-24 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
         <a
           v-for="(faculty, index) in allFaculties"
           :key="index"
@@ -46,7 +46,7 @@ const curFaculty = computed(() => {
         </a>
       </div>
       <div class="bg-white flex-1 my-5 px-5 py-5 pl-12">
-        <h2>Phòng thí nghiệm</h2>
+        <h2 class="text-xl">Phòng thí nghiệm</h2>
         <div v-if="curFaculty" class="relative">
           <h3
             class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-8 pb-1 text-normal mt-3">

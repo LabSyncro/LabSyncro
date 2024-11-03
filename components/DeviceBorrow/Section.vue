@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { categoryService } from '@/services';
+
+const categories = await categoryService.getCategories();
 </script>
 
 <template>
   <section class="mt-2 bg-white py-6 px-10">
-    <h2 class="text-tertiary-darker text-center text-lg">
-      Mượn thiết bị theo môn học
-    </h2>
-    <DeviceBorrowSearchBox />
-    <DeviceBorrowList />
+    <div v-for="(category, index) in categories" :key="index" class="mb-10" >
+      <DeviceBorrowList :categoryName="category" />
+    </div>
   </section>
 </template>

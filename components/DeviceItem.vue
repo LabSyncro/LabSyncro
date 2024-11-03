@@ -10,7 +10,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="cursor-pointer border-[1px] rounded-ss"
+    class="cursor-pointer border-[1px] hover:border-[1px] hover:border-tertiary-dark"
   >
     <div class="w-[100%] h-32 overflow-hidden">
       <NuxtImg :src="props.thumbnailUrl" class="object-cover" />
