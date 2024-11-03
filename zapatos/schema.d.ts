@@ -197,9 +197,9 @@ declare module 'zapatos/schema' {
       /**
       * **categories.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name: string | null;
+      name: string;
       /**
       * **categories.quantity**
       * - `int8` in database
@@ -235,9 +235,9 @@ declare module 'zapatos/schema' {
       /**
       * **categories.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name: string | null;
+      name: string;
       /**
       * **categories.quantity**
       * - `int8` in database
@@ -273,7 +273,7 @@ declare module 'zapatos/schema' {
       /**
       * **categories.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -311,9 +311,9 @@ declare module 'zapatos/schema' {
       /**
       * **categories.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      name: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **categories.quantity**
       * - `int8` in database
@@ -349,9 +349,9 @@ declare module 'zapatos/schema' {
       /**
       * **categories.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **categories.quantity**
       * - `int8` in database
@@ -4072,12 +4072,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       password: string | null;
-      /**
-      * **user.role_id**
-      * - `int8` in database
-      * - Nullable, no default
-      */
-      role_id: db.Int8String | null;
     }
     export interface JSONSelectable {
       /**
@@ -4134,12 +4128,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       password: string | null;
-      /**
-      * **user.role_id**
-      * - `int8` in database
-      * - Nullable, no default
-      */
-      role_id: number | null;
     }
     export interface Whereable {
       /**
@@ -4196,12 +4184,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       password?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **user.role_id**
-      * - `int8` in database
-      * - Nullable, no default
-      */
-      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -4258,12 +4240,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       password?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
-      /**
-      * **user.role_id**
-      * - `int8` in database
-      * - Nullable, no default
-      */
-      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -4320,14 +4296,121 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       password?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
-      /**
-      * **user.role_id**
-      * - `int8` in database
-      * - Nullable, no default
-      */
-      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'user_email_key' | 'user_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **user_role**
+   * - Table in database
+   */
+  export namespace user_role {
+    export type Table = 'user_role';
+    export interface Selectable {
+      /**
+      * **user_role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: Date;
+      /**
+      * **user_role.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id: db.Int8String;
+      /**
+      * **user_role.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id: string;
+    }
+    export interface JSONSelectable {
+      /**
+      * **user_role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at: db.TimestampTzString;
+      /**
+      * **user_role.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id: number;
+      /**
+      * **user_role.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id: string;
+    }
+    export interface Whereable {
+      /**
+      * **user_role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **user_role.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **user_role.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **user_role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **user_role.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment;
+      /**
+      * **user_role.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id: string | db.Parameter<string> | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **user_role.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **user_role.role_id**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      role_id?: (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String | bigint) | db.Parameter<(number | db.Int8String | bigint)> | db.SQLFragment>;
+      /**
+      * **user_role.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'user_role_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -4337,20 +4420,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = action.Table | categories.Table | device_kinds.Table | devices.Table | expiration_extension_requests.Table | inventory_assessments.Table | labs.Table | maintenances.Table | menus.Table | permission.Table | purchase_order.Table | receipts.Table | reservations.Table | resource.Table | role.Table | role_histories.Table | shipments.Table | user.Table;
-    export type Selectable = action.Selectable | categories.Selectable | device_kinds.Selectable | devices.Selectable | expiration_extension_requests.Selectable | inventory_assessments.Selectable | labs.Selectable | maintenances.Selectable | menus.Selectable | permission.Selectable | purchase_order.Selectable | receipts.Selectable | reservations.Selectable | resource.Selectable | role.Selectable | role_histories.Selectable | shipments.Selectable | user.Selectable;
-    export type JSONSelectable = action.JSONSelectable | categories.JSONSelectable | device_kinds.JSONSelectable | devices.JSONSelectable | expiration_extension_requests.JSONSelectable | inventory_assessments.JSONSelectable | labs.JSONSelectable | maintenances.JSONSelectable | menus.JSONSelectable | permission.JSONSelectable | purchase_order.JSONSelectable | receipts.JSONSelectable | reservations.JSONSelectable | resource.JSONSelectable | role.JSONSelectable | role_histories.JSONSelectable | shipments.JSONSelectable | user.JSONSelectable;
-    export type Whereable = action.Whereable | categories.Whereable | device_kinds.Whereable | devices.Whereable | expiration_extension_requests.Whereable | inventory_assessments.Whereable | labs.Whereable | maintenances.Whereable | menus.Whereable | permission.Whereable | purchase_order.Whereable | receipts.Whereable | reservations.Whereable | resource.Whereable | role.Whereable | role_histories.Whereable | shipments.Whereable | user.Whereable;
-    export type Insertable = action.Insertable | categories.Insertable | device_kinds.Insertable | devices.Insertable | expiration_extension_requests.Insertable | inventory_assessments.Insertable | labs.Insertable | maintenances.Insertable | menus.Insertable | permission.Insertable | purchase_order.Insertable | receipts.Insertable | reservations.Insertable | resource.Insertable | role.Insertable | role_histories.Insertable | shipments.Insertable | user.Insertable;
-    export type Updatable = action.Updatable | categories.Updatable | device_kinds.Updatable | devices.Updatable | expiration_extension_requests.Updatable | inventory_assessments.Updatable | labs.Updatable | maintenances.Updatable | menus.Updatable | permission.Updatable | purchase_order.Updatable | receipts.Updatable | reservations.Updatable | resource.Updatable | role.Updatable | role_histories.Updatable | shipments.Updatable | user.Updatable;
-    export type UniqueIndex = action.UniqueIndex | categories.UniqueIndex | device_kinds.UniqueIndex | devices.UniqueIndex | expiration_extension_requests.UniqueIndex | inventory_assessments.UniqueIndex | labs.UniqueIndex | maintenances.UniqueIndex | menus.UniqueIndex | permission.UniqueIndex | purchase_order.UniqueIndex | receipts.UniqueIndex | reservations.UniqueIndex | resource.UniqueIndex | role.UniqueIndex | role_histories.UniqueIndex | shipments.UniqueIndex | user.UniqueIndex;
-    export type Column = action.Column | categories.Column | device_kinds.Column | devices.Column | expiration_extension_requests.Column | inventory_assessments.Column | labs.Column | maintenances.Column | menus.Column | permission.Column | purchase_order.Column | receipts.Column | reservations.Column | resource.Column | role.Column | role_histories.Column | shipments.Column | user.Column;
+    export type Table = action.Table | categories.Table | device_kinds.Table | devices.Table | expiration_extension_requests.Table | inventory_assessments.Table | labs.Table | maintenances.Table | menus.Table | permission.Table | purchase_order.Table | receipts.Table | reservations.Table | resource.Table | role.Table | role_histories.Table | shipments.Table | user.Table | user_role.Table;
+    export type Selectable = action.Selectable | categories.Selectable | device_kinds.Selectable | devices.Selectable | expiration_extension_requests.Selectable | inventory_assessments.Selectable | labs.Selectable | maintenances.Selectable | menus.Selectable | permission.Selectable | purchase_order.Selectable | receipts.Selectable | reservations.Selectable | resource.Selectable | role.Selectable | role_histories.Selectable | shipments.Selectable | user.Selectable | user_role.Selectable;
+    export type JSONSelectable = action.JSONSelectable | categories.JSONSelectable | device_kinds.JSONSelectable | devices.JSONSelectable | expiration_extension_requests.JSONSelectable | inventory_assessments.JSONSelectable | labs.JSONSelectable | maintenances.JSONSelectable | menus.JSONSelectable | permission.JSONSelectable | purchase_order.JSONSelectable | receipts.JSONSelectable | reservations.JSONSelectable | resource.JSONSelectable | role.JSONSelectable | role_histories.JSONSelectable | shipments.JSONSelectable | user.JSONSelectable | user_role.JSONSelectable;
+    export type Whereable = action.Whereable | categories.Whereable | device_kinds.Whereable | devices.Whereable | expiration_extension_requests.Whereable | inventory_assessments.Whereable | labs.Whereable | maintenances.Whereable | menus.Whereable | permission.Whereable | purchase_order.Whereable | receipts.Whereable | reservations.Whereable | resource.Whereable | role.Whereable | role_histories.Whereable | shipments.Whereable | user.Whereable | user_role.Whereable;
+    export type Insertable = action.Insertable | categories.Insertable | device_kinds.Insertable | devices.Insertable | expiration_extension_requests.Insertable | inventory_assessments.Insertable | labs.Insertable | maintenances.Insertable | menus.Insertable | permission.Insertable | purchase_order.Insertable | receipts.Insertable | reservations.Insertable | resource.Insertable | role.Insertable | role_histories.Insertable | shipments.Insertable | user.Insertable | user_role.Insertable;
+    export type Updatable = action.Updatable | categories.Updatable | device_kinds.Updatable | devices.Updatable | expiration_extension_requests.Updatable | inventory_assessments.Updatable | labs.Updatable | maintenances.Updatable | menus.Updatable | permission.Updatable | purchase_order.Updatable | receipts.Updatable | reservations.Updatable | resource.Updatable | role.Updatable | role_histories.Updatable | shipments.Updatable | user.Updatable | user_role.Updatable;
+    export type UniqueIndex = action.UniqueIndex | categories.UniqueIndex | device_kinds.UniqueIndex | devices.UniqueIndex | expiration_extension_requests.UniqueIndex | inventory_assessments.UniqueIndex | labs.UniqueIndex | maintenances.UniqueIndex | menus.UniqueIndex | permission.UniqueIndex | purchase_order.UniqueIndex | receipts.UniqueIndex | reservations.UniqueIndex | resource.UniqueIndex | role.UniqueIndex | role_histories.UniqueIndex | shipments.UniqueIndex | user.UniqueIndex | user_role.UniqueIndex;
+    export type Column = action.Column | categories.Column | device_kinds.Column | devices.Column | expiration_extension_requests.Column | inventory_assessments.Column | labs.Column | maintenances.Column | menus.Column | permission.Column | purchase_order.Column | receipts.Column | reservations.Column | resource.Column | role.Column | role_histories.Column | shipments.Column | user.Column | user_role.Column;
   
-    export type AllBaseTables = [action.Table, categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, menus.Table, permission.Table, purchase_order.Table, receipts.Table, reservations.Table, resource.Table, role.Table, role_histories.Table, shipments.Table, user.Table];
+    export type AllBaseTables = [action.Table, categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, menus.Table, permission.Table, purchase_order.Table, receipts.Table, reservations.Table, resource.Table, role.Table, role_histories.Table, shipments.Table, user.Table, user_role.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [action.Table, categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, menus.Table, permission.Table, purchase_order.Table, receipts.Table, reservations.Table, resource.Table, role.Table, role_histories.Table, shipments.Table, user.Table];
+    export type AllTablesAndViews = [action.Table, categories.Table, device_kinds.Table, devices.Table, expiration_extension_requests.Table, inventory_assessments.Table, labs.Table, maintenances.Table, menus.Table, permission.Table, purchase_order.Table, receipts.Table, reservations.Table, resource.Table, role.Table, role_histories.Table, shipments.Table, user.Table, user_role.Table];
   }
 
 
@@ -4396,6 +4479,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.Selectable;
     "shipments": shipments.Selectable;
     "user": user.Selectable;
+    "user_role": user_role.Selectable;
   }[T];
 
   export type JSONSelectableForTable<T extends Table> = {
@@ -4417,6 +4501,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.JSONSelectable;
     "shipments": shipments.JSONSelectable;
     "user": user.JSONSelectable;
+    "user_role": user_role.JSONSelectable;
   }[T];
 
   export type WhereableForTable<T extends Table> = {
@@ -4438,6 +4523,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.Whereable;
     "shipments": shipments.Whereable;
     "user": user.Whereable;
+    "user_role": user_role.Whereable;
   }[T];
 
   export type InsertableForTable<T extends Table> = {
@@ -4459,6 +4545,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.Insertable;
     "shipments": shipments.Insertable;
     "user": user.Insertable;
+    "user_role": user_role.Insertable;
   }[T];
 
   export type UpdatableForTable<T extends Table> = {
@@ -4480,6 +4567,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.Updatable;
     "shipments": shipments.Updatable;
     "user": user.Updatable;
+    "user_role": user_role.Updatable;
   }[T];
 
   export type UniqueIndexForTable<T extends Table> = {
@@ -4501,6 +4589,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.UniqueIndex;
     "shipments": shipments.UniqueIndex;
     "user": user.UniqueIndex;
+    "user_role": user_role.UniqueIndex;
   }[T];
 
   export type ColumnForTable<T extends Table> = {
@@ -4522,6 +4611,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.Column;
     "shipments": shipments.Column;
     "user": user.Column;
+    "user_role": user_role.Column;
   }[T];
 
   export type SQLForTable<T extends Table> = {
@@ -4543,6 +4633,7 @@ declare module 'zapatos/schema' {
     "role_histories": role_histories.SQL;
     "shipments": shipments.SQL;
     "user": user.SQL;
+    "user_role": user_role.SQL;
   }[T];
 
 }
