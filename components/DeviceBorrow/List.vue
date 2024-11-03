@@ -55,7 +55,12 @@ function pageRight() {
 
 <template>
   <div class="mt-5">
-    <h3 class="pl-16 lg:pl-28 mb-3 font-bold">{{ props.category.name }}</h3>
+    <div class="pl-16 pr-16 lg:pl-28 lg:pr-28 mb-3 flex justify-between">
+      <h3 class="font-bold">{{ props.category.name }}</h3>
+      <NuxtLink class="text-sm text-slate-dark" :href="`/devices?category=${props.category.id}`">
+        Xem thêm
+      </NuxtLink>
+    </div>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
         :class="`opacity-0 group-hover:${currentPage === 0 ? 'opacity-0' : 'opacity-100'} bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark`"
