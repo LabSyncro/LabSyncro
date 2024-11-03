@@ -40,19 +40,14 @@ const curFaculty = computed(() => {
         <h2 class="text-xl">Phòng thí nghiệm</h2>
         <div v-if="curFaculty" class="relative">
           <h3
-            class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-8 pb-1 text-normal mt-3">
+            class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-4 pb-1 text-normal mt-3">
             <span>
               {{ curFaculty.name }}
             </span>
             <Icon aria-hidden class="ml-5" name="i-heroicons-chevron-double-right" />
           </h3>
-          <div class="flex gap-5">
-            <div class="flex-1">
-              <p>Cơ sở 1: Lý Thường Kiệt</p>
-            </div>
-            <div>
-              <p>Cơ sở 2: Lý Thường Kiệt</p>
-            </div>
+          <div>
+            <p class="text-normal font-bold text-slate-dark">Cơ sở 1: Lý Thường Kiệt</p>
           </div>
         </div>
       </div>
