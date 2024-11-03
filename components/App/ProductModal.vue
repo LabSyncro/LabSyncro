@@ -4,13 +4,8 @@ const props = defineProps<{
   active: boolean;
 }>();
 
-const categories = await categoryService.getCategoriesForProductModal();
-const selectedCategoryId = ref(null);
+const categories = await categoryService.getCategories();
 const hoveredCategoryId = ref(null);
-
-function onSelectedCategory (id: number) {
-  selectedCategoryId.value = id;
-}
 
 function onHoveredCategory (id: number) {
   hoveredCategoryId.value = id;
@@ -19,18 +14,12 @@ function onHoveredCategory (id: number) {
 function onMouseoutCategory (id: number) {
   if (hoveredCategoryId.value === id) hoveredCategoryId.value = null;
 }
-
-const curCategory = computed(() => {
-  const index = hoveredCategoryId.value ?? selectedCategoryId.value;
-  if (index === null) return null;
-  return categories[index];
-});
 </script>
 
 <template>
-  <div v-if="props.active" id="menu" role="menu" class="absolute top-[180px] text-primary-dark left-0 w-[100vw] bg-white z-50">
-    <div class="shadow-[0_8px_8px_rgba(0,0,0,0.1)] flex justify-between gap-16 lg:gap-32">
-      <div class="p-5 md:pl-8 pb-20 lg:pr-24 pt-10 self-stretch shadow-[10px_0_10px_rgba(0,0,0,0.1)]">
+  <div v-if="props.active" id="menu" role="menu" class="absolute top-[184px] text-primary-dark left-0 w-[330px] md:w-[350px] bg-white z-50">
+    <div class="shadow-[0_8px_8px_rgba(0,0,0,0.1)]">
+      <div class="pl-12 p-5 self-stretch shadow-[10px_0_10px_rgba(0,0,0,0.1)]">
         <a
           v-for="(category, index) in categories"
           :key="index"
@@ -39,7 +28,7 @@ const curCategory = computed(() => {
           @mouseenter="onHoveredCategory(index)"
           @mouseleave="onMouseoutCategory(index)"
         >
-          {{ category.name }}
+          {{ category }}
           <Icon
             v-if="index === selectedCategoryId"
             aria-hidden
@@ -47,30 +36,6 @@ const curCategory = computed(() => {
             name="i-heroicons-check"
           />
         </a>
-      </div>
-      <div class="flex-1 p-5 md:pl-8 pb-20 lg:pr-24 pt-10 ">
-        <div v-if="curCategory" class="relative">
-          <h2
-            class="border-tertiary-lighter flex items-center border-b-[1px] font-semibold text-tertiary-dark mb-8 pb-2">
-            <span>
-              {{ curCategory.name }}
-            </span>
-            <Icon
-              aria-hidden
-              class="ml-5"
-              name="i-heroicons-chevron-double-right"
-            />
-          </h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-4 text-sm gap-6 font-bold">
-            <a
-              v-for="(category, index) in curCategory.sub"
-              :key="index"
-              class="line-clamp-1"
-            >
-              {{ category.name }}
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   </div> 
