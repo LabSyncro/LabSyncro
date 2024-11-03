@@ -37,7 +37,7 @@ export default defineEventHandler<
       OFFSET ${db.param(offset)}
       `).run(dbPool);
     return {
-      deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images } }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images })),
+      deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit })),
     };
   }
   const deviceKinds = await (db.sql`
@@ -54,6 +54,6 @@ export default defineEventHandler<
       OFFSET ${db.param(offset)}
     `).run(dbPool);
   return {
-    deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images } }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images })),
+    deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit })),
   };
 });
