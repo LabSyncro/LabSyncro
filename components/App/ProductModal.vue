@@ -17,9 +17,9 @@ function onMouseoutCategory (id: number) {
 </script>
 
 <template>
-  <div v-if="props.active" id="menu" role="menu" class="absolute top-[184px] text-primary-dark left-0 w-[330px] md:w-[350px] bg-white z-50">
-    <div class="shadow-[0_8px_8px_rgba(0,0,0,0.1)]">
-      <div class="pl-12 p-5 self-stretch shadow-[10px_0_10px_rgba(0,0,0,0.1)]">
+  <div v-if="props.active" id="menu" role="menu" class="absolute top-[180px] text-primary-dark left-0 w-[330px] md:w-[350px] max-h-[90vh] bg-white overflow-auto z-50 shadow-[8px_8px_24px_rgba(0,0,0,0.1)]">
+    <div>
+      <div class="pl-12 p-5 self-stretch">
         <a
           v-for="(category, index) in categories"
           :key="index"
