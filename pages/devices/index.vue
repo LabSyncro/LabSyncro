@@ -1,4 +1,9 @@
-<script>
+<script setup lang="ts">
+const route = useRoute();
+
+const { categoryId } = route.query;
+
+const { name: categoryName } = await useFetch(`/api/categories/${categoryId}`).data.value;
 </script>
 
 <template>
@@ -21,7 +26,7 @@
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
+    <main class="my-10">
+    </main>
   </div>
-  <main class="mx-16 my-10">
-  </main>
 </template>

@@ -57,7 +57,7 @@ function pageRight() {
   <div class="mt-5">
     <div class="pl-16 pr-16 lg:pl-28 lg:pr-28 mb-3 flex justify-between">
       <h3 class="font-bold">{{ props.category.name }}</h3>
-      <NuxtLink class="text-sm text-slate-dark" :href="`/devices?category=${props.category.id}`">
+      <NuxtLink class="text-sm text-slate-dark" :href="`/devices?categoryId=${props.category.id}`">
         Xem thêm
       </NuxtLink>
     </div>

@@ -30,6 +30,7 @@
       </Breadcrumb>
     </div>
     <main class="mx-16 my-10">
+      
     </main>
   </div>
 </template>
