@@ -7,8 +7,8 @@ const DeviceKindOutputDto = Type.Object({
   deviceKinds: Type.Array(Type.Object({
     id: Type.String(),
     name: Type.String(),
-    brand: Type.String(),
-    manufacturer: Type.String(),
+    brand: Type.Optional(Type.String()),
+    manufacturer: Type.Optional(Type.String()),
     mainImage: Type.String(),
     subImages: Type.Array(Type.String()),
     quantity: Type.String(),
@@ -22,7 +22,7 @@ export default defineEventHandler<
   Promise<DeviceKindOutputDto>
 >(async (event) => {
   const { category_id: categoryId, offset, length } = getQuery(event);
-  if (typeof categoryId === 'number') {
+  if (typeof categoryId === 'string') {
     const deviceKinds = await (db.sql`
       SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}
       FROM ${'devices'}
@@ -30,7 +30,7 @@ export default defineEventHandler<
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
         JOIN ${'menus'}
         ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
-      WHERE ${'menu_id'} = ${db.param(categoryId)}
+      WHERE ${'menu_id'} = ${db.param(Number.parseInt(categoryId))}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}

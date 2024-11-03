@@ -16,7 +16,7 @@ const props = defineProps<{
       <NuxtImg :src="props.thumbnailUrl" class="object-cover" />
     </div>
     <div class="p-2 pt-5 text-ss">
-      <p class="text-slate-dark mb-1">{{ props.manufacturer.toUpperCase() }}</p>
+      <p class="text-slate-dark mb-1">{{ props.manufacturer?.toUpperCase() }}</p>
       <p class="line-clamp-2 mb-3">{{ props.title }}</p>
       <p class="relative text-slate-dark bg-gray-100 pl-1.5 py-0.5 rounded-sm">
         <Icon
