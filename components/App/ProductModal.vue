@@ -23,7 +23,7 @@ function onMouseoutCategory(id: number) {
       <div class="pl-12 p-5 self-stretch">
         <a v-for="(category, index) in categories" :key="index"
           class="relative block cursor-pointer my-2.5 py-1 px-2 pr-8 text-left text-normal rounded-md hover:bg-secondary-dark"
-          @click="onSelectedCategory(index)" @mouseenter="onHoveredCategory(index)"
+          @mouseenter="onHoveredCategory(index)"
           @mouseleave="onMouseoutCategory(index)">
           {{ category.name }}
         </a>
