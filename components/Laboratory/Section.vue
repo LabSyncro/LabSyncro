@@ -59,6 +59,14 @@ const curFaculty = computed(() => {
               name="i-heroicons-chevron-double-right"
             />
           </h3>
+          <div class="flex gap-5">
+            <div class="flex-1">
+              <p>Cơ sở 1: Lý Thường Kiệt</p>
+            </div>
+            <div>
+              <p>Cơ sở 2: Lý Thường Kiệt</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

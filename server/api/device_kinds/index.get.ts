@@ -30,7 +30,7 @@ export default defineEventHandler<
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
         JOIN ${'menus'}
         ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
-      WHERE ${'menus'}.${'level'} = 1 AND ${'menu_id'} = ${db.param(categoryId)}
+      WHERE ${'menu_id'} = ${db.param(categoryId)}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
@@ -47,7 +47,6 @@ export default defineEventHandler<
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
         JOIN ${'menus'}
         ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
-      WHERE ${'menus'}.${'level'} = 1
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
