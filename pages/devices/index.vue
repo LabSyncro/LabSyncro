@@ -2,8 +2,8 @@
 import { categoryService } from '~/services';
 
 const route = useRoute();
-const { categoryId } = route.query;
-const categoryName = categoryId !== undefined ? (await $fetch(`/api/categories/${categoryId}`)).name : 'Thiết bị';
+const categoryId = route.query.categoryId ? Number.parseInt(route.query.categoryId) : null;
+const categoryName = categoryId !== null ? (await $fetch(`/api/categories/${categoryId}`)).name : 'Thiết bị';
 
 const allCategories = await categoryService.getCategories();
 </script>
@@ -33,10 +33,11 @@ const allCategories = await categoryService.getCategories();
             <NuxtLink
               v-for="category in allCategories"
               :key="category.id"
-              :class="`text-left text-black min-w-[190px] px-5 py-1 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === category.id ? 'bg-slate-dark' : 'bg-white'}`"
+              :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`"
             >
               {{ category.name }}
+              <Icon v-if="categoryId === category.id" aria-hidden name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
         </div>
