@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const props = defineProps<{
+  categoryName: string,
+}>();
 const listRef = ref(null);
 const listWidth = computed(() => {
   if (!listRef.value) {
@@ -32,6 +35,7 @@ const items = computed(() => {
 
 <template>
   <div class="mt-5">
+    <h3 class="pl-16 md:pl-32 mb-3 font-bold">{{ props.categoryName }}</h3>
     <div
       ref="listRef"
       class="flex justify-center items-center gap-5"
