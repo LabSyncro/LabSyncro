@@ -25,11 +25,16 @@ const itemNo = computed(() => {
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
 const items = ref([]);
+const totalPages = ref(0);
+const currentPage = ref(0);
 watch(itemNo, async () => {
   if (!itemNo.value) {
     return [];
   }
-  items.value = (await deviceKindService.getDeviceKindsByCategoryId(props.category.id, 0, itemNo.value)).map((deviceKind) => ({
+  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, 0, itemNo.value);
+  totalPages.value = res.totalPages;
+  currentPage.value = res.currentPage;
+  items.value = res.deviceKinds.map((deviceKind) => ({
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
     title: deviceKind.name,
