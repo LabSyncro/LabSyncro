@@ -7,7 +7,7 @@ import {
   UNAUTHORIZED_CODE,
 } from '~/constants';
 import { cookieOptions } from '~/constants/cookie';
-import { initDbClient } from '~/server/db';
+import { initDbPool } from '~/server/db';
 import type { LoginInputDto } from '~/server/dtos/in/auth.dto';
 import type { AuthOutputDto } from '~/server/dtos/out/auth.dto';
 
@@ -28,7 +28,7 @@ export default defineEventHandler<
   const body = await readBody(event);
   const { email, password } = body;
 
-  const dbClient = await initDbClient();
+  const dbPool = initDbPool();
   const { jwtSecret } = useRuntimeConfig();
 
   if (!email || !password) {
@@ -57,7 +57,7 @@ export default defineEventHandler<
                     ) AS rbac ON public.user.role_id = rbac.role_id
                     WHERE public.user.email = $1`;
 
-    const { rows } = await dbClient.query<UserDb>(query, [email]);
+    const { rows } = await dbPool.query<UserDb>(query, [email]);
     if (!rows || rows.length === 0) {
       throw createError({
         statusCode: NOT_FOUND_CODE,
