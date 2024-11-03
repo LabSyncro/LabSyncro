@@ -38,10 +38,10 @@ const items = computed(() => {
     <h3 class="pl-16 md:pl-32 mb-3 font-bold">{{ props.categoryName }}</h3>
     <div
       ref="listRef"
-      class="flex justify-center items-center gap-5"
+      class="group flex justify-center items-center gap-5"
     >
       <button
-        class="bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
       >
         <Icon
           aria-hidden
@@ -61,7 +61,7 @@ const items = computed(() => {
         />
       </div>
       <button
-        class="bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
       >
         <Icon
           aria-hidden
