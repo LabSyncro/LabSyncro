@@ -27,7 +27,7 @@ const curFaculty = computed(() => {
 <template>
   <section class="bg-gray-100 py-16">
     <div class="flex">
-      <div class="relative bg-white py-5 pl-12 pr-8 lg:pl-24 lg:pr-16 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
+      <div class="relative bg-white py-5 pl-12 pr-2 lg:pl-24 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
         <a
           v-for="(faculty, index) in allFaculties"
           :key="index"
