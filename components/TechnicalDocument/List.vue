@@ -1,11 +1,16 @@
 <script setup lang="ts">
 const listRef = ref(null);
-const listWidth = computed(() => {
+const listWidth = ref(null);
+function updateListWidth() {
   if (!listRef.value) {
-    return null;
+    listWidth.value = null;
   }
-  return listRef.value.offsetWidth;
-});
+  listWidth.value = listRef.value.offsetWidth;
+}
+onMounted(() => updateListWidth());
+onMounted(() => document.defaultView.addEventListener('resize', updateListWidth));
+onUnmounted(() => document.defaultView.removeEventListener('resize', updateListWidth));
+
 const ITEM_WIDTH = 330;
 const itemNo = computed(() => {
   if (!listWidth.value) {
