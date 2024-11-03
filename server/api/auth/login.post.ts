@@ -1,3 +1,5 @@
+import { Type } from '@sinclair/typebox';
+import type { Static } from '@sinclair/typebox';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {
@@ -7,9 +9,8 @@ import {
   UNAUTHORIZED_CODE,
 } from '~/constants';
 import { cookieOptions } from '~/constants/cookie';
-import { initDbClient } from '~/server/db';
-import type { LoginInputDto } from '~/server/dtos/in/auth.dto';
-import type { AuthOutputDto } from '~/server/dtos/out/auth.dto';
+import { initDbPool } from '~/server/db';
+import { ObjectId } from '~/server/types';
 
 type UserDb = {
   user_id: string;
@@ -21,6 +22,28 @@ type UserDb = {
   action_name: string;
 };
 
+const LoginInputDto = Type.Object({
+  email: Type.String({ format: 'email' }),
+  password: Type.String(),
+});
+
+type LoginInputDto = Static<typeof LoginInputDto>;
+
+const PermissionType = Type.Object({
+  resource: Type.Union([Type.String(), Type.Null()]),
+  action: Type.Union([Type.String(), Type.Null()]),
+});
+
+const AuthOutputDto = Type.Object({
+  id: ObjectId,
+  name: Type.String(),
+  email: Type.String({ format: 'email' }),
+  role: Type.Union([Type.String(), Type.Null()]),
+  permission: Type.Array(PermissionType),
+});
+
+type AuthOutputDto = Static<typeof AuthOutputDto>;
+
 export default defineEventHandler<
   { body: LoginInputDto },
   Promise<AuthOutputDto>
@@ -28,7 +51,7 @@ export default defineEventHandler<
   const body = await readBody(event);
   const { email, password } = body;
 
-  const dbClient = await initDbClient();
+  const dbPool = initDbPool();
   const { jwtSecret } = useRuntimeConfig();
 
   if (!email || !password) {
@@ -57,7 +80,7 @@ export default defineEventHandler<
                     ) AS rbac ON public.user.role_id = rbac.role_id
                     WHERE public.user.email = $1`;
 
-    const { rows } = await dbClient.query<UserDb>(query, [email]);
+    const { rows } = await dbPool.query<UserDb>(query, [email]);
     if (!rows || rows.length === 0) {
       throw createError({
         statusCode: NOT_FOUND_CODE,
