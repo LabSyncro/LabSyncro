@@ -3,7 +3,7 @@ import { categoryService } from '~/services';
 
 const route = useRoute();
 const { categoryId } = route.query;
-const categoryName = categoryId !== undefined ? (await useFetch(`/api/categories/${categoryId}`)).data.value.name : 'Thiết bị';
+const categoryName = categoryId !== undefined ? (await $fetch(`/api/categories/${categoryId}`)).name : 'Thiết bị';
 
 const allCategories = await categoryService.getCategories();
 </script>
@@ -28,15 +28,16 @@ const allCategories = await categoryService.getCategories();
     <main class="my-10">
       <div class="flex gap-16">
         <div>
-          <div class="text-sm flex flex-col">
+          <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
-            <p
+            <NuxtLink
               v-for="category in allCategories"
               :key="category.id"
-              class="bg-white text-black min-w-[190px] px-5 py-1 line-clamp-1 border-b-[1px] border-b-slate-light"
+              :class="`text-left text-black min-w-[190px] px-5 py-1 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === category.id ? 'bg-slate-dark' : 'bg-white'}`"
+              :href="`/devices?categoryId=${category.id}`"
             >
               {{ category.name }}
-            </p>
+            </NuxtLink>
           </div>
         </div>
         <div class="flex-1 bg-white p-8">
