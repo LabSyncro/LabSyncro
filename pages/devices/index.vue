@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { categoryService } from '~/services';
+
 const route = useRoute();
-
 const { categoryId } = route.query;
+const categoryName = categoryId !== undefined ? (await useFetch(`/api/categories/${categoryId}`)).data.value.name : 'Thiết bị';
 
-const { name: categoryName } = await useFetch(`/api/categories/${categoryId}`).data.value;
+const allCategories = await categoryService.getCategories();
 </script>
 
 <template>
@@ -12,21 +14,37 @@ const { name: categoryName } = await useFetch(`/api/categories/${categoryId}`).d
       <BreadcrumbList>
         <BreadcrumbItem>
           <NuxtLink href="/" class="flex justify-center items-center text-lg">
-            <Icon
-              aria-hidden
-              name="i-heroicons-home"
-            />
+            <Icon aria-hidden name="i-heroicons-home" />
           </NuxtLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
           <p class="font-semibold">/</p>
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <p class="text-normal font-bold underline text-black">Cảm biến</p>
+          <p class="text-normal font-bold underline text-black">{{ categoryName }}</p>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
     <main class="my-10">
+      <div class="flex gap-16">
+        <div>
+          <div class="text-sm flex flex-col">
+            <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
+            <p
+              v-for="category in allCategories"
+              :key="category.id"
+              class="bg-white text-black min-w-[190px] px-5 py-1 line-clamp-1 border-b-[1px] border-b-slate-light"
+            >
+              {{ category.name }}
+            </p>
+          </div>
+        </div>
+        <div class="flex-1 bg-white p-8">
+          <h2 class="text-2xl">
+            {{ categoryName }}
+          </h2>
+        </div>
+      </div>
     </main>
   </div>
 </template>
