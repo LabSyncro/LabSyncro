@@ -7,13 +7,13 @@
       <IntroBanner />
     </div>
     <div>
+      <LaboratorySection />
+    </div>
+   <div>
       <DeviceBorrowSection />
     </div>
     <div>
       <TechnicalDocumentSection />
-    </div>
-    <div>
-      <LaboratorySection />
     </div>
   </div>
 </template>

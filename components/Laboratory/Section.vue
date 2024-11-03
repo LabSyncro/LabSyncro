@@ -25,7 +25,7 @@ const curFaculty = computed(() => {
 </script>
 
 <template>
-  <section class="bg-gray-200 py-6">
+  <section class="bg-gray-100 py-16">
     <div class="flex">
       <div class="relative bg-white py-5 pl-12 pr-8 lg:pl-24 lg:pr-16 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
         <a
