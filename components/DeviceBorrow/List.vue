@@ -41,7 +41,7 @@ watch(itemNo, async () => {
 
 <template>
   <div class="mt-5">
-    <h3 class="pl-16 md:pl-32 mb-3 font-bold">{{ props.category.name }}</h3>
+    <h3 class="pl-16 lg:pl-28 mb-3 font-bold">{{ props.category.name }}</h3>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
