@@ -6,11 +6,11 @@
     <div>
       <IntroBanner />
     </div>
-    <div>
-      <LaboratorySection />
-    </div>
    <div>
       <DeviceBorrowSection />
+    </div>
+    <div>
+      <LaboratorySection />
     </div>
     <div>
       <TechnicalDocumentSection />
