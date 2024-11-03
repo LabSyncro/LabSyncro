@@ -59,7 +59,7 @@ watch(itemNo, async () => {
           :quantity="item.quantity" :unit="item.unit" />
       </div>
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark">
+        :class="`opacity-0 group-hover:${currentPage === totalPages - 1 ? 'opacity-0' : 'opacity-100'}  bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark`">
         <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
     </div>

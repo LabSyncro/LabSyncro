@@ -38,7 +38,7 @@ export default defineEventHandler<
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
       `).run(dbPool);
-    const [totalRecords] = await (db.sql`
+    const [{ quantity: totalRecords }] = await (db.sql`
       SELECT count(*) as quantity
       FROM ${'device_kinds'}
         JOIN ${'menus'}
