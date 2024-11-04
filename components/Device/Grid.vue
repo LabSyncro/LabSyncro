@@ -58,7 +58,7 @@ async function fetchItem(offset: number) {
 
 <template>
   <div ref="gridRef" :class="`grid grid-cols-${cols} gap-4`" role="grid">
-    <div v-for="i in [...Array(gridItemNo).keys()]" :key="i + currentPage * gridItemNo">
+    <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${i + currentPage * gridItemNo}`">
       <DeviceSuspenseItem
         v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
         :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" />
