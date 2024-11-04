@@ -2,8 +2,12 @@
 import { categoryService } from '~/services';
 
 const route = useRoute();
-const categoryId = route.query.categoryId ? Number.parseInt(route.query.categoryId) : null;
-const categoryName = categoryId !== null ? (await $fetch(`/api/categories/${categoryId}`)).name : 'Thiết bị';
+const categoryId = computed(() => route.query.categoryId ? Number.parseInt(route.query.categoryId) : null);
+const categoryName = ref('Thiết bị');
+watch(categoryId, async () => {
+  if (categoryId.value === null) return;
+  categoryName.value = (await $fetch(`/api/categories/${categoryId.value}`)).name;
+});
 
 const allCategories = await categoryService.getCategories();
 </script>
