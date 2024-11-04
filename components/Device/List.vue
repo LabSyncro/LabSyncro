@@ -47,11 +47,15 @@ async function fetchItem(offset: number) {
   };
 }
 
+const listDirection = ref(null);
+
 function pageLeft() {
+  listDirection.value = 'slide-right';
   currentPage.value = (currentPage.value - 1 + totalPages.value) % totalPages.value;
 }
 
 function pageRight() {
+  listDirection.value = 'slide-left';
   currentPage.value = (currentPage.value + 1) % totalPages.value;
 }
 </script>
@@ -70,13 +74,13 @@ function pageRight() {
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
-      <div class="flex justify-around gap-2 min-h-64">
-        <div v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo">
-          <DeviceSuspenseItem
-            v-if="i + currentPage * itemNo < totalItems" :width="`${ITEM_WIDTH}px`"
-            :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
-        </div>
-      </div>
+      <TransitionGroup class="flex justify-around gap-2 min-h-64" :name="listDirection" tag="div">
+          <div v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo">
+            <DeviceSuspenseItem
+              v-if="i + currentPage * itemNo < totalItems" :width="`${ITEM_WIDTH}px`"
+              :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
+          </div>
+      </TransitionGroup>
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
         @click="pageRight">
@@ -85,3 +89,57 @@ function pageRight() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(200px);
+}
+
+.slide-left-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-left-enter-to {
+  opacity: 1;
+}
+
+.slide-left-leave-from {
+  opacity: 1;
+}
+
+.slide-left-leave-active {
+  transition: all 0.1s ease;
+}
+
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+
+.slide-right-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-right-enter-to {
+  opacity: 1;
+}
+
+.slide-right-leave-from {
+  opacity: 1;
+}
+
+.slide-right-leave-active {
+  transition: all 0.1s ease;
+}
+
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(200px);
+}
+</style>
