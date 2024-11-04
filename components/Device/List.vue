@@ -67,7 +67,7 @@ function pageRight() {
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
-      <div class="flex justify-around gap-2">
+      <div class="flex justify-around gap-2 min-h-64">
         <DeviceItem
           v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo"
           :class="`w-[${ITEM_WIDTH}px]`" :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
