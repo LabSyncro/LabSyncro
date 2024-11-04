@@ -17,4 +17,7 @@ export const deviceKindService = {
       },
     })).totalPages;
   },
+  async getById(deviceKindId: number): Promise<Record<string, string>> {
+    return await $fetch(`/api/device_kinds/${deviceKindId}`);
+  }
 };
