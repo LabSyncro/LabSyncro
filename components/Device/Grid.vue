@@ -74,6 +74,16 @@ function setPage(pageNo: number) {
       <button class="px-2 py-1 rounded-tl-md rounded-bl-md border-[1px] border-gray-100">
         <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-left" />
       </button>
+      <button
+        v-if="currentPageGroup !== 0" class="text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100"
+        @click="setPage(0)">
+        1
+      </button>
+      <div
+        v-if="currentPageGroup !== 0"
+        class="flex justify-center items-center text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100">
+        ...
+      </div>
       <div v-for="i in [...Array(numberOfPagesShown).keys()]" :key="currentPageGroup * numberOfPagesShown + i">
         <button
           v-if="currentPageGroup * numberOfPagesShown + i < totalPages"
