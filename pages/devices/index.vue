@@ -45,10 +45,11 @@ const allCategories = await categoryService.getCategories();
             </NuxtLink>
           </div>
         </div>
-        <div class="flex-1 bg-white p-8">
-          <h2 class="text-2xl">
+        <div class="flex-1 bg-white p-10">
+          <h2 class="text-2xl mb-8">
             {{ categoryName }}
           </h2>
+          <DeviceGrid :rows="5" />
         </div>
       </div>
     </main>
