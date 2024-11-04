@@ -41,9 +41,8 @@ export default defineEventHandler<
     const [{ quantity: totalRecords }] = await (db.sql`
       SELECT count(*) as quantity
       FROM ${'device_kinds'}
-        JOIN ${'menus'}
-        ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
       WHERE ${'menu_id'} = ${db.param(Number.parseInt(categoryId))}
+        AND EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'})
       `).run(dbPool);
     const totalPages = Math.ceil(totalRecords / length);
     const currentPage = Math.floor(offset / length);
@@ -65,7 +64,11 @@ export default defineEventHandler<
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
     `).run(dbPool);
-  const totalRecords = await db.count('device_kinds', {}).run(dbPool);
+  const [{ quantity: totalRecords }] = await (db.sql`
+      SELECT count(*) as quantity
+      FROM ${'device_kinds'}
+      WHERE EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'})
+      `).run(dbPool);
   const totalPages = Math.ceil(totalRecords / length);
   const currentPage = Math.floor(offset / length);
   return {
