@@ -23,7 +23,7 @@ const allCategories = await categoryService.getCategories();
             <p class="font-semibold">/</p>
           </BreadcrumbSeparator>
           <BreadcrumbItem>
-            <NuxtLink class="text-normal text-black" href="/devices">{{ deviceKindMeta.categoryName }}</NuxtLink>
+          <NuxtLink class="text-normal text-black" :href="`/devices?categoryId=${deviceKindMeta.categoryId}`">{{ deviceKindMeta.categoryName }}</NuxtLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator>
             <p class="font-semibold">/</p>
