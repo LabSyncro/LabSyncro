@@ -60,6 +60,17 @@ async function fetchItem(offset: number) {
 function setPage(pageNo: number) {
   currentPage.value = pageNo;
 }
+
+function pageLeft() {
+  if (currentPageGroup.value === 0) return;
+  currentPage.value = (currentPageGroup.value - 1) * numberOfPagesShown;
+}
+
+function pageRight() {
+  const oldPage = currentPage.value;
+  currentPage.value = (currentPageGroup.value + 1) * numberOfPagesShown;
+  if (currentPage.value >= totalPages.value) currentPage.value = oldPage;
+}
 </script>
 
 <template>
@@ -71,7 +82,7 @@ function setPage(pageNo: number) {
       </div>
     </div>
     <div class="flex justify-center gap-0 mt-10">
-      <button class="px-2 py-1 rounded-tl-md rounded-bl-md border-[1px] border-gray-100">
+      <button class="px-2 py-1 rounded-tl-md rounded-bl-md border-[1px] border-gray-100" @click="pageLeft">
         <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-left" />
       </button>
       <button
@@ -102,7 +113,7 @@ function setPage(pageNo: number) {
         class="text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100" @click="setPage(totalPages - 1)">
         {{ totalPages }}
       </button>
-      <button class="px-2 py-1 rounded-tr-md rounded-br-md border-[1px] border-l-[0px] border-gray-100">
+      <button class="px-2 py-1 rounded-tr-md rounded-br-md border-[1px] border-l-[0px] border-gray-100" @click="pageRight">
         <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-right" />
       </button>
     </div>
