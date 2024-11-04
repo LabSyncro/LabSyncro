@@ -8,13 +8,13 @@ export const deviceKindService = {
       },
     }));
   },
-  async getTotalPages(categoryId: number, length: number): Promise<number> {
+  async getTotalItems(categoryId: number): Promise<number> {
     return (await $fetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
         offset: 0,
-        length,
+        length: 1,
       },
     })).totalPages;
-  }
+  },
 };

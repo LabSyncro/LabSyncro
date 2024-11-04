@@ -26,9 +26,13 @@ const itemNo = computed(() => {
 });
 
 const totalPages = ref(0);
+const totalItems = ref(0);
 const currentPage = ref(0);
 
-watch([itemNo], async () => totalPages.value = await deviceKindService.getTotalPages(props.category.id, itemNo.value));
+watch([itemNo], async () => {
+  totalItems.value = await deviceKindService.getTotalItems(props.category.id);
+  totalPages.value = Math.ceil(totalItems.value / itemNo.value);
+});
 
 async function fetchItem(offset: number) {
   await nextTick();
@@ -67,9 +71,11 @@ function pageRight() {
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2 min-h-64">
-        <DeviceSuspenseItem
-          v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo"
-          :width="`${ITEM_WIDTH}px`" :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
+        <div v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo">
+          <DeviceSuspenseItem
+            v-if="i + currentPage * itemNo < totalItems" :width="`${ITEM_WIDTH}px`"
+            :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
+        </div>
       </div>
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
