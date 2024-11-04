@@ -60,32 +60,38 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                   class="border-[1px] border-gray-200" />
               </div>
             </div>
-            <div>
-              <h2 class="text-lg mb-2">{{ deviceKindMeta.name }}</h2>
-              <div class="grid grid-cols-2 mb-1">
-                <p class="text-sm font-bold text-slate-dark">Phân loại</p>
-                <p class="text-sm">{{ deviceKindMeta.categoryName }}</p>
+            <div class="min-w-[45%]">
+              <div>
+                <h2 class="text-lg mb-2">{{ deviceKindMeta.name }}</h2>
+                <div class="grid grid-cols-2 mb-1">
+                  <p class="text-sm font-bold text-slate-dark">Phân loại</p>
+                  <p class="text-sm">{{ deviceKindMeta.categoryName }}</p>
+                </div>
+                <div class="grid grid-cols-2 mb-1">
+                  <p class="text-sm font-bold text-slate-dark">Thương hiệu</p>
+                  <p class="text-sm">{{ deviceKindMeta.brand || 'Không rõ' }}</p>
+                </div>
+                <div class="mt-5 text-sm font-semibold">
+                  <span
+                    v-if="deviceKindMeta.quantity > 0"
+                    class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
+                    Hàng còn
+                  </span>
+                  <span
+                    v-else
+                    class="border-[1px] border-danger-darker bg-red-50 text-red-500 p-1.5 rounded-sm">
+                    Hàng hết
+                  </span>
+                </div>
+                <div class="mt-10">
+                  <h3 class="text-sm font-bold text-slate-dark">Mô tả thiết bị</h3>
+                  <p class="text-sm mt-2 h-[100px] md:h-[200px] overflow-auto">{{ deviceKindMeta.description }}</p>
+                </div>
               </div>
-              <div class="grid grid-cols-2 mb-1">
-                <p class="text-sm font-bold text-slate-dark">Thương hiệu</p>
-                <p class="text-sm">{{ deviceKindMeta.brand || 'Không rõ' }}</p>
-              </div>
-              <div class="mt-5 text-sm font-semibold">
-                <span
-                  v-if="deviceKindMeta.quantity > 0"
-                  class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
-                  Hàng còn
-                </span>
-                <span
-                  v-else
-                  class="border-[1px] border-danger-darker bg-red-50 text-red-500 p-1.5 rounded-sm">
-                  Hàng hết
-                </span>
-              </div>
-              <div class="mt-10">
-                <h3 class="text-sm font-bold text-slate-dark">Mô tả thiết bị</h3>
-                <p class="text-sm mt-2 line-clamp-6">{{ deviceKindMeta.description }}</p>
-              </div>
+              <button class="text-sm bg-green-500 text-white py-1.5 flex justify-center gap-2 w-[100%]">
+                <Icon aria-hidden name="i-heroicons-heart" class="text-xl" />
+                <span>Thêm vào yêu thích</span>
+              </button>
             </div>
           </div>
         </div>
