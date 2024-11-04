@@ -77,12 +77,21 @@ function setPage(pageNo: number) {
       <div v-for="i in [...Array(numberOfPagesShown).keys()]" :key="currentPageGroup * numberOfPagesShown + i">
         <button
           v-if="currentPageGroup * numberOfPagesShown + i < totalPages"
-          :class="`h-[100%] text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100 ${ currentPageGroup * numberOfPagesShown + i === currentPage ? 'bg-green-500 text-white' : ''}`"
-          @click="setPage(currentPageGroup * numberOfPagesShown + i)"
-        >
+          :class="`h-[100%] text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100 ${currentPageGroup * numberOfPagesShown + i === currentPage ? 'bg-green-500 text-white' : ''}`"
+          @click="setPage(currentPageGroup * numberOfPagesShown + i)">
           {{ currentPageGroup * numberOfPagesShown + i + 1 }}
         </button>
       </div>
+      <div
+        v-if="(currentPageGroup + 1) * numberOfPagesShown < totalPages"
+        class="flex justify-center items-center text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100">
+        ...
+      </div>
+      <button
+        v-if="(currentPageGroup + 1) * numberOfPagesShown < totalPages"
+        class="text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100" @click="setPage(totalPages - 1)">
+        {{ totalPages }}
+      </button>
       <button class="px-2 py-1 rounded-tr-md rounded-br-md border-[1px] border-l-[0px] border-gray-100">
         <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-right" />
       </button>
