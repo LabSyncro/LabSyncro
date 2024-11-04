@@ -51,7 +51,7 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
           </div>
         </div>
         <div class="flex-1">
-          <div class="bg-white p-10 flex gap-16 lg:gap-32">
+          <section class="bg-white p-10 flex gap-16 lg:gap-32">
             <div class="w-[300px]">
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
@@ -93,7 +93,10 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 <span>Thêm vào yêu thích</span>
               </button>
             </div>
-          </div>
+          </section>
+          <section class="bg-white p-10 mt-10">
+            <h2 class="text-xl">Tồn kho thiết bị</h2>
+          </section>
         </div>
       </div>
     </main>
