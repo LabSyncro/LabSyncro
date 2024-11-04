@@ -36,6 +36,8 @@ const gridItemNo = computed(() => {
 const totalPages = ref(0);
 const totalItems = ref(0);
 const currentPage = ref(0);
+const numberOfPagesShown = 5;
+const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
 watch([gridItemNo], async () => {
   totalItems.value = await deviceKindService.getTotalItems(props.categoryId);
@@ -54,13 +56,36 @@ async function fetchItem(offset: number) {
     id: deviceKind.id,
   };
 }
+
+function setPage(pageNo: number) {
+  currentPage.value = pageNo;
+}
 </script>
 
 <template>
-  <div ref="gridRef" :class="`grid grid-cols-${cols} gap-4`" role="grid">
-    <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${i + currentPage * gridItemNo}`">
-      <DeviceSuspenseItem v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
-        :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" />
+  <div>
+    <div ref="gridRef" :class="`grid grid-cols-${cols} gap-4`" role="grid">
+      <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${i + currentPage * gridItemNo}`">
+        <DeviceSuspenseItem v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
+          :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" />
+      </div>
+    </div>
+    <div class="flex justify-center gap-0 mt-10">
+      <button class="px-2 py-1 rounded-tl-md rounded-bl-md border-[1px] border-gray-100">
+        <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-left" />
+      </button>
+      <div v-for="i in [...Array(numberOfPagesShown).keys()]" :key="currentPageGroup * numberOfPagesShown + i">
+        <button
+          v-if="currentPageGroup * numberOfPagesShown + i < totalPages"
+          :class="`h-[100%] text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100 ${ currentPageGroup * numberOfPagesShown + i === currentPage ? 'bg-green-500 text-white' : ''}`"
+          @click="setPage(currentPageGroup * numberOfPagesShown + i)"
+        >
+          {{ currentPageGroup * numberOfPagesShown + i + 1 }}
+        </button>
+      </div>
+      <button class="px-2 py-1 rounded-tr-md rounded-br-md border-[1px] border-l-[0px] border-gray-100">
+        <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-right" />
+      </button>
     </div>
   </div>
 </template>
