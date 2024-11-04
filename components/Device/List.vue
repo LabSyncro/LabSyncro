@@ -24,16 +24,15 @@ const itemNo = computed(() => {
   }
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
+
 const totalPages = ref(0);
 const currentPage = ref(0);
 
 watch([itemNo], async () => totalPages.value = await deviceKindService.getTotalPages(props.category.id, itemNo.value));
 
 async function fetchItem(offset: number) {
-  if (itemNo.value === null) {
-    return null;
-  }
-  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, currentPage.value * itemNo.value + offset, 1);
+  await nextTick();
+  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, offset, 1);
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
@@ -63,7 +62,8 @@ function pageRight() {
     </div>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        :class="`opacity-0 group-hover:${currentPage === 0 ? 'opacity-0' : 'opacity-100'} bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark`"
+        v-if="currentPage !== 0"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
