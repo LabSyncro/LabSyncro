@@ -3,9 +3,12 @@ const animate = require('tailwindcss-animate');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
-  safelist: ['dark'],
+  safelist: [
+    'dark',
+    'grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4', 'grid-cols-5',
+  ],
   prefix: '',
-  
+
   theme: {
     fontSize: {
       'ss': '10px',
@@ -86,7 +89,7 @@ module.exports = {
         },
       },
       borderRadius: {
-      	xl: 'calc(var(--radius) + 4px)',
+        xl: 'calc(var(--radius) + 4px)',
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
