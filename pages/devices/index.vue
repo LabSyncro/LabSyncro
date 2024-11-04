@@ -34,14 +34,12 @@ const allCategories = await categoryService.getCategories();
         <div>
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
-            <NuxtLink
-              v-for="category in allCategories"
-              :key="category.id"
+            <NuxtLink v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === category.id ? 'bg-slate-light' : 'bg-white'}`"
-              :href="`/devices?categoryId=${category.id}`"
-            >
+              :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
-              <Icon v-if="categoryId === category.id" aria-hidden name="i-heroicons-check" class="absolute top-1.5 right-2" />
+              <Icon v-if="categoryId === category.id" aria-hidden name="i-heroicons-check"
+                class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
         </div>
@@ -49,7 +47,7 @@ const allCategories = await categoryService.getCategories();
           <h2 class="text-2xl mb-8">
             {{ categoryName }}
           </h2>
-          <DeviceGrid :rows="5" />
+          <DeviceGrid :rows="5" :category-id="categoryId" />
         </div>
       </div>
     </main>
