@@ -26,6 +26,7 @@ const itemNo = computed(() => {
 });
 const totalPages = ref(0);
 const currentPage = ref(0);
+
 watch([itemNo], async () => totalPages.value = await deviceKindService.getTotalPages(props.category.id, itemNo.value));
 
 async function fetchItem(offset: number) {
@@ -68,8 +69,8 @@ function pageRight() {
       </button>
       <div class="flex justify-around gap-2">
         <DeviceItem
-          v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo" :class="`w-[${ITEM_WIDTH}px]`"
-          :fetchFn="() => fetchItem(i + currentPage * itemNo)" />
+          v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo"
+          :class="`w-[${ITEM_WIDTH}px]`" :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
       </div>
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
