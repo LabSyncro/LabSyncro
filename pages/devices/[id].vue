@@ -1,4 +1,7 @@
-<script>
+<script setup>
+const route = useRoute();
+
+const deviceKindId = computed(() => route.params.id);
 </script>
 
 <template>
