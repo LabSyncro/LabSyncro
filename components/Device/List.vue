@@ -62,15 +62,14 @@ function pageRight() {
     </div>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        v-if="currentPage !== 0"
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <div class="flex justify-around gap-2 min-h-64">
-        <DeviceItem
+        <DeviceSuspenseItem
           v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo"
-          :class="`w-[${ITEM_WIDTH}px]`" :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
+          :width="`${ITEM_WIDTH}px`" :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
       </div>
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
