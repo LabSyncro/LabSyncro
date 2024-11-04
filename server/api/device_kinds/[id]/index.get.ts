@@ -15,6 +15,7 @@ const DeviceKindOutputDto = Type.Object({
   quantity: Type.String(),
   categoryId: Type.String(),
   categoryName: Type.String(),
+  description: Type.String(),
 });
 
 type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
@@ -25,7 +26,7 @@ export default defineEventHandler<
   const deviceKindId = Number.parseInt(getRouterParam(event, 'id')!);
   try {
     const [deviceKind] = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'menus'}.${'id'} as category_id, ${'menus'}.${'name'} as category_name
+      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'menus'}.${'id'} as category_id, ${'menus'}.${'name'} as category_name
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
@@ -46,6 +47,7 @@ export default defineEventHandler<
       quantity: deviceKind.quantity,
       categoryId: deviceKind.category_id,
       categoryName: deviceKind.category_name,
+      description: deviceKind.description,
     };
   } catch {
     throw createError({
