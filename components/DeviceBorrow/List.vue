@@ -24,25 +24,24 @@ const itemNo = computed(() => {
   }
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
-const items = ref([]);
 const totalPages = ref(0);
 const currentPage = ref(0);
-watch([itemNo, currentPage], async () => {
-  if (!itemNo.value) {
-    return [];
+watch([itemNo], async () => totalPages.value = await deviceKindService.getTotalPages(props.category.id, itemNo.value));
+
+async function fetchItem(offset: number) {
+  if (itemNo.value === null) {
+    return null;
   }
-  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, currentPage.value * itemNo.value, itemNo.value);
-  totalPages.value = res.totalPages;
-  currentPage.value = res.currentPage;
-  items.value = res.deviceKinds.map((deviceKind) => ({
+  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, currentPage.value * itemNo.value + offset, 1);
+  return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
     title: deviceKind.name,
     quantity: deviceKind.quantity,
     unit: deviceKind.unit,
     id: deviceKind.id,
-  }));
-});
+  };
+}
 
 function pageLeft() {
   currentPage.value = (currentPage.value - 1 + totalPages.value) % totalPages.value;
@@ -69,9 +68,8 @@ function pageRight() {
       </button>
       <div class="flex justify-around gap-2">
         <DeviceItem
-          v-for="item in items" :key="item.id" :class="`w-[${ITEM_WIDTH}px]`"
-          :thumbnail-url="item.thumbnailUrl" :manufacturer="item.manufacturer" :title="item.title"
-          :quantity="item.quantity" :unit="item.unit" />
+          v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo" :class="`w-[${ITEM_WIDTH}px]`"
+          :fetchFn="() => fetchItem(i + currentPage * itemNo)" />
       </div>
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"

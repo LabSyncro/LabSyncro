@@ -8,4 +8,13 @@ export const deviceKindService = {
       },
     }));
   },
+  async getTotalPages(categoryId: number, length: number): Promise<number> {
+    return (await $fetch('/api/device_kinds', {
+      query: {
+        category_id: categoryId,
+        offset: 0,
+        length,
+      },
+    })).totalPages;
+  }
 };
