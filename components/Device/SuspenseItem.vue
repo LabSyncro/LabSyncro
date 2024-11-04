@@ -16,8 +16,8 @@ const props = defineProps<{
     <DeviceItem :fetch-fn="props.fetchFn" :class="`w-[${props.width}]`" />
     <template #fallback>
       <div :class="`cursor-pointer border-[1px] hover:border-[1px] hover:border-tertiary-dark w-[${props.width}] h-60`">
-        <div class="overflow-hidden" />
-        <div class="p-2 pt-5" />
+        <div class="animate-pulse w-[100%] h-32 overflow-hidden bg-gray-100" />
+        <div class="p-2 pt-5"/>
       </div>
     </template>
   </Suspense>
