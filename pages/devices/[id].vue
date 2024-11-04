@@ -52,7 +52,7 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
         </div>
         <div class="flex-1">
           <div class="bg-white p-10 flex gap-16 lg:gap-32">
-            <div class="max-w-[45%]">
+            <div class="w-[300px]">
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
                 <NuxtImg
@@ -60,7 +60,7 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                   class="border-[1px] border-gray-200" />
               </div>
             </div>
-            <div class="min-w-[45%]">
+            <div class="flex-1">
               <div>
                 <h2 class="text-lg mb-2">{{ deviceKindMeta.name }}</h2>
                 <div class="grid grid-cols-2 mb-1">
@@ -85,7 +85,7 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 </div>
                 <div class="mt-10">
                   <h3 class="text-sm font-bold text-slate-dark">Mô tả thiết bị</h3>
-                  <p class="text-sm mt-2 h-[100px] md:h-[200px] overflow-auto">{{ deviceKindMeta.description }}</p>
+                  <p class="text-sm mt-2 h-[170px] overflow-auto">{{ deviceKindMeta.description }}</p>
                 </div>
               </div>
               <button class="text-sm bg-green-500 text-white py-1.5 flex justify-center gap-2 w-[100%]">
