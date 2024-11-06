@@ -5,6 +5,8 @@ const props = defineProps<{
     branch: string;
     timetable: Record<string, string[]>
     adminId: string;
+    adminName: string;
+    adminTel: string;
     name: string;
     room: string;
   };
@@ -33,6 +35,9 @@ function toggleDropdown() {
         </div>
       </div>
       <p class="text-sm font-bold text-slate-dark my-2">LIÊN HỆ:</p>
+      <p class="text-sm font-bold">{{ lab.adminName }}</p>
+      <p class="text-sm">Email: {{ lab.adminEmail }}</p>
+      <p class="text-sm">SĐT: {{ lab.adminTel }}</p>
     </div>
   </div>
 </template>
