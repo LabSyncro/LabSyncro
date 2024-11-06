@@ -112,7 +112,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
                   </span>
                   {{ quantity }} món
                 </p>
-                <p v-else>Hết hàng</p>
+                <p v-else class="text-slate-darker">Hết hàng</p>
               </div>
             </div>
           </section>
