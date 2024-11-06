@@ -16,5 +16,5 @@ export default defineEventHandler<
     FROM ${'device_kinds'}
     WHERE ${'device_kinds'}.${'id'} = ${db.param(kindId)}
   `.run(dbPool));
-  return quantity;
+  return quantity.available_quantity;
 });

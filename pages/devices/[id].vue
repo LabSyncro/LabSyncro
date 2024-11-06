@@ -41,12 +41,12 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
-v-for="category in allCategories" :key="category.id"
+              v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${Number.parseInt(deviceKindMeta.categoryId) === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
               <Icon
-v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
+                v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -103,10 +103,9 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 <p>Phòng thí nghiệm</p>
                 <p>Hàng còn</p>
               </div>
-              <div class="grid grid-cols-[1fr_5fr_1fr] p-2.5 border-top-[1px] border-gray-100">
-                <p>Cơ sở</p>
-                <p>Phòng thí nghiệm</p>
-                <p>Hàng còn</p>
+              <div v-for="[location, quantity] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[1fr_5fr_1fr] p-2.5 border-top-[1px] border-gray-100">
+                <p></p>
+                <p>{{ location }}</p>
               </div>
             </div>
           </section>
