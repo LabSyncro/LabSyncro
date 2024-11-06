@@ -22,6 +22,10 @@ const curFaculty = computed(() => {
   return allFaculties[index];
 });
 
+const curBranches = ref([]);
+watch(curFaculty, () => {
+  
+});
 </script>
 
 <template>
