@@ -7,7 +7,7 @@ const categoryName = ref('Thiết bị');
 watch(categoryId, async () => {
   if (categoryId.value === null) return;
   categoryName.value = (await $fetch(`/api/categories/${categoryId.value}`)).name;
-});
+}, { immediate: true });
 
 const allCategories = await categoryService.getCategories();
 </script>
