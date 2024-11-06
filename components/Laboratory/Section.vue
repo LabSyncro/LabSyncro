@@ -61,14 +61,7 @@ watch(curFaculty, async () => {
             <div v-for="branch, index in curBranches" :key="index" class="mt-6 mb-10">
               <p class="text-normal font-bold text-slate-dark">{{ branch.name }}</p>
               <div class="grid grid-cols-4 gap-5 mt-2.5">
-                <div v-for="lab in branch.labs" :key="lab.name">
-                  <button class="relative text-left text-normal p-2.5 py-3 border-[1px] w-[100%] shadow-sm">
-                    <p class="line-clamp-1">{{ lab.name }}</p>
-                    <Icon
-                      aria-hidden class="absolute top-4 right-2"
-                      name="i-heroicons-chevron-down" />
-                  </button>
-                </div>
+                <LaboratoryDropdown v-for="lab in branch.labs" :key="lab.name" :lab="lab" />
               </div>
             </div>
           </div>
