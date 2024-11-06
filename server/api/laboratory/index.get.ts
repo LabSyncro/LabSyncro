@@ -24,10 +24,10 @@ export default defineEventHandler<
 >(async (event) => {
   const { faculty } = getQuery(event);
   const labs = (await db.sql`
-    SELECT DISTINCT ${'labs'}.${'branch'}, ${'labs'}.${'room'}, ${'labs'}.${'timetable'}, ${'labs'}.${'admin_id'}
+    SELECT DISTINCT ${'labs'}.${'branch'}, ${'labs'}.${'room'}, ${'labs'}.${'timetable'}, ${'labs'}.${'admin_id'}, ${'labs'}.${'name'}
     FROM ${'labs'}
     WHERE ${'labs'}.${'faculty'} = ${db.param(faculty)}
-  `.run(dbPool)).map(({ branch, room, timetable, admin_id }) => ({ branch, room, timetable: mapValues(timetable, (time) => [time]), adminId: admin_id }));
+  `.run(dbPool)).map(({ branch, room, timetable, admin_id, name }) => ({ branch, room, timetable: mapValues(timetable, (time) => [time]), adminId: admin_id, name }));
   const _branches = groupBy(labs, (lab) => lab.branch);
   const branches = [];
   for (const key in _branches) {

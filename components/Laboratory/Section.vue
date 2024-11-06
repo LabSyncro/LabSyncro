@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { facultyService } from '@/services';
+import { facultyService, laboratoryService } from '@/services';
 const allFaculties = await facultyService.getAllFaculties();
 const selectedFacultyId = ref(0);
 const hoveredFacultyId = ref(null);
@@ -23,9 +23,14 @@ const curFaculty = computed(() => {
 });
 
 const curBranches = ref([]);
-watch(curFaculty, () => {
-  
-});
+watch(curFaculty, async () => {
+  if (curFaculty.value === null) {
+    curBranches.value = [];
+    return;
+  }
+  curBranches.value = await laboratoryService.getAllLabsByFaculty(curFaculty.value.name);
+  console.log(curBranches.value);
+}, { immediate: true });
 </script>
 
 <template>
@@ -51,7 +56,14 @@ watch(curFaculty, () => {
             <Icon aria-hidden class="ml-5" name="i-heroicons-chevron-double-right" />
           </h3>
           <div>
-            <p class="text-normal font-bold text-slate-dark">Cơ sở 1: Lý Thường Kiệt</p>
+            <div v-for="branch, index in curBranches" :key="index" class="mt-6 mb-10">
+              <p class="text-normal font-bold text-slate-dark">{{ branch.name }}</p>
+              <div class="grid grid-cols-4 gap-5">
+                <div v-for="lab in branch.labs" :key="lab.name">
+                  <button>{{ lab.name }}</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
