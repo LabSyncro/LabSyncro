@@ -37,11 +37,13 @@ watch(curFaculty, async () => {
   <section class="bg-gray-100 py-16">
     <div class="flex">
       <div class="relative bg-white py-5 pl-12 pr-2 lg:pl-24 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
-        <a v-for="(faculty, index) in allFaculties" :key="index"
+        <a
+v-for="(faculty, index) in allFaculties" :key="index"
           class="relative inline-block text-sm my-2 cursor-pointer rounded-md hover:bg-secondary-dark p-1 pl-2 pr-8"
           @mouseenter="onHoveredFaculty(index)" @click="onSelectedFaculty(index)" @mouseout="onMouseoutFaculty(index)">
           {{ faculty.name }}
-          <Icon v-if="index === selectedFacultyId" aria-hidden class="absolute top-[8px] right-[6px]"
+          <Icon
+v-if="index === selectedFacultyId" aria-hidden class="absolute top-[8px] right-[6px]"
             name="i-heroicons-check" />
         </a>
       </div>
@@ -58,9 +60,14 @@ watch(curFaculty, async () => {
           <div>
             <div v-for="branch, index in curBranches" :key="index" class="mt-6 mb-10">
               <p class="text-normal font-bold text-slate-dark">{{ branch.name }}</p>
-              <div class="grid grid-cols-4 gap-5">
+              <div class="grid grid-cols-4 gap-5 mt-2.5">
                 <div v-for="lab in branch.labs" :key="lab.name">
-                  <button>{{ lab.name }}</button>
+                  <button class="relative text-left text-normal p-2.5 py-3 border-[1px] w-[100%] shadow-sm">
+                    <p class="line-clamp-1">{{ lab.name }}</p>
+                    <Icon
+                      aria-hidden class="absolute top-4 right-2"
+                      name="i-heroicons-chevron-down" />
+                  </button>
                 </div>
               </div>
             </div>
