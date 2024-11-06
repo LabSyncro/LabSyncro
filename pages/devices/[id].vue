@@ -96,6 +96,18 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
           </section>
           <section class="bg-white p-10 mt-10">
             <h2 class="text-xl">Tồn kho thiết bị</h2>
+            <div class="mt-10">
+              <div class="grid grid-cols-[1fr_5fr_1fr] bg-gray-100 font-bold p-2.5">
+                <p>Cơ sở</p>
+                <p>Phòng thí nghiệm</p>
+                <p>Hàng còn</p>
+              </div>
+              <div class="grid grid-cols-[1fr_5fr_1fr] p-2.5 border-top-[1px] border-gray-100">
+                <p>Cơ sở</p>
+                <p>Phòng thí nghiệm</p>
+                <p>Hàng còn</p>
+              </div>
+            </div>
           </section>
         </div>
       </div>
