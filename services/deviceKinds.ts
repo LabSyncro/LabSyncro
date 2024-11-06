@@ -19,5 +19,8 @@ export const deviceKindService = {
   },
   async getById(deviceKindId: number): Promise<Record<string, string>> {
     return await $fetch(`/api/device_kinds/${deviceKindId}`);
+  },
+  async getQuantityById(deviceKindId: number): Promise<Record<string, number>> {
+    return await $fetch('/api/device_kinds/quantity', { query: { kindId: deviceKindId } });
   }
 };
