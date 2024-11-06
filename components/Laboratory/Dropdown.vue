@@ -10,11 +10,15 @@ const props = defineProps<{
   };
 }>();
 const isDropdownActive = ref(false);
+
+function toggleDropdown() {
+  isDropdownActive.value = !isDropdownActive.value;
+}
 </script>
 
 <template>
   <div>
-    <button class="relative text-left text-normal p-2.5 py-3 border-[1px] w-[100%] shadow-sm">
+    <button class="relative text-left text-normal p-2.5 py-3 border-[1px] w-[100%] shadow-sm" @click="toggleDropdown">
       <p class="line-clamp-1">{{ props.lab.name }}</p>
       <Icon
         aria-hidden class="absolute top-4 right-2"
