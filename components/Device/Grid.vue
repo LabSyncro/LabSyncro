@@ -25,7 +25,7 @@ const cols = computed(() => {
   if (gridWidth.value < 50) {
     return 0;
   }
-  return Math.floor((gridWidth.value - 75) / (ITEM_WIDTH + 10));
+  return Math.min(Math.floor((gridWidth.value - 75) / (ITEM_WIDTH + 10)), 5);
 });
 const gridItemNo = computed(() => {
   if (!cols.value) {
