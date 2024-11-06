@@ -7,6 +7,7 @@ const deviceKindId = computed(() => route.params.id);
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
+const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.value);
 </script>
 
 <template>

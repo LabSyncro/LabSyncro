@@ -10,7 +10,7 @@ export default defineEventHandler<
   { query: { kindId: string } },
   Promise<DeviceQuantityOutputDto>
 >(async (event) => {
-  const kindId = getQuery(event);
+  const { kindId } = getQuery(event);
   const [quantity] = (await db.sql`
     SELECT DISTINCT ${'device_kinds'}.${'available_quantity'}
     FROM ${'device_kinds'}
