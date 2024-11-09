@@ -10,9 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint . --ignore-pattern \"zapatos/\"",
     "lint:fix": "eslint . --ignore-pattern \"zapatos/\" --fix",
-    "db:create": "dbmate create",
-    "db:schema": "dotenv -e .env -- zapatos",
-    "db:migrate": "dbmate migrate"
+    "db:schema": "dotenv -e .env -- zapatos"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.33.11",
@@ -46,7 +44,6 @@
     "@types/selenium-webdriver": "^4.1.26",
     "autoprefixer": "^10.4.20",
     "cheerio": "^1.0.0",
-    "dbmate": "^2.21.0",
     "dotenv-cli": "^7.4.2",
     "eslint": "^9.9.0",
     "folder-hash": "^4.0.4",

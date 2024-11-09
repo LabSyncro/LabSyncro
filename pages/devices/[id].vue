@@ -104,7 +104,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
                 <p>Hàng còn</p>
               </div>
               <div v-for="[location, quantity] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[1fr_5fr_1fr] p-2.5 border-top-[1px] border-gray-100">
-                <p></p>
+                <p/>
                 <p>{{ location }}</p>
                 <p v-if="quantity > 0" class="relative text-green-500 pl-8">
                   <span class="absolute left-0 top-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center">
