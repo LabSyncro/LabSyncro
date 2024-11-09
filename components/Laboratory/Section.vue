@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { facultyService } from '@/services';
+import { facultyService, laboratoryService } from '@/services';
 const allFaculties = await facultyService.getAllFaculties();
 const selectedFacultyId = ref(0);
 const hoveredFacultyId = ref(null);
@@ -22,19 +22,28 @@ const curFaculty = computed(() => {
   return allFaculties[index];
 });
 
+const curBranches = ref([]);
+watch(curFaculty, async () => {
+  if (curFaculty.value === null) {
+    curBranches.value = [];
+    return;
+  }
+  curBranches.value = await laboratoryService.getAllLabsByFaculty(curFaculty.value.name);
+  console.log(curBranches.value);
+}, { immediate: true });
 </script>
 
 <template>
   <section class="bg-gray-100 py-16">
     <div class="flex">
-      <div class="relative bg-white py-5 pl-12 pr-2 lg:pl-24 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
+      <div class="relative bg-white py-5 pl-12 pr-2 flex flex-col shadow-[0_0_24px_rgba(0,0,0,0.2)]">
         <a
-v-for="(faculty, index) in allFaculties" :key="index"
-          class="relative inline-block text-sm my-2 cursor-pointer rounded-md hover:bg-secondary-dark p-1 pl-2 pr-8"
+          v-for="(faculty, index) in allFaculties" :key="index"
+          class="relative inline-block text-sm my-2 cursor-pointer rounded-md hover:bg-secondary-dark p-1 pl-2 pr-16"
           @mouseenter="onHoveredFaculty(index)" @click="onSelectedFaculty(index)" @mouseout="onMouseoutFaculty(index)">
           {{ faculty.name }}
           <Icon
-v-if="index === selectedFacultyId" aria-hidden class="absolute top-[8px] right-[6px]"
+            v-if="index === selectedFacultyId" aria-hidden class="absolute top-[8px] right-[6px]"
             name="i-heroicons-check" />
         </a>
       </div>
@@ -49,7 +58,12 @@ v-if="index === selectedFacultyId" aria-hidden class="absolute top-[8px] right-[
             <Icon aria-hidden class="ml-5" name="i-heroicons-chevron-double-right" />
           </h3>
           <div>
-            <p class="text-normal font-bold text-slate-dark">Cơ sở 1: Lý Thường Kiệt</p>
+            <div v-for="branch, index in curBranches" :key="index" class="mt-6 mb-10">
+              <p class="text-normal font-bold text-slate-dark">{{ branch.name }}</p>
+              <div class="grid grid-cols-4 gap-5 mt-2.5">
+                <LaboratoryDropdown v-for="lab in branch.labs" :key="lab.name" :lab="lab" />
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ const deviceKindId = computed(() => route.params.id);
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
+const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.value);
 </script>
 
 <template>
@@ -23,7 +24,7 @@ const allCategories = await categoryService.getCategories();
             <p class="font-semibold">/</p>
           </BreadcrumbSeparator>
           <BreadcrumbItem>
-            <NuxtLink class="text-normal text-black" href="/devices">{{ deviceKindMeta.categoryName }}</NuxtLink>
+          <NuxtLink class="text-normal text-black" :href="`/devices?categoryId=${deviceKindMeta.categoryId}`">{{ deviceKindMeta.categoryName }}</NuxtLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator>
             <p class="font-semibold">/</p>
@@ -40,12 +41,12 @@ const allCategories = await categoryService.getCategories();
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
-v-for="category in allCategories" :key="category.id"
+              v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${Number.parseInt(deviceKindMeta.categoryId) === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
               <Icon
-v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
+                v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -96,6 +97,24 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
           </section>
           <section class="bg-white p-10 mt-10">
             <h2 class="text-xl">Tồn kho thiết bị</h2>
+            <div class="mt-10">
+              <div class="grid grid-cols-[1fr_5fr_1fr] bg-gray-100 font-bold p-2.5">
+                <p>Cơ sở</p>
+                <p>Phòng thí nghiệm</p>
+                <p>Hàng còn</p>
+              </div>
+              <div v-for="[location, quantity] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[1fr_5fr_1fr] p-2.5 border-top-[1px] border-gray-100">
+                <p></p>
+                <p>{{ location }}</p>
+                <p v-if="quantity > 0" class="relative text-green-500 pl-8">
+                  <span class="absolute left-0 top-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center">
+                    <Icon aria-hidden name="i-heroicons-check" class="text-white text-sm font-bold" />
+                  </span>
+                  {{ quantity }} món
+                </p>
+                <p v-else class="text-slate-darker">Hết hàng</p>
+              </div>
+            </div>
           </section>
         </div>
       </div>
