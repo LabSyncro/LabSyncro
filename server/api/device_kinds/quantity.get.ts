@@ -30,5 +30,5 @@ export default defineEventHandler<
     WHERE ${'device_kinds'}.${'id'} = ${db.param(kindId)}
     GROUP BY ${'device_kinds'}.${'id'}
   `.run(dbPool));
-  return quantity.json_object_agg;
+  return quantity.jsonb_object_agg;
 });
