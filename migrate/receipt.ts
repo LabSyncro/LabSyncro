@@ -5,7 +5,6 @@ configEnv();
 
 // Types
 type ReturnProgress = 'on_time' | 'late';
-type DeviceQuality = 'broken' | 'lost' | 'needs_fixing' | 'healthy';
 
 interface DeviceKind {
   id: number;
@@ -30,7 +29,6 @@ interface Receipt {
   device_kind_id: number;
   lab_id: string;
   progress: ReturnProgress | null;
-  status: DeviceQuality | null;
 }
 
 interface LabAllocation {
@@ -103,7 +101,6 @@ const generateReceipt = (
   const isReturned = Math.random() > 0.3;
   let returnedAt = null;
   let progress: ReturnProgress | null = null;
-  let status: DeviceQuality | null = null;
 
   if (isReturned) {
     const maxReturnDelay = 5;
@@ -112,13 +109,6 @@ const generateReceipt = (
     returnedAt = new Date(expectedReturnedAt);
     returnedAt.setDate(expectedReturnedAt.getDate() + returnDelay);
     progress = returnedAt > expectedReturnedAt ? 'late' : 'on_time';
-    const statuses: DeviceQuality[] = [
-      'broken',
-      'lost',
-      'needs_fixing',
-      'healthy',
-    ];
-    status = statuses[Math.floor(Math.random() * statuses.length)];
   }
 
   const deviceKindId =
@@ -147,7 +137,6 @@ const generateReceipt = (
     device_kind_id: deviceKindId,
     lab_id: allocation.labId,
     progress,
-    status,
   }));
 };
 
@@ -237,7 +226,6 @@ const insertReceiptBatch = async (
       receipt.device_kind_id,
       receipt.lab_id,
       receipt.progress || 'on_time',
-      receipt.status,
     );
   });
 
