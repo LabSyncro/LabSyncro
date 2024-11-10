@@ -29,7 +29,6 @@ watch(curFaculty, async () => {
     return;
   }
   curBranches.value = await laboratoryService.getAllLabsByFaculty(curFaculty.value.name);
-  console.log(curBranches.value);
 }, { immediate: true });
 </script>
 
