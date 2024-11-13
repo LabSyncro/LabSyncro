@@ -31,10 +31,10 @@ const rows = computed(() => {
     return null;
   }
   switch (cols.value) {
-    case 1: return 20;
-    case 2: return 15;
-    case 3: return 10;
-    default: return 5;
+  case 1: return 20;
+  case 2: return 15;
+  case 3: return 10;
+  default: return 5;
   }
 });
 const gridItemNo = computed(() => {
