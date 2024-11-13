@@ -9,11 +9,5 @@
    <div>
       <DeviceBorrowSection />
     </div>
-    <div>
-      <LaboratorySection />
-    </div>
-    <div>
-      <TechnicalDocumentSection />
-    </div>
   </div>
 </template>
