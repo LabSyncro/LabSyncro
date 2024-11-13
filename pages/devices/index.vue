@@ -31,7 +31,7 @@ const allCategories = await categoryService.getCategories();
     </Breadcrumb>
     <main class="my-10">
       <div class="flex gap-16">
-        <div>
+        <div class="hidden md:block">
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
@@ -49,7 +49,7 @@ const allCategories = await categoryService.getCategories();
           <h2 class="text-2xl mb-8">
             {{ categoryName }}
           </h2>
-          <DeviceGrid :rows="5" :category-id="categoryId" />
+          <DeviceGrid :category-id="categoryId" />
         </div>
       </div>
     </main>
