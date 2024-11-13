@@ -31,10 +31,10 @@ const rows = computed(() => {
     return null;
   }
   switch (cols.value) {
-  case 1: return 20;
-  case 2: return 15;
-  case 3: return 10;
-  default: return 5;
+    case 1: return 20;
+    case 2: return 15;
+    case 3: return 10;
+    default: return 5;
   }
 });
 const gridItemNo = computed(() => {
@@ -67,7 +67,9 @@ async function fetchItem(offset: number) {
   };
 }
 
+const top = useTemplateRef('top');
 function setPage(pageNo: number) {
+  top.value.scrollIntoView();
   currentPage.value = pageNo;
 }
 
@@ -85,6 +87,7 @@ function pageRight() {
 
 <template>
   <div>
+    <span ref="top" />
     <div ref="gridRef" :class="`grid grid-cols-${cols} gap-4 justify-items-center`" role="grid">
       <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${i + currentPage * gridItemNo}`">
         <DeviceSuspenseItem v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
