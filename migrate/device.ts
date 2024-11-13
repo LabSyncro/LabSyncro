@@ -2,8 +2,11 @@ import pg from 'pg';
 import fs from 'fs';
 import { from as copyFrom } from 'pg-copy-streams';
 import { config as configEnv } from 'dotenv';
-
 configEnv();
+
+interface LabQuantity {
+  [labId: string]: number;
+}
 
 async function insertMockDevicesData() {
   const { Client } = pg;
@@ -21,12 +24,9 @@ async function insertMockDevicesData() {
     arr[Math.floor(Math.random() * arr.length)];
 
   const deviceKindsResult = await dbClient.query(
-    'SELECT id, total_quantity FROM device_kinds ORDER BY id',
+    'SELECT id, total_quantity, available_quantity FROM device_kinds ORDER BY id',
   );
   const deviceKinds = deviceKindsResult.rows;
-
-  const labsResult = await dbClient.query('SELECT id FROM labs');
-  const labIds = labsResult.rows.map((row) => row.id);
 
   const deviceStatuses = [
     'available',
@@ -38,13 +38,22 @@ async function insertMockDevicesData() {
   ];
 
   const tempFilePath = 'temp_devices_data_test.csv';
-
   const fileStream = fs.createWriteStream(tempFilePath);
 
   for (const deviceKind of deviceKinds) {
-    for (let i = 0; i < deviceKind.total_quantity; i++) {
-      const row = `${deviceKind.id},${getRandomItem(labIds)},{},${getRandomItem(deviceStatuses)}\n`;
-      fileStream.write(row);
+    const labQuantities = deviceKind.available_quantity as LabQuantity;
+
+    if (!labQuantities || Object.keys(labQuantities).length === 0) {
+      console.warn(`No lab quantities found for device kind ${deviceKind.id}`);
+      continue;
+    }
+
+    // Generate devices for each lab based on its quantity
+    for (const [labId, quantity] of Object.entries(labQuantities)) {
+      for (let i = 0; i < quantity; i++) {
+        const row = `${deviceKind.id},${labId},{},${getRandomItem(deviceStatuses)}\n`;
+        fileStream.write(row);
+      }
     }
   }
 
@@ -57,14 +66,13 @@ async function insertMockDevicesData() {
 
   try {
     await dbClient.query('BEGIN');
-
     const copyStream = dbClient.query(
       copyFrom(
-        'COPY devices_test (kind, lab_id, meta, status) FROM STDIN WITH (FORMAT csv, NULL \'\\N\')',
+        'COPY devices (kind, lab_id, meta, status) FROM STDIN WITH (FORMAT csv, NULL \'\\N\')',
       ),
     );
-    const readStream = fs.createReadStream(tempFilePath);
 
+    const readStream = fs.createReadStream(tempFilePath);
     readStream.pipe(copyStream);
 
     await new Promise((resolve, reject) => {
@@ -80,7 +88,6 @@ async function insertMockDevicesData() {
     throw error;
   } finally {
     await dbClient.end();
-
     fs.unlink(tempFilePath, (err) => {
       if (err) console.error('Failed to delete temp file:', err);
     });

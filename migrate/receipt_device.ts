@@ -1,8 +1,8 @@
 import pg from 'pg';
+import fs from 'fs';
 import Cursor from 'pg-cursor';
-import { config as configEnv } from 'dotenv';
-import { Readable } from 'stream';
 import { from as copyFrom } from 'pg-copy-streams';
+import { config as configEnv } from 'dotenv';
 
 configEnv();
 
@@ -29,6 +29,7 @@ interface ReceiptDevice {
 }
 
 const RECEIPT_BATCH_SIZE = 5000;
+const TEMP_FILE_PATH = 'temp_receipt_device_data.csv';
 
 const { Pool } = pg;
 const pool = new Pool({
@@ -81,102 +82,20 @@ function determineStatus(returnedAt: Date | null): string | null {
   return 'healthy';
 }
 
-async function insertWithCopy(
-  client: pg.PoolClient,
-  receiptDevices: ReceiptDevice[],
-) {
-  // First create a temporary table
-  await client.query(`
-    CREATE TEMP TABLE temp_receipt_device (
-      receipt_id UUID,
-      device_id UUID,
-      status device_quality
-    ) ON COMMIT DROP
-  `);
+async function writeReceiptDevicesToFile(receiptDevices: ReceiptDevice[]) {
+  const fileStream = fs.createWriteStream(TEMP_FILE_PATH);
 
-  // Prepare the data as a CSV string
-  const csvData =
-    receiptDevices
-      .map((rd) => `${rd.receipt_id},${rd.device_id},${rd.status || '\\N'}`)
-      .join('\n') + '\n';
+  for (const rd of receiptDevices) {
+    const row = `${rd.receipt_id},${rd.device_id},${rd.status || '\\N'}\n`;
+    fileStream.write(row);
+  }
 
-  // Create a readable stream from the CSV data
-  const stream = new Readable({
-    read() {
-      this.push(csvData);
-      this.push(null);
-    },
-  });
-
-  // Use COPY command
-  const copyStream = client.query(
-    copyFrom(
-      'COPY temp_receipt_device (receipt_id, device_id, status) FROM STDIN WITH (FORMAT csv, NULL \'\\N\')',
-    ),
-  );
+  fileStream.end();
 
   return new Promise((resolve, reject) => {
-    // Handle errors on both streams
-    stream.on('error', (error) => {
-      console.error('Error in readable stream:', error);
-      reject(error);
-    });
-
-    copyStream.on('error', (error) => {
-      console.error('Error in copy stream:', error);
-      reject(error);
-    });
-
-    // Handle successful completion
-    copyStream.on('finish', async () => {
-      try {
-        // Insert from temp table to actual table
-        await client.query(`
-          INSERT INTO receipt_device (receipt_id, device_id, status)
-          SELECT receipt_id, device_id, status FROM temp_receipt_device
-        `);
-        resolve(true);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    // Pipe with error handling
-    stream.pipe(copyStream).on('error', (error) => {
-      console.error('Error in pipe:', error);
-      reject(error);
-    });
+    fileStream.on('finish', resolve);
+    fileStream.on('error', reject);
   });
-}
-async function insertWithBatches(
-  client: pg.PoolClient,
-  receiptDevices: ReceiptDevice[],
-) {
-  const BATCH_SIZE = 1000;
-
-  for (let i = 0; i < receiptDevices.length; i += BATCH_SIZE) {
-    const batch = receiptDevices.slice(i, i + BATCH_SIZE);
-    const values = batch
-      .map((_rd, idx) => {
-        const offset = idx * 3;
-        return `($${offset + 1}, $${offset + 2}, $${offset + 3})`;
-      })
-      .join(', ');
-
-    const params = batch.flatMap((rd) => [
-      rd.receipt_id,
-      rd.device_id,
-      rd.status,
-    ]);
-
-    const query = `
-      INSERT INTO receipt_device (receipt_id, device_id, status)
-      VALUES ${values}
-    `;
-
-    await client.query(query, params);
-    console.log(`Inserted batch of ${batch.length} records`);
-  }
 }
 
 async function processReceipts() {
@@ -186,7 +105,7 @@ async function processReceipts() {
     await client.query('BEGIN');
 
     const cursor = client.query(
-      new Cursor('SELECT * FROM receipts ORDER BY id LIMIT 1000'),
+      new Cursor('SELECT * FROM receipts ORDER BY id'),
     );
 
     let receipts: Receipt[] = [];
@@ -197,12 +116,12 @@ async function processReceipts() {
     while ((receipts = await cursor.read(RECEIPT_BATCH_SIZE)).length > 0) {
       await Promise.all(
         receipts.map(async (receipt) => {
-          if (receipt.quantity === 0) return;
+          if (Number(receipt.quantity) === 0) return;
 
           const availableDevices = await getAvailableDevicesInBatch(
-            receipt.device_kind_id,
+            Number(receipt.device_kind_id),
             receipt.lab_id,
-            receipt.quantity,
+            Number(receipt.quantity),
           );
 
           if (availableDevices.length < receipt.quantity) {
@@ -228,13 +147,23 @@ async function processReceipts() {
 
     await cursor.close();
 
-    try {
-      console.log('Attempting COPY method...');
-      await insertWithCopy(client, receiptDevices);
-    } catch (error) {
-      console.warn('COPY method failed, falling back to batch INSERT:', error);
-      await insertWithBatches(client, receiptDevices);
-    }
+    // Write data to temp file
+    await writeReceiptDevicesToFile(receiptDevices);
+
+    // Copy from temp file to database
+    const copyStream = client.query(
+      copyFrom(
+        'COPY receipt_device (receipt_id, device_id, status) FROM STDIN WITH (FORMAT csv, NULL \'\\N\')',
+      ),
+    );
+
+    const readStream = fs.createReadStream(TEMP_FILE_PATH);
+    readStream.pipe(copyStream);
+
+    await new Promise((resolve, reject) => {
+      copyStream.on('finish', resolve);
+      copyStream.on('error', reject);
+    });
 
     await client.query('COMMIT');
     console.log('Data generation completed successfully');
@@ -245,8 +174,11 @@ async function processReceipts() {
   } finally {
     client.release();
     await pool.end();
+    fs.unlink(TEMP_FILE_PATH, (err) => {
+      if (err) console.error('Failed to delete temp file:', err);
+    });
   }
 }
 
 // Run the script
-processReceipts().catch(console.error);
+processReceipts().catch((error) => console.error('Processing failed:', error));
