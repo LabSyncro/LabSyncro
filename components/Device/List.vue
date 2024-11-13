@@ -70,7 +70,7 @@ function pageRight() {
     </div>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark z-50"
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
@@ -82,7 +82,7 @@ function pageRight() {
           </div>
       </TransitionGroup>
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark z-50"
         @click="pageRight">
         <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
@@ -115,11 +115,13 @@ function pageRight() {
 .slide-left-leave-to {
   opacity: 0;
   transform: translateX(-100px);
+  position: absolute;
 }
 
 .slide-right-enter-from {
   opacity: 0;
   transform: translateX(-100px);
+  position: absolute;
 }
 
 .slide-right-enter-active {
