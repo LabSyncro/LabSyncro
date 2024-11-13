@@ -86,12 +86,12 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
                 </div>
                 <div class="mt-10">
                   <h3 class="text-sm font-bold text-slate-dark">Mô tả thiết bị</h3>
-                  <p class="text-sm mt-2 h-[170px] overflow-auto">{{ deviceKindMeta.description }}</p>
+                  <p class="text-sm mt-2 md:h-[50px] lg:h-[170px] overflow-auto">{{ deviceKindMeta.description }}</p>
                 </div>
               </div>
-              <button class="text-sm bg-green-500 text-white py-1.5 flex justify-center gap-2 w-[100%]">
+              <button class="text-sm bg-green-500 text-white py-1.5 px-1.5 flex justify-center items-center gap-2 w-[100%]">
                 <Icon aria-hidden name="i-heroicons-heart" class="text-xl" />
-                <span>Thêm vào yêu thích</span>
+                <span>Yêu thích</span>
               </button>
             </div>
           </section>
