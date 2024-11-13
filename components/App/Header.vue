@@ -8,12 +8,12 @@
         <AppLogo />
         <AppAvatar />
       </div>
-      <div class="flex gap-16 justify-between">
+      <div class="flex gap-8 justify-between">
         <div class="grow-[1] hidden md:flex items-center">
           <AppLogo />
         </div>
         <div class="flex items-stretch justify-between gap-4 grow-[3]">
-          <AppDeviceFilter class="h-11" />
+          <AppDeviceFilter class="w-[120px] sm:w-[180px] h-11" />
           <AppSearchBox class="flex-1" />
           <AppQrButton />
         </div>
