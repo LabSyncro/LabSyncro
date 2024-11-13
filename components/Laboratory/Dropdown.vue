@@ -11,7 +11,8 @@ const props = defineProps<{
     room: string;
   };
 }>();
-const isDropdownActive = ref(false);
+const buttonRef = useTemplateRef('button');
+const { isActive: isDropdownActive } = useClick(buttonRef);
 const dayMap = {
   '1': 'Chủ nhật',
   '2': 'Thứ 2',
@@ -21,17 +22,13 @@ const dayMap = {
   '6': 'Thứ 6',
   '7': 'Thứ 7',
 };
-function toggleDropdown() {
-  isDropdownActive.value = !isDropdownActive.value;
-}
 </script>
 
 <template>
   <div class="relative">
-    <button class="relative text-left text-normal p-2.5 py-3 pr-6 border-[1px] w-[100%] shadow-sm" @click="toggleDropdown">
+    <button ref="button" class="relative text-left text-normal p-2.5 py-3 pr-6 border-[1px] w-[100%] shadow-sm">
       <p class="line-clamp-1">{{ props.lab.name }}</p>
-      <Icon
-        aria-hidden class="absolute top-4 right-2"
+      <Icon aria-hidden class="absolute top-4 right-2"
         :name="`${isDropdownActive ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'}`" />
     </button>
     <div v-if="isDropdownActive" class="my-1 absolute px-2.5 py-1 bg-white z-50 w-[100%] shadow-md">
