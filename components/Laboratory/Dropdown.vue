@@ -11,8 +11,8 @@ const props = defineProps<{
     room: string;
   };
 }>();
-const buttonRef = useTemplateRef('button');
-const { isActive: isDropdownActive } = useClick(buttonRef);
+const dropdownRef = useTemplateRef('dropdown');
+const { isActive: isDropdownActive } = useClick(dropdownRef);
 const dayMap = {
   '1': 'Chủ nhật',
   '2': 'Thứ 2',
@@ -22,11 +22,15 @@ const dayMap = {
   '6': 'Thứ 6',
   '7': 'Thứ 7',
 };
+function toggleDropdown (event: Event) {
+  event.stopPropagation();
+  isDropdownActive.value = !isDropdownActive.value;
+}
 </script>
 
 <template>
-  <div class="relative">
-    <button ref="button" class="relative text-left text-normal p-2.5 py-3 pr-6 border-[1px] w-[100%] shadow-sm">
+  <div ref="dropdown" class="relative">
+    <button class="relative text-left text-normal p-2.5 py-3 pr-6 border-[1px] w-[100%] shadow-sm" @click="toggleDropdown">
       <p class="line-clamp-1">{{ props.lab.name }}</p>
       <Icon aria-hidden class="absolute top-4 right-2"
         :name="`${isDropdownActive ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'}`" />
