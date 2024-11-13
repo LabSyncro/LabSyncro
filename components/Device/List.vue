@@ -62,13 +62,13 @@ function pageRight() {
 
 <template>
   <div class="mt-5">
-    <div class="pl-16 pr-16 lg:pl-28 lg:pr-28 mb-1 sm:mb-3 flex gap-4 justify-between items-start">
+    <div class="pl-4 pr-4 md:pl-28 md:pr-28 mb-1 sm:mb-3 flex gap-4 justify-between items-start">
       <h3 class="font-bold">{{ props.category.name }}</h3>
       <NuxtLink class="hidden sm:block text-sm text-slate-dark min-w-16" :href="`/devices?categoryId=${props.category.id}`">
         Xem thêm
       </NuxtLink>
     </div>
-    <NuxtLink class="block sm:hidden mb-5 pl-16 pr-16 lg:pl-28 lg:pr-28 text-sm text-slate-dark min-w-16" :href="`/devices?categoryId=${props.category.id}`">
+    <NuxtLink class="block sm:hidden mb-5 pl-4 pr-4 text-sm text-slate-dark min-w-16" :href="`/devices?categoryId=${props.category.id}`">
       Xem thêm
     </NuxtLink>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
