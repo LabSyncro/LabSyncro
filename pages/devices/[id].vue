@@ -52,7 +52,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
           </div>
         </div>
         <div>
-          <section class="bg-white p-10 flex flex-col md:flex-row gap-4 md:gap-16">
+          <section class="bg-white p-10 flex flex-col md:flex-row gap-8 md:gap-16">
             <div class="w-[100%] md:max-w-[300px]">
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
@@ -63,7 +63,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
             </div>
             <div class="flex-1 flex flex-col">
               <div class="text-normal md:text-sm">
-                <h2 class="md:text-lg text-2xl mb-2">{{ deviceKindMeta.name }}</h2>
+                <h2 class="text-lg mb-3">{{ deviceKindMeta.name }}</h2>
                 <div class="grid grid-cols-2 mb-1">
                   <p class="font-bold text-slate-dark">Phân loại</p>
                   <p>{{ deviceKindMeta.categoryName }}</p>
@@ -72,7 +72,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
                   <p class="font-bold text-slate-dark">Thương hiệu</p>
                   <p>{{ deviceKindMeta.brand || 'Không rõ' }}</p>
                 </div>
-                <div class="mt-5 font-semibold">
+                <div class="mt-8 font-semibold">
                   <span
                     v-if="deviceKindMeta.quantity > 0"
                     class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
