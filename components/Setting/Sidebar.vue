@@ -24,14 +24,24 @@ watchEffect(() => {
   activeSection.value = route.params?.role?.toString() || '';
 });
 
-const setActiveSection = (section: string) => {
+const setActiveSection = (section: string, openNewtab: boolean) => {
   activeSection.value = section;
-  router.push(`/settings/permissions/group/${section}`);
+  const newRoute = `/settings/permissions/group/${section}`;
+  if (openNewTab) {
+    window.open(newRoute, '_blank');
+  } else {
+    router.push(newRoute);
+  }
 };
 
-const handleBackToSimpleSidebar = () => {
+const handleBackToSimpleSidebar = (openNewTab: boolean) => {
   activeSidebar.value = 'simple';
-  router.push('/settings/permissions');
+  const newRoute = '/settings/permissions';
+  if (openNewTab) {
+    window.open(newRoute, '_blank');
+  } else {
+    router.push(newRoute);
+  }
 };
 
 </script>
@@ -52,14 +62,14 @@ const handleBackToSimpleSidebar = () => {
 
     <div v-else class="w-64 border-r bg-background p-4 space-y-4 min-h-screen">
       <div class="flex items-center space-x-2 mb-6">
-        <Button variant="ghost" class="w-full justify-start" @click="handleBackToSimpleSidebar">
+        <Button variant="ghost" class="w-full justify-start" @click="(event) => handleBackToSimpleSidebar(!!event.ctrlKey)">
           <ChevronLeft class="mr-2 h-4 w-4" />
           <span class="text-md">Back</span>
         </Button>
       </div>
       <div v-for="section in sections" :key="section.key" class="w-full">
         <Button variant="ghost" :class="['w-full justify-start', activeSection === section.key ? 'bg-accent' : '']"
-          @click="setActiveSection(section.key)">
+          @click="(event) => setActiveSection(section.key, !!event.ctrlKey)">
           <span class="flex items-center text-normal">
             {{ section.name }}
             <Lock class="ml-2 h-3 w-3 text-muted-foreground" />
