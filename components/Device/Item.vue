@@ -18,10 +18,10 @@ const item = await props.fetchFn();
       <div class="w-[100%] h-32 overflow-hidden">
         <NuxtImg :src="item.thumbnailUrl" class="object-cover" />
       </div>
-      <div class="p-2 pt-5 text-ss">
+      <div class="p-2 pt-5 text-ss h-28 flex flex-col">
         <p class="text-slate-dark mb-1">{{ item.manufacturer?.toUpperCase() }}</p>
         <p class="line-clamp-2 mb-3">{{ item.title }}</p>
-        <p class="relative text-slate-dark bg-gray-100 pl-1.5 py-0.5 rounded-sm">
+        <p class="relative text-slate-dark bg-gray-100 pl-1.5 py-0.5 rounded-sm mt-auto">
           <Icon aria-hidden class="absolute text-sm top-1" name="i-heroicons-check" />
           <span class="ml-4">
             Sẵn có:
