@@ -101,7 +101,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
               <div class="grid grid-cols-[1fr_4fr_2fr] bg-gray-100 font-bold p-2.5">
                 <p>Cơ sở</p>
                 <p>Phòng thí nghiệm</p>
-                <p>Hàng còn</p>
+                <p>Số lượng</p>
               </div>
               <div v-for="[location, { branch, room, quantity }] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[1fr_4fr_2fr] p-2.5 border-top-[1px] border-gray-100">
                 <p>{{ branch }}</p>
@@ -110,7 +110,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
                   <span class="absolute left-0 top-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center">
                     <Icon aria-hidden name="i-heroicons-check" class="text-white text-sm font-bold" />
                   </span>
-                  {{ quantity }} món
+                  {{ quantity }} cái
                 </p>
                 <p v-else class="text-slate-darker">Hết hàng</p>
               </div>

@@ -24,7 +24,7 @@ const item = await props.fetchFn();
         <p class="relative text-slate-dark bg-gray-100 pl-1.5 py-0.5 rounded-sm">
           <Icon aria-hidden class="absolute text-sm top-1" name="i-heroicons-check" />
           <span class="ml-4">
-            Hàng còn:
+            Sẵn có:
             <span class="font-semibold">{{ item.quantity }}</span>
             {{ item.unit }}
           </span>
