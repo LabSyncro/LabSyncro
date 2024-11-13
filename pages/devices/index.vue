@@ -30,8 +30,8 @@ const allCategories = await categoryService.getCategories();
       </BreadcrumbList>
     </Breadcrumb>
     <main class="my-10">
-      <div class="flex gap-16">
-        <div class="hidden md:block">
+      <div class="flex flex-col md:flex-row gap-8 md:gap-16">
+        <div>
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
