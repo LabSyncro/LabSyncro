@@ -9,7 +9,7 @@
     >
       <div class="flex gap-16 justify-between">
         <div class="grow-[1] flex items-center">
-          <AppLogo class="w-[240px]" />
+          <AppLogo />
         </div>
         <div class="flex items-stretch justify-between gap-4 grow-[3]">
           <AppDeviceFilter class="w-[180px] h-11" /> 

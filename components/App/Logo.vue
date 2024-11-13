@@ -1,11 +1,5 @@
-<script setup lang="ts">
-const router = useRouter();
-
-const navigateToHome = () => {
-  router.push('/');
-};
-</script>
-
 <template>
-  <NuxtImg src="/images/logo.png" class="cursor-pointer" @click="navigateToHome" />
+  <NuxtLink href="/" class="block w-[240px]">
+    <NuxtImg src="/images/logo.png" class="cursor-pointer" />
+  </NuxtLink>
 </template>
