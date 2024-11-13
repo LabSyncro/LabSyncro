@@ -17,8 +17,8 @@ function toggleDropdown (event: Event) {
       </button>
       <AppProductDropdown :active="isDropdownActive" />
     </div>
-    <button class="cursor-pointer h-16 px-3 hover:bg-primary-darker"> Phòng thí nghiệm </button>
-    <button class="cursor-pointer h-16 px-3 hover:bg-primary-darker"> Tài liệu </button>
-    <button class="cursor-pointer h-16 px-3 hover:bg-primary-darker"> Liên hệ </button>
+    <button class="cursor-pointer h-16 px-3 sm:px-5 hover:bg-primary-darker"> Phòng thí nghiệm </button>
+    <button class="cursor-pointer h-16 px-3 sm:px-5 hover:bg-primary-darker"> Tài liệu </button>
+    <button class="cursor-pointer h-16 px-3 sm:px-5 hover:bg-primary-darker"> Liên hệ </button>
   </nav>
 </template>
