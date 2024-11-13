@@ -7,7 +7,7 @@ function toggleDropdown (event: Event) {
 }
 </script>
 <template>
-  <nav class="bg-tertiary-darker flex pl-32 text-white items-stretch">
+  <nav class="bg-tertiary-darker flex md:pl-32 text-white items-stretch text-normal md:text-lg">
     <div ref="dropdown">
       <button
         :class="`relative h-16 px-8 pr-14 hover:bg-primary-darker ${isDropdownActive ? 'bg-primary-darker' : ''}`" @click="toggleDropdown">
@@ -17,9 +17,8 @@ function toggleDropdown (event: Event) {
       </button>
       <AppProductDropdown :active="isDropdownActive" />
     </div>
-    <button class="cursor-pointer h-16 px-5 hover:bg-primary-darker"> Phòng thí nghiệm </button>
-    <button class="cursor-pointer h-16 px-5 hover:bg-primary-darker"> Bài viết </button>
-    <button class="cursor-pointer h-16 px-5 hover:bg-primary-darker"> Quy định </button>
-    <button class="cursor-pointer h-16 px-5 hover:bg-primary-darker"> Liên hệ </button>
+    <button class="cursor-pointer h-16 px-3 hover:bg-primary-darker"> Phòng thí nghiệm </button>
+    <button class="cursor-pointer h-16 px-3 hover:bg-primary-darker"> Tài liệu </button>
+    <button class="cursor-pointer h-16 px-3 hover:bg-primary-darker"> Liên hệ </button>
   </nav>
 </template>
