@@ -29,7 +29,7 @@ function closeDropdown(event: Event) {
       <div class="h-[100%] m-0 p-0" role="dropdown">
         <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
       </div>
-      <Icon aria-hidden class="absolute right-[16px] top-[16px] text-primary-dark text-md"
+      <Icon aria-hidden class="absolute right-[10px] top-[16px] text-primary-dark text-md"
         :name="`${!isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up'}`" />
     </div>
     <div
