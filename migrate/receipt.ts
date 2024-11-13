@@ -1,9 +1,10 @@
-import type { Client } from 'pg';
 import pg from 'pg';
 import { config as configEnv } from 'dotenv';
+import { Readable } from 'stream';
+import { from as copyFrom } from 'pg-copy-streams';
+
 configEnv();
 
-// Types
 type ReturnProgress = 'on_time' | 'late';
 
 interface DeviceKind {
@@ -36,37 +37,31 @@ interface LabAllocation {
   quantity: number;
 }
 
-const BATCH_SIZE = 1000; // Configure batch size for optimal performance
-
-// Helper function to generate random date between two dates
 const randomDate = (start: Date, end: Date): Date => {
   return new Date(
     start.getTime() + Math.random() * (end.getTime() - start.getTime()),
   );
 };
 
-// Helper function to find available labs and allocate quantities
 const findAvailableLabs = (
   deviceKinds: DeviceKind[],
   deviceKindId: number,
   requestedQuantity: number,
+  allocatedQuantities: { [labId: string]: number },
 ): LabAllocation[] | null => {
   const deviceKind = deviceKinds.find((dk) => dk.id === deviceKindId);
   if (!deviceKind) return null;
 
-  // Calculate total available quantity across all labs
-  const totalAvailable = Object.values(deviceKind.available_quantity).reduce(
-    (sum, qty) => sum + qty,
+  const totalAvailable = Object.entries(deviceKind.available_quantity).reduce(
+    (sum, [labId, qty]) => sum + (qty - (allocatedQuantities[labId] || 0)),
     0,
   );
 
-  // If total available is less than requested, return null
   if (totalAvailable < requestedQuantity) return null;
 
   const allocations: LabAllocation[] = [];
   let remainingQuantity = requestedQuantity;
 
-  // Sort labs by available quantity in descending order
   const sortedLabs = Object.entries(deviceKind.available_quantity).sort(
     ([, a], [, b]) => b - a,
   );
@@ -74,7 +69,11 @@ const findAvailableLabs = (
   for (const [labId, availableQty] of sortedLabs) {
     if (remainingQuantity <= 0) break;
 
-    const quantityToAllocate = Math.min(availableQty, remainingQuantity);
+    const allocatedQty = allocatedQuantities[labId] || 0;
+    const quantityToAllocate = Math.min(
+      availableQty - allocatedQty,
+      remainingQuantity,
+    );
     if (quantityToAllocate > 0) {
       allocations.push({
         labId,
@@ -87,11 +86,11 @@ const findAvailableLabs = (
   return allocations;
 };
 
-// Generate receipts for a single borrow transaction
 const generateReceipt = (
   deviceKinds: DeviceKind[],
   userIds: string[],
   options: { minDate: Date; maxDate: Date },
+  allocatedQuantities: { [labId: string]: number },
 ): Receipt[] => {
   const borrowedAt = randomDate(options.minDate, options.maxDate);
   const expectedReturnDays = Math.floor(Math.random() * 14) + 1;
@@ -115,10 +114,19 @@ const generateReceipt = (
     deviceKinds[Math.floor(Math.random() * deviceKinds.length)].id;
   const quantity = Math.floor(Math.random() * 5) + 1;
 
-  const labAllocations = findAvailableLabs(deviceKinds, deviceKindId, quantity);
+  const labAllocations = findAvailableLabs(
+    deviceKinds,
+    deviceKindId,
+    quantity,
+    allocatedQuantities,
+  );
   if (!labAllocations) {
-    // Try again with a different device kind or smaller quantity
-    return generateReceipt(deviceKinds, userIds, options);
+    return [];
+  }
+
+  for (const allocation of labAllocations) {
+    allocatedQuantities[allocation.labId] =
+      (allocatedQuantities[allocation.labId] || 0) + allocation.quantity;
   }
 
   const borrowerId = userIds[Math.floor(Math.random() * userIds.length)];
@@ -126,7 +134,6 @@ const generateReceipt = (
     ? userIds[Math.floor(Math.random() * userIds.length)]
     : null;
 
-  // Create a receipt for each lab allocation
   return labAllocations.map((allocation) => ({
     borrower_id: borrowerId,
     checker_id: checkerId,
@@ -140,46 +147,60 @@ const generateReceipt = (
   }));
 };
 
-// Generate receipts in batches
-const generateReceiptBatches = async function* (
-  deviceKinds: DeviceKind[],
-  userIds: string[],
-  options: MockReceiptOptions = {},
-): AsyncGenerator<Receipt[]> {
-  const {
-    startDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-    endDate = new Date(),
-    numberOfRecords = 100,
-  } = options;
-
-  let generatedCount = 0;
-  let currentBatch: Receipt[] = [];
-
-  while (generatedCount < numberOfRecords) {
-    const receipts = generateReceipt(deviceKinds, userIds, {
-      minDate: startDate,
-      maxDate: endDate,
-    });
-
-    currentBatch.push(...receipts);
-    generatedCount++;
-
-    if (currentBatch.length >= BATCH_SIZE) {
-      yield currentBatch;
-      currentBatch = [];
-    }
-  }
-
-  if (currentBatch.length > 0) {
-    yield currentBatch;
-  }
+const receiptToCopyFormat = (receipt: Receipt): string => {
+  return (
+    [
+      receipt.borrower_id,
+      receipt.checker_id || '\\N',
+      receipt.quantity,
+      receipt.borrowed_at.toISOString(),
+      receipt.expected_returned_at.toISOString(),
+      receipt.returned_at ? receipt.returned_at.toISOString() : '\\N',
+      receipt.device_kind_id,
+      receipt.lab_id,
+      receipt.progress || 'on_time',
+    ].join('\t') + '\n'
+  );
 };
 
-// Fetch required data from database
-const fetchRequiredData = async (client: Client) => {
+async function* generateReceiptData(
+  deviceKinds: DeviceKind[],
+  userIds: string[],
+  options: Required<MockReceiptOptions>,
+) {
+  let generated = 0;
+  const allocatedQuantities: { [labId: string]: number } = {};
+  while (generated < options.numberOfRecords) {
+    const receipts = generateReceipt(
+      deviceKinds,
+      userIds,
+      {
+        minDate: options.startDate,
+        maxDate: options.endDate,
+      },
+      allocatedQuantities,
+    );
+
+    for (const receipt of receipts) {
+      yield receiptToCopyFormat(receipt);
+    }
+    generated++;
+  }
+}
+
+const createReceiptStream = (
+  deviceKinds: DeviceKind[],
+  userIds: string[],
+  options: Required<MockReceiptOptions>,
+) => {
+  const generator = generateReceiptData(deviceKinds, userIds, options);
+  return Readable.from(generator);
+};
+
+const fetchRequiredData = async (pool: pg.Pool) => {
   const [deviceKindsResult, userIdsResult] = await Promise.all([
-    client.query('SELECT id, available_quantity FROM device_kinds'),
-    client.query('SELECT id FROM users'),
+    pool.query('SELECT id, available_quantity FROM device_kinds'),
+    pool.query('SELECT id FROM users'),
   ]);
 
   return {
@@ -188,117 +209,72 @@ const fetchRequiredData = async (client: Client) => {
   };
 };
 
-// Prepare the bulk insert query
-const prepareBulkInsertQuery = (batchSize: number): string => {
-  const valuePlaceholders = Array.from({ length: batchSize }, (_, i) => {
-    const offset = i * 10;
-    return `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${
-      offset + 5
-    }, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${
-      offset + 10
-    })`;
-  }).join(',');
-
-  return `
-    INSERT INTO receipts (
-      borrower_id, checker_id, quantity,
-      borrowed_at, expected_returned_at, returned_at,
-      device_kind_id, lab_id, progress, status
-    ) VALUES ${valuePlaceholders}
-  `;
-};
-
-// Insert receipts in batches
-const insertReceiptBatch = async (
-  client: Client,
-  receipts: Receipt[],
-): Promise<void> => {
-  const values: (string | number | Date | null)[] = [];
-
-  receipts.forEach((receipt) => {
-    values.push(
-      receipt.borrower_id,
-      receipt.checker_id,
-      receipt.quantity,
-      receipt.borrowed_at,
-      receipt.expected_returned_at,
-      receipt.returned_at,
-      receipt.device_kind_id,
-      receipt.lab_id,
-      receipt.progress || 'on_time',
-    );
-  });
-
-  const query = prepareBulkInsertQuery(receipts.length);
-  await client.query(query, values);
-};
-
-// Main function to generate and insert mock data
 const generateMockData = async (
-  client: Client,
+  pool: pg.Pool,
   options: MockReceiptOptions = {},
 ): Promise<void> => {
-  console.log('Starting mock data generation...');
+  console.log('Starting mock data generation with COPY...');
   const startTime = Date.now();
 
-  const { deviceKinds, userIds } = await fetchRequiredData(client);
-  let insertedCount = 0;
+  const { deviceKinds, userIds } = await fetchRequiredData(pool);
+  const finalOptions = {
+    startDate:
+      options.startDate || new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+    endDate: options.endDate || new Date(),
+    numberOfRecords: options.numberOfRecords || 100,
+  };
 
-  // Process batches
-  for await (const batch of generateReceiptBatches(
-    deviceKinds,
-    userIds,
-    options,
-  )) {
-    await insertReceiptBatch(client, batch);
-    insertedCount += batch.length;
+  const client = await pool.connect();
+  try {
+    const receiptStream = createReceiptStream(
+      deviceKinds,
+      userIds,
+      finalOptions,
+    );
 
-    if (insertedCount % 10000 === 0) {
-      const elapsedSeconds = (Date.now() - startTime) / 1000;
-      const recordsPerSecond = insertedCount / elapsedSeconds;
-      console.log(
-        `Inserted ${insertedCount.toLocaleString()} records. ` +
-          `Speed: ${Math.round(recordsPerSecond)} records/second`,
-      );
-    }
+    const copyStream = client.query(
+      copyFrom(`
+      COPY receipts (
+        borrower_id, checker_id, quantity,
+        borrowed_at, expected_returned_at, returned_at,
+        device_kind_id, lab_id, progress      
+      ) FROM STDIN WITH (FORMAT text, NULL '\\N')
+    `),
+    );
+
+    await new Promise((resolve, reject) => {
+      receiptStream.pipe(copyStream).on('finish', resolve).on('error', reject);
+    });
+
+    const totalTime = (Date.now() - startTime) / 1000;
+    console.log(
+      `Completed inserting ${finalOptions.numberOfRecords.toLocaleString()} records in ${totalTime.toFixed(2)} seconds`,
+    );
+  } finally {
+    client.release();
   }
-
-  const totalTime = (Date.now() - startTime) / 1000;
-  console.log(
-    `Completed inserting ${insertedCount.toLocaleString()} records in ${totalTime.toFixed(2)} seconds`,
-  );
 };
 
-// Example usage
 const mockData = async () => {
-  const { Client } = pg;
-  const dbClient = new Client({
+  const pool = new pg.Pool({
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
     database: process.env.DATABASE_DATABASE,
     password: process.env.DATABASE_PASSWORD,
     port: parseInt(process.env.DATABASE_PORT || '5432'),
+    max: 20,
   });
 
   try {
-    await dbClient.connect();
-
-    // Configure connection for better bulk insert performance
-    await dbClient.query('SET session_replication_role = replica;'); // Temporarily disable triggers and constraints
-    await dbClient.query('SET synchronous_commit = off;'); // Disable synchronous commits for better performance
-
-    await generateMockData(dbClient, {
+    await generateMockData(pool, {
       startDate: new Date('2024-01-01'),
       endDate: new Date(),
-      numberOfRecords: 1000000,
+      numberOfRecords: 100000000,
     });
   } catch (error) {
     console.error('Error generating mock data:', error);
   } finally {
-    // Reset connection settings
-    await dbClient.query('SET session_replication_role = DEFAULT;');
-    await dbClient.query('SET synchronous_commit = on;');
-    await dbClient.end();
+    await pool.end();
   }
 };
 
