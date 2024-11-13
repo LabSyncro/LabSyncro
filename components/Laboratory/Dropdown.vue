@@ -12,7 +12,15 @@ const props = defineProps<{
   };
 }>();
 const isDropdownActive = ref(false);
-
+const dayMap = {
+  '1': 'Chủ nhật',
+  '2': 'Thứ 2',
+  '3': 'Thứ 3',
+  '4': 'Thứ 4',
+  '5': 'Thứ 5',
+  '6': 'Thứ 6',
+  '7': 'Thứ 7',
+};
 function toggleDropdown() {
   isDropdownActive.value = !isDropdownActive.value;
 }
@@ -29,14 +37,14 @@ function toggleDropdown() {
     <div v-if="isDropdownActive" class="my-1 absolute px-2.5 py-1 bg-white z-50 w-[100%] shadow-md">
       <p class="text-sm font-bold text-slate-dark my-2">GIỜ MỞ CỬA (Dự kiến)</p>
       <div v-for="[day, times] in Object.entries(props.lab.timetable)" :key="day" class="flex gap-1 text-sm">
-        <p>{{ day }}:</p>
+        <p>{{ dayMap[day] }}:</p>
         <div>
           <p v-for="time in times" :key="time">{{ time }}</p>
         </div>
       </div>
       <p class="text-sm font-bold text-slate-dark my-2">LIÊN HỆ:</p>
       <p class="text-sm font-bold">{{ lab.adminName }}</p>
-      <p class="text-sm">Email: {{ lab.adminEmail }}</p>
+      <p class="text-sm break-words">Email: {{ lab.adminEmail }}</p>
       <p class="text-sm">SĐT: {{ lab.adminTel }}</p>
     </div>
   </div>
