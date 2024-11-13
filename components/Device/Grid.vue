@@ -75,7 +75,7 @@ function pageRight() {
 
 <template>
   <div>
-    <div ref="gridRef" :class="`grid grid-cols-${cols} gap-4`" role="grid">
+    <div ref="gridRef" :class="`grid grid-cols-${cols} gap-4 justify-items-center`" role="grid">
       <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${i + currentPage * gridItemNo}`">
         <DeviceSuspenseItem v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
           :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" />
