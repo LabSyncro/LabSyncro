@@ -13,7 +13,7 @@ const allCategories = await categoryService.getCategories();
 </script>
 
 <template>
-  <div class="mx-16 my-10">
+  <div class="mx-6 sm:mx-16 my-10">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>

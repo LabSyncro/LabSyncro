@@ -11,7 +11,7 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
 </script>
 
 <template>
-  <div class="mx-16 my-10">
+  <div class="mx-6 sm:mx-16 my-10">
     <div>
       <Breadcrumb>
         <BreadcrumbList>
@@ -97,17 +97,17 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
           </section>
           <section class="bg-white p-10 mt-10">
             <h2 class="text-xl">Tồn kho thiết bị</h2>
-            <div class="mt-10">
-              <div class="grid grid-cols-[1fr_4fr_2fr] bg-gray-100 font-bold p-2.5">
+            <div class="mt-10 text-normal">
+              <div class="grid grid-cols-[2fr_4fr_2fr] bg-gray-100 font-bold p-2.5 gap-3">
                 <p>Cơ sở</p>
                 <p>Phòng thí nghiệm</p>
                 <p>Số lượng</p>
               </div>
-              <div v-for="[location, { branch, room, quantity }] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[1fr_4fr_2fr] p-2.5 border-top-[1px] border-gray-100">
+              <div v-for="[location, { branch, room, quantity }] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[2fr_4fr_2fr] p-2.5 border-top-[1px] border-gray-100 gap-3">
                 <p>{{ branch }}</p>
                 <p>{{ room }} - {{ location }}</p>
-                <p v-if="quantity > 0" class="relative text-green-500 pl-8">
-                  <span class="absolute left-0 top-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center">
+                <p v-if="quantity > 0" class="relative text-green-500 pl-6 sm:pl-8">
+                  <span class="absolute left-0.5 top-1 bg-green-500 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                     <Icon aria-hidden name="i-heroicons-check" class="text-white text-sm font-bold" />
                   </span>
                   {{ quantity }} cái
