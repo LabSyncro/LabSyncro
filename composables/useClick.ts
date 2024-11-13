@@ -11,7 +11,7 @@ export function useClick(elementRef: Ref<Element>): { isActive: Ref<boolean> } {
   onMounted(() => document.addEventListener('click', clickOutsideHandler));
   onUnmounted(() => document.removeEventListener('click', clickOutsideHandler));
   onMounted(() => elementRef.value.addEventListener('click', clickInsideHandler));
-  onUnmounted(() => elementRef.value.removeEventListener('click', clickInsideHandler));
+  onBeforeUnmount(() => elementRef.value.removeEventListener('click', clickInsideHandler));
 
   return { isActive };
 }
