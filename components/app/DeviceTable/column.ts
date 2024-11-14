@@ -51,16 +51,6 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
       ),
   },
   {
-    accessorKey: 'quantity',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Số lượng' }),
-    cell: ({ row }) =>
-      h(
-        'span',
-        { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('quantity'),
-      ),
-  },
-  {
     accessorKey: 'category',
     header: ({ column }) =>
       h(ColumnHeader, {

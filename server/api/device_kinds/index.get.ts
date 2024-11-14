@@ -12,6 +12,7 @@ const DeviceKindOutputDto = Type.Object({
     mainImage: Type.String(),
     subImages: Type.Array(Type.String()),
     quantity: Type.String(),
+    borrowableQuantity: Type.String(),
   })),
   totalPages: Type.Number(),
   currentPage: Type.Number(),
