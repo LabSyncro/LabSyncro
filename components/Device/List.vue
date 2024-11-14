@@ -62,15 +62,18 @@ function pageRight() {
 
 <template>
   <div class="mt-5">
-    <div class="pl-16 pr-16 lg:pl-28 lg:pr-28 mb-3 flex justify-between">
+    <div class="pl-4 pr-4 md:pl-28 md:pr-28 mb-1 sm:mb-3 flex gap-4 justify-between items-start">
       <h3 class="font-bold">{{ props.category.name }}</h3>
-      <NuxtLink class="text-sm text-slate-dark" :href="`/devices?categoryId=${props.category.id}`">
+      <NuxtLink class="hidden sm:block text-sm text-slate-dark min-w-16" :href="`/devices?categoryId=${props.category.id}`">
         Xem thêm
       </NuxtLink>
     </div>
+    <NuxtLink class="block sm:hidden mb-5 pl-4 pr-4 text-sm text-slate-dark min-w-16" :href="`/devices?categoryId=${props.category.id}`">
+      Xem thêm
+    </NuxtLink>
     <div ref="listRef" class="group flex justify-center items-center gap-5">
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark z-50"
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
@@ -82,7 +85,7 @@ function pageRight() {
           </div>
       </TransitionGroup>
       <button
-        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark"
+        class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark z-50"
         @click="pageRight">
         <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
@@ -115,11 +118,13 @@ function pageRight() {
 .slide-left-leave-to {
   opacity: 0;
   transform: translateX(-100px);
+  position: absolute;
 }
 
 .slide-right-enter-from {
   opacity: 0;
   transform: translateX(-100px);
+  position: absolute;
 }
 
 .slide-right-enter-active {

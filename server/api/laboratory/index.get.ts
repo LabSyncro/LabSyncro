@@ -31,7 +31,7 @@ export default defineEventHandler<
       JOIN ${'users'}
       ON ${'labs'}.${'admin_id'} = ${'users'}.${'id'}
     WHERE ${'labs'}.${'faculty'} = ${db.param(faculty)}
-  `.run(dbPool)).map(({ branch, room, timetable, admin_id, name, admin_name, admin_email, admin_tel }) => ({ branch, room, timetable: mapValues(timetable, (time) => [time]), adminId: admin_id, name, adminName: admin_name, adminEmail: admin_email, adminTel: admin_tel }));
+  `.run(dbPool)).map(({ branch, room, timetable, admin_id, name, admin_name, admin_email, admin_tel }) => ({ branch, room, timetable, adminId: admin_id, name, adminName: admin_name, adminEmail: admin_email, adminTel: admin_tel }));
   const _branches = groupBy(labs, (lab) => lab.branch);
   const branches = [];
   for (const key in _branches) {

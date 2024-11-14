@@ -26,10 +26,15 @@ const permissions = ref([
 const { activeSection, activeSidebar } = useSidebar();
 const router = useRouter();
 
-const handleRowClick = (rowKey: string) => {
-  activeSection.value = rowKey;
-  activeSidebar.value = 'detailed';
-  router.push(`/settings/permissions/group/${rowKey}`);
+const handleRowClick = (rowKey: string, openNewTab: boolean) => {
+  const newRoute = `/settings/permissions/group/${rowKey}`;
+  if (openNewTab) {
+    window.open(newRoute, '_blank');
+  } else {
+    activeSection.value = rowKey;
+    activeSidebar.value = 'detailed';
+    router.push(newRoute);
+  }
 };
 </script>
 
@@ -57,7 +62,8 @@ const handleRowClick = (rowKey: string) => {
       </TableHeader>
       <TableBody>
         <TableRow v-for="row in permissions" :key="row.name">
-          <TableCell class="font-medium cursor-pointer hover:text-tertiary-darker" @click="handleRowClick(row.key)">
+          <TableCell class="font-medium cursor-pointer hover:text-tertiary-darker"
+            @click="(event) => handleRowClick(row.key, !!event.ctrlKey)">
             <div class="flex items-center space-x-2">
               <span>{{ row.name }}</span>
               <Lock class="h-4 w-4 text-muted-foreground" />

@@ -8,16 +8,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const router = useRouter();
 const avatar = ref<null | string>(null);
 
 onMounted(async () => {
   avatar.value = await userService.getAvatar();
 });
-
-const navigateToSettings = () => {
-  router.push('/settings/users');
-};
 </script>
 
 <template>
@@ -27,8 +22,7 @@ const navigateToSettings = () => {
         <div class="flex items-center cursor-pointer">
           <div class="h-9 w-9 rounded-full border-slate-dark border-[2px] bg-primary-lighter relative">
             <img class="h-[100%] aspect-auto inline-block rounded-full" :src="avatar || ''" alt="User's avatar">
-            <div
-class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2px] top-6 right-[-2px]"
+            <div class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2px] top-6 right-[-2px]"
               aria-hidden />
           </div>
           <ChevronDown class="h-4 w-4 ml-2 text-gray-500" :stroke-width="3" />
@@ -46,9 +40,11 @@ class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2p
           </div>
         </div>
 
-        <DropdownMenuItem class="cursor-pointer" @click="navigateToSettings">
-          <span class="text-normal">Cài đặt</span>
-        </DropdownMenuItem>
+        <NuxtLink href="/settings/users">
+          <DropdownMenuItem class="cursor-pointer">
+            <span class="text-normal">Cài đặt</span>
+          </DropdownMenuItem>
+        </NuxtLink>
 
         <DropdownMenuItem class="text-red-600 cursor-pointer hover:!bg-red-400">
           <span class="text-normal">Đăng xuất</span>

@@ -3,7 +3,7 @@
     <div class="flex py-6 justify-around">
       <div class="w-[45vw] pr-5">
         <div class="max-w-[300px]">
-          <AppLogo class="w-[150px] mb-5"/>
+          <AppLogo class="w-[145px] mb-5"/>
           LabSyncro là hệ thống Quản lý mượn trả trang thiết bị phòng thí nghiệm được hiện thực bởi nhóm sinh viên trong đề tài Luận văn.
         </div>
       </div>

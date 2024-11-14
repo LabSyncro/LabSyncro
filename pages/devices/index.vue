@@ -13,7 +13,7 @@ const allCategories = await categoryService.getCategories();
 </script>
 
 <template>
-  <div class="mx-16 my-10">
+  <div class="mx-6 sm:mx-16 my-10">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -30,7 +30,7 @@ const allCategories = await categoryService.getCategories();
       </BreadcrumbList>
     </Breadcrumb>
     <main class="my-10">
-      <div class="flex gap-16">
+      <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
         <div>
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
@@ -49,7 +49,7 @@ const allCategories = await categoryService.getCategories();
           <h2 class="text-2xl mb-8">
             {{ categoryName }}
           </h2>
-          <DeviceGrid :rows="5" :category-id="categoryId" />
+          <DeviceGrid :category-id="categoryId" />
         </div>
       </div>
     </main>
