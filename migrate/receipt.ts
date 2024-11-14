@@ -37,6 +37,10 @@ interface LabAllocation {
   quantity: number;
 }
 
+interface AllocatedQuantities {
+  [key: string]: number;
+}
+
 const randomDate = (start: Date, end: Date): Date => {
   return new Date(
     start.getTime() + Math.random() * (end.getTime() - start.getTime()),
@@ -47,13 +51,17 @@ const findAvailableLabs = (
   deviceKinds: DeviceKind[],
   deviceKindId: number,
   requestedQuantity: number,
-  allocatedQuantities: { [labId: string]: number },
+  allocatedQuantities: AllocatedQuantities,
 ): LabAllocation[] | null => {
   const deviceKind = deviceKinds.find((dk) => dk.id === deviceKindId);
   if (!deviceKind) return null;
 
   const totalAvailable = Object.entries(deviceKind.available_quantity).reduce(
-    (sum, [labId, qty]) => sum + (qty - (allocatedQuantities[labId] || 0)),
+    (sum, [labId, qty]) => {
+      const key = `${deviceKindId}:${labId}`;
+      const allocated = allocatedQuantities[key] || 0;
+      return sum + (qty - allocated);
+    },
     0,
   );
 
@@ -69,7 +77,8 @@ const findAvailableLabs = (
   for (const [labId, availableQty] of sortedLabs) {
     if (remainingQuantity <= 0) break;
 
-    const allocatedQty = allocatedQuantities[labId] || 0;
+    const key = `${deviceKindId}:${labId}`;
+    const allocatedQty = allocatedQuantities[key] || 0;
     const quantityToAllocate = Math.min(
       availableQty - allocatedQty,
       remainingQuantity,
@@ -80,6 +89,8 @@ const findAvailableLabs = (
         quantity: quantityToAllocate,
       });
       remainingQuantity -= quantityToAllocate;
+      allocatedQuantities[key] =
+        (allocatedQuantities[key] || 0) + quantityToAllocate;
     }
   }
 
@@ -90,7 +101,7 @@ const generateReceipt = (
   deviceKinds: DeviceKind[],
   userIds: string[],
   options: { minDate: Date; maxDate: Date },
-  allocatedQuantities: { [labId: string]: number },
+  allocatedQuantities: AllocatedQuantities,
 ): Receipt[] => {
   const borrowedAt = randomDate(options.minDate, options.maxDate);
   const expectedReturnDays = Math.floor(Math.random() * 14) + 1;
@@ -110,23 +121,25 @@ const generateReceipt = (
     progress = returnedAt > expectedReturnedAt ? 'late' : 'on_time';
   }
 
-  const deviceKindId =
-    deviceKinds[Math.floor(Math.random() * deviceKinds.length)].id;
-  const quantity = Math.floor(Math.random() * 5) + 1;
+  let validDeviceKindId: number | null = null;
+  while (validDeviceKindId === null) {
+    const randomIndex = Math.floor(Math.random() * deviceKinds.length);
+    const randomDeviceKind = deviceKinds[randomIndex];
+    if (randomDeviceKind) {
+      validDeviceKindId = randomDeviceKind.id;
+    }
+  }
+
+  const quantity = Math.floor(Math.random() * 100) + 1;
 
   const labAllocations = findAvailableLabs(
     deviceKinds,
-    deviceKindId,
+    validDeviceKindId,
     quantity,
     allocatedQuantities,
   );
   if (!labAllocations) {
     return [];
-  }
-
-  for (const allocation of labAllocations) {
-    allocatedQuantities[allocation.labId] =
-      (allocatedQuantities[allocation.labId] || 0) + allocation.quantity;
   }
 
   const borrowerId = userIds[Math.floor(Math.random() * userIds.length)];
@@ -141,7 +154,7 @@ const generateReceipt = (
     borrowed_at: borrowedAt,
     expected_returned_at: expectedReturnedAt,
     returned_at: returnedAt,
-    device_kind_id: deviceKindId,
+    device_kind_id: validDeviceKindId,
     lab_id: allocation.labId,
     progress,
   }));
@@ -169,7 +182,7 @@ async function* generateReceiptData(
   options: Required<MockReceiptOptions>,
 ) {
   let generated = 0;
-  const allocatedQuantities: { [labId: string]: number } = {};
+  const allocatedQuantities: AllocatedQuantities = {};
   while (generated < options.numberOfRecords) {
     const receipts = generateReceipt(
       deviceKinds,
@@ -269,7 +282,7 @@ const mockData = async () => {
     await generateMockData(pool, {
       startDate: new Date('2024-01-01'),
       endDate: new Date(),
-      numberOfRecords: 100000000,
+      numberOfRecords: 50000000,
     });
   } catch (error) {
     console.error('Error generating mock data:', error);
