@@ -66,7 +66,7 @@ export const columns: ColumnDef<BorrowReturnDevice>[] = [
     header: ({ column }) =>
       h(ColumnHeader, {
         column,
-        title: 'Phòng thí nghiệm',
+        title: 'Nơi mượn',
       }),
     cell: ({ row }) =>
       h(
@@ -77,7 +77,7 @@ export const columns: ColumnDef<BorrowReturnDevice>[] = [
   },
   {
     accessorKey: 'facility',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Cơ sở' }),
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Nơi trả' }),
     cell: ({ row }) =>
       h(
         'span',
