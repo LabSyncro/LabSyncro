@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '@tanstack/vue-table';
 import { cn } from '@/lib/utils';
-import { ChevronDown, ChevronUp, ChevronsUpDown, EyeOff } from 'lucide-vue-next';
 import type { AdminDeviceList } from './schema';
 
 interface DataTableColumnHeaderProps {
@@ -14,34 +13,30 @@ defineProps<DataTableColumnHeaderProps>();
 defineOptions({
   inheritAttrs: false,
 });
+
+function toggleSortOrder(column: Column<AdminDeviceList, unknown>) {
+  const oldSortOrder = column.getIsSorted();
+  if (oldSortOrder === 'asc') {
+    column.toggleSorting(true);
+  } else if (oldSortOrder === 'desc') {
+    column.clearSorting();
+  } else {
+    column.toggleSorting(false);
+  }
+}
 </script>
 
 <template>
   <div v-if="column.getCanSort()" :class="cn('flex items-center space-x-2', $attrs.class ?? '')">
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="ghost" size="sm" class="-ml-3 h-8 data-[state=open]:bg-accent">
+        <Button variant="ghost" size="sm" class="relative h-8 data-[state=open]:bg-accent text-md pr-8 text-black" @click="toggleSortOrder(column)">
           <span>{{ title }}</span>
-          <ChevronDown v-if="column.getIsSorted() === 'desc'" class="ml-2 h-4 w-4" />
-          <ChevronUp v-else-if="column.getIsSorted() === 'asc'" class="ml-2 h-4 w-4" />
-          <ChevronsUpDown v-else class="ml-2 h-4 w-4" />
+          <Icon v-if="column.getIsSorted() === 'asc'" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrow-long-down" />
+          <Icon v-else-if="column.getIsSorted() === 'desc'" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrow-long-up" />
+          <Icon v-else aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrows-up-down" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start">
-        <DropdownMenuItem @click="column.toggleSorting(false)">
-          <ChevronUp class="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-          Asc
-        </DropdownMenuItem>
-        <DropdownMenuItem @click="column.toggleSorting(true)">
-          <ChevronDown class="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-          Desc
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem @click="column.toggleVisibility(false)">
-          <EyeOff class="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-          Hide
-        </DropdownMenuItem>
-      </DropdownMenuContent>
     </DropdownMenu>
   </div>
 
