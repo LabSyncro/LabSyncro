@@ -40,6 +40,12 @@ const table = useVueTable({
     get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
   },
+  localization: {
+    locale: 'vi',
+    labels: {
+      selectedRows: (selected, total) => `${selected} trong ${total} hàng được chọn`,
+    },
+  },
   enableRowSelection: true,
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
@@ -61,8 +67,10 @@ const table = useVueTable({
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
-              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
-                :props="header.getContext()" />
+              <div v-if="header.id === 'select'" class="h-4 w-4 border-[1px] border-slate-300 rounded-sm" />
+              <div v-else>
+
+              </div>
             </TableHead>
           </TableRow>
         </TableHeader>
