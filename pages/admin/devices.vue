@@ -42,7 +42,9 @@ const data = ref<AdminDeviceList[]>([]);
           </div>
         </div>
       </section>
-      <DeviceTable :columns="columns" :data="data" />
+      <section class="bg-white mt-8 p-4 pb-8">
+        <DeviceTable :columns="columns" :data="data" />
+      </section>
     </main>
   </div>
 </template>
