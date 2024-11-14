@@ -27,16 +27,16 @@ const data = ref<AdminDeviceList[]>([]);
     <main class="my-10">
       <section class="bg-white p-4 pb-8">
         <h2 class="font-bold text-xl"> Tất cả loại thiết bị </h2>
-        <div class="flex flex-col sm:flex-row gap-2 sm:gap-0 mt-6 text-slate-dark">
-          <div class="flex gap-4 sm:border-r-2 sm:border-slate-250 pr-5">
+        <div class="flex flex-col lg:flex-row gap-2 lg:gap-0 mt-6 text-slate-dark">
+          <div class="flex gap-4 lg:border-r-2 sm:border-slate-250 pr-5">
             <p class="w-[150px]"> Tổng loại thiết bị </p>
             <span class="text-black bg-slate-100 px-2 border-slate-250 border-2 rounded-sm">100</span>
           </div>
-          <div class="flex gap-4 sm:border-r-2 sm:border-slate-250 pr-5 sm:pl-5">
+          <div class="flex gap-4 lg:border-r-2 sm:border-slate-250 pr-5 lg:pl-5">
             <p class="w-[150px]"> Không có sẵn </p>
             <span class="text-black bg-slate-100 px-2 border-slate-250 border-2 rounded-sm">100</span>
           </div>
-          <div class="flex gap-4 sm:border-r-2 sm:border-slate-250 pr-5 sm:pl-5">
+          <div class="flex gap-4 lg:border-r-2 sm:border-slate-250 pr-5 lg:pl-5">
             <p class="w-[150px]"> Sẵn có </p>
             <span class="text-black bg-slate-100 px-2 border-slate-250 border-2 rounded-sm">100</span>
           </div>
