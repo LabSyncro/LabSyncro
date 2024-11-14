@@ -76,7 +76,7 @@ const table = useVueTable({
           </template>
 
           <TableRow v-else>
-            <TableCell :colspan="columns.length" class="h-24 text-center">
+            <TableCell :colspan="columns.length" class="h-24 text-center text-lg text-slate-500">
               Không có kết quả
             </TableCell>
           </TableRow>
