@@ -85,12 +85,12 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
       ),
   },
   {
-    accessorKey: 'usableQuantity',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Khả dụng' }),
+    accessorKey: 'borrowableQuantity',
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Có thể mượn' }),
     cell: ({ row }) => h(
       'span',
       { class: 'text-slate-500 text-sm font-normal leading-tight' },
-      row.getValue('usableQuantity'),
+      row.getValue('borrowableQuantity'),
     ),
   },
   {

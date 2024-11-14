@@ -7,7 +7,7 @@ export const AdminDeviceListSchema = Type.Object({
   name: Type.String(),
   category: Type.String(),
   brand: Type.String(),
-  usableQuantity: Type.Number(),
+  borrowableQuantity: Type.Number(),
   totalQuantity: Type.Number(),
 });
 
