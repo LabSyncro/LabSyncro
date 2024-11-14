@@ -3,7 +3,7 @@
     <input
       class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 pr-3 rounded-md text-md placeholder:text-normal"
       type="search"
-      placeholder="Tên thiết bị"
+      placeholder="Tên loại thiết bị"
     >
     <Icon
       aria-hidden

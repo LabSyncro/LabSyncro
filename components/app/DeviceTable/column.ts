@@ -29,7 +29,7 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Tên thiết bị' }),
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Tên loại thiết bị' }),
     cell: ({ row }) =>
       h(
         'div',
