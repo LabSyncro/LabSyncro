@@ -40,12 +40,6 @@ const table = useVueTable({
     get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
   },
-  localization: {
-    locale: 'vi',
-    labels: {
-      selectedRows: (selected, total) => `${selected} trong ${total} hàng được chọn`,
-    },
-  },
   enableRowSelection: true,
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
