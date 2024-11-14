@@ -67,10 +67,7 @@ const table = useVueTable({
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
-              <div v-if="header.id === 'select'" class="h-4 w-4 border-[1px] border-slate-300 rounded-sm" />
-              <div v-else>
-
-              </div>
+              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
             </TableHead>
           </TableRow>
         </TableHeader>
