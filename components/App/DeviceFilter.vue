@@ -23,13 +23,15 @@ function closeDropdown(event: Event) {
 </script>
 
 <template>
-  <div ref="dropdown"
+  <div
+ref="dropdown"
     :class="`${!isDropdownActive ? 'bg-white' : 'bg-slate-lighter'} relative rounded-md text-primary-light text-normal`">
     <div class="cursor-pointer pl-4 py-3 pr-8 " @click="toggleDropdown">
       <div class="h-[100%] m-0 p-0" role="dropdown">
         <p class="line-clamp-1 text-ellipsis">{{ currentFacultyName }}</p>
       </div>
-      <Icon aria-hidden class="absolute right-[10px] top-[16px] text-primary-dark text-md"
+      <Icon
+aria-hidden class="absolute right-[10px] top-[16px] text-primary-dark text-md"
         :name="`${!isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up'}`" />
     </div>
     <div
@@ -41,14 +43,17 @@ function closeDropdown(event: Event) {
           :class="`${currentFacultyId === null ? 'bg-secondary-dark' : ''} relative mx-1 my-0.5 px-1 py-1 hover:bg-secondary-dark text-left rounded-sm`"
           @click="(event) => { setFaculty(null); closeDropdown(event) }">
           Tất cả các khoa
-          <Icon v-if="currentFacultyId === null" aria-hidden class="absolute top-[8px] right-[6px]"
+          <Icon
+v-if="currentFacultyId === null" aria-hidden class="absolute top-[8px] right-[6px]"
             name="i-heroicons-check" />
         </button>
-        <button v-for="faculty in allFaculties" :key="faculty.id"
+        <button
+v-for="faculty in allFaculties" :key="faculty.id"
           :class="`${currentFacultyId === faculty.id ? 'bg-secondary-dark' : ''} relative mx-1 my-0.5 px-1 py-1 text-black hover:bg-secondary-dark text-left rounded-sm line-clamp-1`"
           @click="(event) => { setFaculty(faculty.id); closeDropdown(event) }">
           {{ faculty.name }}
-          <Icon v-if="currentFacultyId === faculty.id" aria-hidden class="absolute top-[8px] right-[6px]"
+          <Icon
+v-if="currentFacultyId === faculty.id" aria-hidden class="absolute top-[8px] right-[6px]"
             name="i-heroicons-check" />
         </button>
       </div>

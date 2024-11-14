@@ -180,5 +180,4 @@ async function processReceipts() {
   }
 }
 
-// Run the script
 processReceipts().catch((error) => console.error('Processing failed:', error));

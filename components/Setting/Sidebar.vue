@@ -68,7 +68,8 @@ const handleBackToSimpleSidebar = (openNewTab: boolean) => {
         </Button>
       </div>
       <div v-for="section in sections" :key="section.key" class="w-full">
-        <Button variant="ghost" :class="['w-full justify-start', activeSection === section.key ? 'bg-accent' : '']"
+        <Button
+variant="ghost" :class="['w-full justify-start', activeSection === section.key ? 'bg-accent' : '']"
           @click="(event) => setActiveSection(section.key, !!event.ctrlKey)">
           <span class="flex items-center text-normal">
             {{ section.name }}
