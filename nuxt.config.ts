@@ -21,6 +21,14 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  components: [
+    {
+      path: './components/common',
+    },
+    {
+      path: './components/app',
+    },
+  ],
   shadcn: {
     /**
      * Prefix for all the imported component

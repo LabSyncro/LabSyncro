@@ -15,7 +15,7 @@ function toggleDropdown (event: Event) {
         <Icon aria-hidden class="absolute text-white text-sm sm:text-md top-[27px] sm:top-[26px] right-[10px]"
           :name="`${!isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up'}`" />
       </button>
-      <AppProductDropdown :active="isDropdownActive" />
+      <ProductDropdown :active="isDropdownActive" />
     </div>
     <button class="cursor-pointer h-16 px-2 sm:px-5 hover:bg-primary-darker"> Phòng thí nghiệm </button>
     <button class="cursor-pointer h-16 px-2.5 sm:px-5 hover:bg-primary-darker"> Bài viết </button>
