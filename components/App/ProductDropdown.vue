@@ -17,11 +17,13 @@ function onMouseoutCategory(id: number) {
 </script>
 
 <template>
-  <div v-if="props.active" id="menu" role="menu"
+  <div
+v-if="props.active" id="menu" role="menu"
     class="absolute top-[270px] sm:top-[180px] text-primary-dark left-0 w-[100%] sm:w-[350px] max-h-[90vh] bg-white overflow-auto z-50 shadow-[8px_8px_24px_rgba(0,0,0,0.1)]">
     <div>
       <div class="pl-12 p-5 self-stretch">
-        <a v-for="(category, index) in categories" :key="index"
+        <a
+v-for="(category, index) in categories" :key="index"
           class="relative block cursor-pointer my-2.5 py-1 px-2 pr-8 text-left text-normal rounded-md hover:bg-secondary-dark"
           @mouseenter="onHoveredCategory(index)" @mouseleave="onMouseoutCategory(index)">
           {{ category.name }}

@@ -14,16 +14,16 @@ const roleTitles: { [key: string]: string } = {
 
 
 const apps = ref([
-  'HomePage App',
-  'Restocking App',
-  'Tracking Devices App',
-  'Category Management App',
-  'Import App',
-  'Inventory App',
-  'Performance Monitor App',
-  'Repricing App',
-  'User Management App',
-  'Warehouse App'
+  'Home Page',
+  'Restocking Page',
+  'Tracking Devices Page',
+  'Category Management Page',
+  'Import Page',
+  'Inventory Page',
+  'Performance Monitor Page',
+  'Repricing Page',
+  'User Management Page',
+  'Warehouse Page'
 ]);
 
 const selectedApps = ref<string[]>([]);

@@ -62,7 +62,8 @@ const handleRowClick = (rowKey: string, openNewTab: boolean) => {
       </TableHeader>
       <TableBody>
         <TableRow v-for="row in permissions" :key="row.name">
-          <TableCell class="font-medium cursor-pointer hover:text-tertiary-darker"
+          <TableCell
+class="font-medium cursor-pointer hover:text-tertiary-darker"
             @click="(event) => handleRowClick(row.key, !!event.ctrlKey)">
             <div class="flex items-center space-x-2">
               <span>{{ row.name }}</span>
