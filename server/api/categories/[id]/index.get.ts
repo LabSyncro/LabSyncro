@@ -16,7 +16,7 @@ export default defineEventHandler<
 >(async (event) => {
   const categoryId = Number.parseInt(getRouterParam(event, 'id')!);
   try {
-    const { name, id } = await db.selectExactlyOne('menus', { id: categoryId }).run(dbPool);
+    const { name, id } = await db.selectExactlyOne('categories', { id: categoryId }).run(dbPool);
     return {
       id,
       name,

@@ -31,9 +31,9 @@ export default defineEventHandler<
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
-        JOIN ${'menus'}
-        ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
-      WHERE ${'menu_id'} = ${db.param(Number.parseInt(categoryId))}
+        JOIN ${'categories'}
+        ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
+      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
@@ -42,7 +42,7 @@ export default defineEventHandler<
     const [{ quantity: totalRecords }] = await (db.sql`
       SELECT count(*) as quantity
       FROM ${'device_kinds'}
-      WHERE ${'menu_id'} = ${db.param(Number.parseInt(categoryId))}
+      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))}
         AND EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'})
       `).run(dbPool);
     const totalPages = Math.ceil(totalRecords / length);
@@ -58,8 +58,8 @@ export default defineEventHandler<
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
-        JOIN ${'menus'}
-        ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
+        JOIN ${'categories'}
+        ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}

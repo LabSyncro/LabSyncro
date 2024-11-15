@@ -26,14 +26,14 @@ export default defineEventHandler<
   const deviceKindId = Number.parseInt(getRouterParam(event, 'id')!);
   try {
     const [deviceKind] = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'menus'}.${'id'} as category_id, ${'menus'}.${'name'} as category_name
+      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
-        JOIN ${'menus'}
-        ON ${'menus'}.${'id'} = ${'device_kinds'}.${'menu_id'}
+        JOIN ${'categories'}
+        ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       WHERE ${'device_kinds'}.${'id'} = ${db.param(deviceKindId)}
-      GROUP BY ${'device_kinds'}.${'id'}, ${'menus'}.${'id'}
+      GROUP BY ${'device_kinds'}.${'id'}, ${'categories'}.${'id'}
       `).run(dbPool);
 
     return {

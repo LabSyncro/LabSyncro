@@ -13,7 +13,7 @@ const CategoryOutputDto = Type.Object({
 type CategoryOutputDto = Static<typeof CategoryOutputDto>;
 
 export default defineEventHandler<Promise<CategoryOutputDto>>(async () => {
-  const categories = (await db.select('menus', {}).run(dbPool)).map(({ name, id }) => ({ id, name }));
+  const categories = (await db.select('categories', {}).run(dbPool)).map(({ name, id }) => ({ id, name }));
   return {
     categories,
   };
