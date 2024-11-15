@@ -29,10 +29,10 @@ export default defineEventHandler<
       SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
       FROM ${'devices'}
         JOIN ${'device_kinds'}
-        ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
+        ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'devices'}.${'deleted_at'} IS NULL
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
-      WHERE ${'device_kinds'}.${'id'} = ${db.param(deviceKindId)}
+      WHERE ${'device_kinds'}.${'id'} = ${db.param(deviceKindId)} AND ${'device_kinds'}.${'deleted_at'} IS NULL
       GROUP BY ${'device_kinds'}.${'id'}, ${'categories'}.${'id'}
       `).run(dbPool);
 

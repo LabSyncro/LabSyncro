@@ -15,6 +15,7 @@ export default defineEventHandler<Promise<FacultyOutputDto>>(async () => {
   const faculties = (await db.sql`
     SELECT DISTINCT ${'labs'}.${'faculty'}
     FROM ${'labs'}
+    WHERE ${'labs'}.${'deleted_at'} IS NULL
   `.run(dbPool)).map(({ faculty }, index) => ({ name: faculty, id: index }));
   return {
     faculties,

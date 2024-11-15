@@ -17,7 +17,7 @@ async function insertAvailableQuantityIntoDeviceKind() {
 
   const deviceKindsQuery = await dbClient.query<{
     id: number;
-  }>('SELECT id FROM device_kinds');
+  }>(`SELECT ${'id'} FROM ${'device_kinds'} WHERE ${'device_kinds'}.${'deleted_at'} IS NULL`);
 
   await Promise.all(
     deviceKindsQuery.rows.map(async (deviceKind) => {
@@ -34,9 +34,10 @@ async function insertAvailableQuantityIntoDeviceKind() {
           SUM(devices.quantity)::integer as quantity
         FROM
           devices
-          JOIN labs ON devices.lab_id = labs.id
+          JOIN labs ON devices.lab_id = labs.id AND ${'labs'}.${'deleted_at'} IS NULL
         WHERE
           devices.kind = $1
+          ${'labs'}.${'deleted_at'} IS NULL
         GROUP BY
           labs.name
         )
