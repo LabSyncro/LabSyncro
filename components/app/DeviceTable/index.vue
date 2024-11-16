@@ -56,7 +56,7 @@ const table = useVueTable({
 
 <template>
   <div class="space-y-4">
-    <div class="rounded-md border">
+    <div>
       <Table>
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
