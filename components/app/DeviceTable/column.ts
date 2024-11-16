@@ -29,12 +29,12 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Tên loại thiết bị' }),
+    header: ({ column }) => h(ColumnHeader, { class: 'w-[250px] sm:w-[300px]', column, title: 'Tên loại thiết bị' }),
     cell: ({ row }) =>
       h(
         'div',
         {
-          class: 'justify-center items-start gap-3 inline-flex',
+          class: 'justify-center items-center gap-3 inline-flex',
         },
         [
           h('img', {
@@ -44,7 +44,7 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
           }),
           h(
             'span',
-            { class: 'text-slate-500 text-xs font-normal leading-none' },
+            { class: 'text-slate-500 text-normal leading-5 font-normal leading-none' },
             row.getValue('name'),
           ),
         ],
@@ -78,19 +78,19 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
     accessorKey: 'borrowableQuantity',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Có thể mượn' }),
     cell: ({ row }) => h(
-      'span',
-      { class: 'text-slate-500 text-sm font-normal leading-tight' },
+      'p',
+      { class: 'text-slate-500 text-sm font-normal leading-tight text-right' },
       row.getValue('borrowableQuantity'),
     ),
   },
   {
-    accessorKey: 'totalQuantity',
+    accessorKey: 'quantity',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Tổng' }),
     cell: ({ row }) => {
       return h(
-        'span',
-        { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('totalQuantity'),
+        'p',
+        { class: 'text-slate-500 text-sm font-normal leading-tight text-right' },
+        row.getValue('quantity'),
       );
     },
   },
