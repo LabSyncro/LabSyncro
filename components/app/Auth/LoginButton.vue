@@ -2,7 +2,7 @@
 const { signIn } = useAuth();
 
 const handleLogin = async () => {
-  await signIn('google');
+  await signIn('google', { callbackUrl: '/' });
 };
 </script>
 
