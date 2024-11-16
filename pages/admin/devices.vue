@@ -12,6 +12,7 @@ function setPagination(pageUpdater: (any) => void) {
   paginationState.value = newPage;
 }
 const rowCount = await deviceKindService.getTotalItems();
+const pageCount = computed(() => Math.ceil(rowCount / paginationState.value.pageSize));
 const data = ref<AdminDeviceList[]>([]);
 onMounted(async () => {
   data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize)).deviceKinds;
@@ -59,7 +60,8 @@ watch(paginationState, async () => {
         </div>
       </section>
       <section class="bg-white mt-8 p-4 pb-8">
-        <DeviceTable :columns="columns" :data="data" :row-count="rowCount" :pagination-state="paginationState" :set-pagination="setPagination" />
+        <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
+          :set-pagination="setPagination" />
       </section>
     </main>
   </div>

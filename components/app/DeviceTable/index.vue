@@ -23,7 +23,7 @@ import type { AdminDeviceList } from './schema';
 interface DataTableProps {
   columns: ColumnDef<AdminDeviceList, unknown>[];
   data: AdminDeviceList[];
-  rowCount: number;
+  pageCount: number;
   paginationState: Ref<{ pageIndex: number; pageSize: number }>;
   setPagination: (number) => void;
 }
@@ -57,7 +57,7 @@ const table = useVueTable({
   getFacetedRowModel: getFacetedRowModel(),
   getFacetedUniqueValues: getFacetedUniqueValues(),
   manualPagination: true,
-  rowCount: props.rowCount,
+  pageCount: props.pageCount,
 });
 </script>
 
@@ -91,6 +91,6 @@ const table = useVueTable({
       </Table>
     </div>
 
-    <DataTablePagination :table="table" />
+    <DataTablePagination :table="table" :page-index="paginationState.pageIndex" :page-size="paginationState.pageSize" :page-count="pageCount" />
   </div>
 </template>

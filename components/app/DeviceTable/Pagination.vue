@@ -5,6 +5,9 @@ import type { AdminDeviceList } from './schema';
 
 interface DataTablePaginationProps {
   table: Table<AdminDeviceList>;
+  pageCount: number;
+  pageSize: number;
+  pageIndex: number;
 }
 
 const props = defineProps<DataTablePaginationProps>();
@@ -24,9 +27,9 @@ const handlePageSizeChange = (value: string) => {
         <p class="text-sm font-medium">
           Số hàng
         </p>
-        <Select :model-value="`${table.getState().pagination.pageSize}`" @update:model-value="handlePageSizeChange">
+        <Select :model-value="`${pageSize}`" @update:model-value="handlePageSizeChange">
           <SelectTrigger class="h-8 w-[70px]">
-            <SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
+            <SelectValue :placeholder="`${pageSize}`" />
           </SelectTrigger>
           <SelectContent side="top">
             <SelectItem v-for="pageSize in [10, 20, 30, 40, 50]" :key="pageSize" :value="`${pageSize}`">
@@ -36,26 +39,26 @@ const handlePageSizeChange = (value: string) => {
         </Select>
       </div>
       <div class="flex w-[100px] items-center justify-center text-sm font-medium">
-        Trang {{ table.getState().pagination.pageIndex + 1 }} /
-        {{ table.getPageCount() + 1 }}
+        Trang {{ pageIndex + 1 }} /
+        {{ pageCount + 1 }}
       </div>
       <div class="flex items-center space-x-2">
-        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanPreviousPage()"
+        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === 0"
           @click="table.setPageIndex(0)">
           <span class="sr-only">Đi đến trang đầu</span>
           <ArrowLeft class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()"
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === 0"
           @click="table.previousPage()">
           <span class="sr-only">Đi đến trang trước</span>
           <ChevronLeft class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === pageCount - 1" @click="table.nextPage()">
           <span class="sr-only">Đi đến trang tiếp</span>
           <ChevronRight class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanNextPage()"
-          @click="table.setPageIndex(table.getPageCount() - 1)">
+        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === pageCount - 1"
+          @click="table.setPageIndex(pageCount - 1)">
           <span class="sr-only">Đi đến trang cuối</span>
           <ArrowRight class="h-4 w-4" />
         </Button>
