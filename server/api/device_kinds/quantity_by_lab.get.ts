@@ -2,33 +2,28 @@ import { Type, type Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
 
-const DeviceQuantityOutputDto = Type.Record(Type.String(), Type.Object({
-  branch: Type.String(),
-  room: Type.String(),
-  quantity: Type.Number(),
-}));
+const DeviceQuantityByLabOutputDto = Type.Object({
+  labs: Type.Array(Type.Object({
+    name: Type.String(),
+    branch: Type.String(),
+    room: Type.String(),
+    borrowableQuantity: Type.Number(),
+  })),
+});
 
-type DeviceQuantityOutputDto = Static<typeof DeviceQuantityOutputDto>;
+type DeviceQuantityByLabOutputDto = Static<typeof DeviceQuantityByLabOutputDto>;
 
 export default defineEventHandler<
   { query: { kindId: string } },
-  Promise<DeviceQuantityOutputDto>
+  Promise<DeviceQuantityByLabOutputDto>
 >(async (event) => {
   const { kindId } = getQuery(event);
-  const [quantity] = (await db.sql`
-    SELECT jsonb_object_agg(
-      labs.name,
-      jsonb_build_object('branch', labs.branch, 'room', labs.room, 'quantity', lab_quantity)
-    )
-    FROM ${'device_kinds'},
-      LATERAL jsonb_each(${'device_kinds'}.${'available_quantity'}) as each_pair(lab_id, lab_quantity),
-      LATERAL (
-        SELECT l.${'name'}, l.${'branch'}, l.${'room'}
-        FROM ${'labs'} l
-        WHERE l.${'id'}::text = lab_id
-      ) labs
-    WHERE ${'device_kinds'}.${'id'} = ${db.param(kindId)} AND ${'device_kinds'}.${'deleted_at'} IS NULL
-    GROUP BY ${'device_kinds'}.${'id'}
+  const labs = (await db.sql`
+    SELECT labs.name, labs.branch, labs.room, sum(CASE WHEN devices.status = 'healthy' THEN 1 ELSE 0 END)::int as borrowableQuantity
+    FROM labs
+      JOIN devices ON labs.id = devices.lab_id
+      JOIN device_kinds ON devices.kind = device_kinds.id AND device_kinds.id = ${db.param(kindId)} 
+    GROUP BY labs.id
   `.run(dbPool));
-  return quantity.jsonb_object_agg;
+  return { labs };
 });
