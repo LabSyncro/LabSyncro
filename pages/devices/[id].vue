@@ -99,21 +99,19 @@ const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(dev
           <section class="bg-white p-10 mt-10">
             <h2 class="text-xl">Tồn kho thiết bị</h2>
             <div class="mt-10 text-normal">
-              <div class="grid grid-cols-[2fr_4fr_2fr] bg-gray-100 font-bold p-2.5 gap-3">
-                <p>Cơ sở</p>
+              <div class="grid grid-cols-[4fr_2fr] bg-gray-100 font-bold p-2.5 gap-3">
                 <p>Phòng thí nghiệm</p>
-                <p>Số lượng</p>
+                <p class="text-right">Số lượng</p>
               </div>
-              <div v-for="{ name, branch, room, borrowableQuantity } in deviceQuantityByLabs" :key="name" class="grid grid-cols-[2fr_4fr_2fr] p-2.5 border-top-[1px] border-gray-100 gap-3">
-                <p>{{ branch }}</p>
-                <p>{{ room }} - {{ name }}</p>
-                <p v-if="borrowableQuantity > 0" class="relative text-green-500 pl-6 sm:pl-8">
+              <div v-for="{ name, branch, room, borrowableQuantity } in deviceQuantityByLabs" :key="name" class="grid grid-cols-[2fr_2fr] p-2.5 border-top-[1px] border-gray-100 gap-3">
+                <p>{{ room }}, {{ branch }} - {{ name }}</p>
+                <p v-if="borrowableQuantity > 0" class="relative text-green-500 pl-6 sm:pl-8 text-right">
                   <span class="absolute left-0.5 top-1 bg-green-500 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                     <Icon aria-hidden name="i-heroicons-check" class="text-white text-sm font-bold" />
                   </span>
                   {{ borrowableQuantity }} cái
                 </p>
-                <p v-else class="text-gray-dark flex items-center gap-2">
+                <p v-else class="text-gray-dark flex items-center gap-2 justify-end">
                   <Icon aria-hidden name="i-heroicons-archive-box-x-mark" class="text-md font-bold" />
                   <span>Không có sẵn</span>
                 </p>
