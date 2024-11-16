@@ -32,17 +32,15 @@ const handlePageSizeChange = (value: string) => {
       </div>
       <div class="flex w-[100px] items-center justify-center text-sm font-medium">
         Trang {{ table.getState().pagination.pageIndex + 1 }} /
-        {{ table.getPageCount() }}
+        {{ table.getPageCount() + 1 }}
       </div>
       <div class="flex items-center space-x-2">
-        <Button
-variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanPreviousPage()"
+        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanPreviousPage()"
           @click="table.setPageIndex(0)">
           <span class="sr-only">Đi đến trang đầu</span>
           <ArrowLeft class="h-4 w-4" />
         </Button>
-        <Button
-variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()"
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()"
           @click="table.previousPage()">
           <span class="sr-only">Đi đến trang trước</span>
           <ChevronLeft class="h-4 w-4" />
@@ -51,8 +49,7 @@ variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()"
           <span class="sr-only">Đi đến trang tiếp</span>
           <ChevronRight class="h-4 w-4" />
         </Button>
-        <Button
-variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanNextPage()"
+        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanNextPage()"
           @click="table.setPageIndex(table.getPageCount() - 1)">
           <span class="sr-only">Đi đến trang cuối</span>
           <ArrowRight class="h-4 w-4" />
