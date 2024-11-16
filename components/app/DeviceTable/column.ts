@@ -43,8 +43,8 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
             class: 'w-8 h-8 relative object-cover rounded-lg',
           }),
           h(
-            'span',
-            { class: 'text-slate-500 text-normal leading-5 font-normal leading-none' },
+            'p',
+            { class: 'line-clamp-2 text-slate-500 text-normal leading-5 font-normal leading-none' },
             row.getValue('name'),
           ),
         ],
