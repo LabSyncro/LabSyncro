@@ -75,7 +75,7 @@ const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(dev
                 </div>
                 <div class="mt-8 font-semibold">
                   <span
-                    v-if="deviceKindMeta.quantity > 0"
+                    v-if="deviceKindMeta.borrowableQuantity > 0"
                     class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
                     Sẵn có
                   </span>
