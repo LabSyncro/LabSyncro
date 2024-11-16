@@ -7,7 +7,7 @@ const deviceKindId = computed(() => route.params.id);
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
-const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.value);
+const deviceQuantityByLabs = await deviceKindService.getQuantityByLab(deviceKindId.value);
 </script>
 
 <template>
@@ -103,14 +103,14 @@ const deviceQuantity = await deviceKindService.getQuantityById(deviceKindId.valu
                 <p>Phòng thí nghiệm</p>
                 <p>Số lượng</p>
               </div>
-              <div v-for="[location, { branch, room, quantity }] in Object.entries(deviceQuantity)" :key="location" class="grid grid-cols-[2fr_4fr_2fr] p-2.5 border-top-[1px] border-gray-100 gap-3">
+              <div v-for="{ name, branch, room, borrowableQuantity } in deviceQuantityByLabs" :key="name" class="grid grid-cols-[2fr_4fr_2fr] p-2.5 border-top-[1px] border-gray-100 gap-3">
                 <p>{{ branch }}</p>
-                <p>{{ room }} - {{ location }}</p>
-                <p v-if="quantity > 0" class="relative text-green-500 pl-6 sm:pl-8">
+                <p>{{ room }} - {{ name }}</p>
+                <p v-if="borrowableQuantity > 0" class="relative text-green-500 pl-6 sm:pl-8">
                   <span class="absolute left-0.5 top-1 bg-green-500 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                     <Icon aria-hidden name="i-heroicons-check" class="text-white text-sm font-bold" />
                   </span>
-                  {{ quantity }} cái
+                  {{ borrowableQuantity }} cái
                 </p>
                 <p v-else class="text-slate-darker">Hết hàng</p>
               </div>
