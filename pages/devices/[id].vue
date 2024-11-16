@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { sortBy } from 'lodash-es';
 import { deviceKindService, categoryService } from '~/services';
 
 const route = useRoute();
@@ -7,7 +8,7 @@ const deviceKindId = computed(() => route.params.id);
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
-const deviceQuantityByLabs = await deviceKindService.getQuantityByLab(deviceKindId.value);
+const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity);
 </script>
 
 <template>
@@ -112,7 +113,10 @@ const deviceQuantityByLabs = await deviceKindService.getQuantityByLab(deviceKind
                   </span>
                   {{ borrowableQuantity }} cái
                 </p>
-                <p v-else class="text-slate-darker">Hết hàng</p>
+                <p v-else class="text-gray-dark flex items-center gap-2">
+                  <Icon aria-hidden name="i-heroicons-archive-box-x-mark" class="text-md font-bold" />
+                  <span>Không có sẵn</span>
+                </p>
               </div>
             </div>
           </section>
