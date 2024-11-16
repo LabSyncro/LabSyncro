@@ -62,6 +62,7 @@ const table = useVueTable({
   getFacetedUniqueValues: getFacetedUniqueValues(),
   manualPagination: true,
   rowCount: props.rowCount,
+  autoResetPageIndex: true,
 });
 </script>
 
