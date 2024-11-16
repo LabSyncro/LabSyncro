@@ -44,7 +44,7 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
           }),
           h(
             'p',
-            { class: 'line-clamp-2 text-slate-500 text-normal leading-5 font-normal leading-none' },
+            { class: 'line-clamp-2 text-slate-500 text-normal leading-6 font-normal leading-none' },
             row.getValue('name'),
           ),
         ],
