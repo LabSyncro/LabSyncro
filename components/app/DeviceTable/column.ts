@@ -38,7 +38,7 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
         },
         [
           h('img', {
-            src: row.original.image,
+            src: row.original.mainImage,
             alt: row.original.name,
             class: 'w-8 h-8 relative object-cover rounded-lg',
           }),

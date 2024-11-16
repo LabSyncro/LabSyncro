@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { columns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
+import { deviceKindService } from '~/services';
 
-const data = ref<AdminDeviceList[]>([]);
+const data = ref<AdminDeviceList[]>((await deviceKindService.getDeviceKinds(5, 5)).deviceKinds);
 </script>
 
 <template>

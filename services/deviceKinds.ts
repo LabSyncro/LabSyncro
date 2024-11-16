@@ -8,6 +8,14 @@ export const deviceKindService = {
       },
     }));
   },
+  async getDeviceKinds(offset: number, length: number): Promise<{ id: number, name: string, quantity: number }[]> {
+    return (await $fetch('/api/device_kinds', {
+      query: {
+        offset,
+        length,
+      },
+    }));
+  },
   async getTotalItems(categoryId: number): Promise<number> {
     return (await $fetch('/api/device_kinds', {
       query: {
