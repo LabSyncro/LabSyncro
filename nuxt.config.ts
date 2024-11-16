@@ -36,9 +36,6 @@ export default defineNuxtConfig({
   },
   components: [
     {
-      path: './components/common',
-    },
-    {
       path: './components/app',
     },
   ],

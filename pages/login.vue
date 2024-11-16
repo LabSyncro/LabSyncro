@@ -1,3 +1,9 @@
+<script lang="ts">
+definePageMeta({
+  layout: 'auth'
+});
+</script>
+
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="max-w-md w-full space-y-8 p-8">
@@ -10,7 +16,7 @@
         <AuthLoginForm />
         <div class="relative">
           <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-300"/>
+            <div class="w-full border-t border-gray-300" />
           </div>
           <div class="relative flex justify-center text-sm">
             <span class="px-2 bg-gray-50 text-gray-500">Or continue with</span>

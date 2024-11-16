@@ -22,7 +22,12 @@ export default NuxtAuthHandler({
         if (!credentials?.email || !credentials?.password) return null;
 
         const users = [
-          { id: '1', name: 'J Smith', email: 'jsmith', password: 'hunter2' },
+          {
+            id: '1',
+            name: 'J Smith',
+            email: 'jsmith@gmail.com',
+            password: 'hunter2',
+          },
         ];
         const user = users.find((u) => u.email === credentials.email);
         if (!user) return null;
