@@ -23,6 +23,10 @@ import type { AdminDeviceList } from './schema';
 interface DataTableProps {
   columns: ColumnDef<AdminDeviceList, unknown>[];
   data: AdminDeviceList[];
+  rowCount: number;
+  pageIndex: number;
+  pageSize: number;
+  setPagination: (number) => void;
 }
 const props = defineProps<DataTableProps>();
 
@@ -39,18 +43,25 @@ const table = useVueTable({
     get columnFilters() { return columnFilters.value; },
     get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
+    pagination: {
+      pageIndex: props.pageIndex,
+      pageSize: props.pageSize,
+    },
   },
   enableRowSelection: true,
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
   onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
+  onPaginationChange: props.setPagination,
   getCoreRowModel: getCoreRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
   getSortedRowModel: getSortedRowModel(),
   getFacetedRowModel: getFacetedRowModel(),
   getFacetedUniqueValues: getFacetedUniqueValues(),
+  manualPagination: true,
+  rowCount: props.rowCount,
 });
 </script>
 
