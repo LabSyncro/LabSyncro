@@ -1,6 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import type { Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
+import { BAD_REQUEST_CODE } from '~/constants';
 import { dbPool } from '~/server/db';
 
 const DeviceKindOutputDto = Type.Object({
@@ -21,10 +22,16 @@ const DeviceKindOutputDto = Type.Object({
 type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
 
 export default defineEventHandler<
-  { query: { category_id?: number, offset: number, length: number } },
+  { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_kind_id' | 'device_name')[] } },
   Promise<DeviceKindOutputDto>
 >(async (event) => {
-  const { category_id: categoryId, offset, length } = getQuery(event);
+  const { category_id: categoryId, offset, length, search_text: searchText, search_fields: searchFields } = getQuery(event);
+  if (searchText !== undefined && !searchFields) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request',
+    });
+  }
   if (typeof categoryId === 'string') {
     const deviceKinds = await (db.sql`
       SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
