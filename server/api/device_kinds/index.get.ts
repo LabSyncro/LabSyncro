@@ -22,7 +22,7 @@ const DeviceKindOutputDto = Type.Object({
 type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
 
 export default defineEventHandler<
-  { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_kind_id' | 'device_name')[] } },
+  { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_name')[] } },
   Promise<DeviceKindOutputDto>
 >(async (event) => {
   const { category_id: categoryId, offset, length, search_text: searchText, search_fields: searchFields } = getQuery(event);
@@ -41,24 +41,24 @@ export default defineEventHandler<
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))} AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
-        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
-        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
-        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
-      `) : db.raw('')}
+        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+      )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
       `).run(dbPool);
     const [{ quantity: totalRecords }] = await (db.sql`
-      SELECT count(*) as quantity
-      FROM ${'device_kinds'}
+      SELECT COUNT (DISTINCT ${'device_kinds'}.${'id'}) as quantity
+      FROM ${'devices'}
+      JOIN ${'device_kinds'}
+      ON ${'device_kinds'}.${'id'} = ${'devices'}.${'kind'}
       WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))}
-        AND EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL AND ${'devices'}.${'deleted_at'} IS NULL) ${searchText !== undefined ? db.raw(`AND (
-        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
-        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
-        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
-      `) : db.raw('')}
+        AND ${'device_kinds'}.${'deleted_at'} IS NULL AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
+        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+        )`) : db.raw('')}
       `).run(dbPool);
     const totalPages = Math.ceil(totalRecords / length);
     const currentPage = Math.floor(offset / length);
@@ -76,24 +76,24 @@ export default defineEventHandler<
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       WHERE ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
-        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
-        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
-        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
-      `) : db.raw('')}
+        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+      )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
     `).run(dbPool);
   const [{ quantity: totalRecords }] = await (db.sql`
-      SELECT count(*) as quantity
-      FROM ${'device_kinds'}
-      WHERE EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'devices'}.${'deleted_at'} IS NULL AND ${'device_kinds'}.${'deleted_at'} IS NULL) ${searchText !== undefined ? db.raw(`AND (
-        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
-        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
-        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
-      `) : db.raw('')}
-      `).run(dbPool);
+    SELECT COUNT (DISTINCT ${'device_kinds'}.${'id'}) as quantity
+    FROM ${'devices'}
+    JOIN ${'device_kinds'}
+    ON ${'device_kinds'}.${'id'} = ${'devices'}.${'kind'}
+    WHERE ${'devices'}.${'deleted_at'} IS NULL AND ${'device_kinds'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
+      (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
+      (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+    )`) : db.raw('')}
+    `).run(dbPool);
   const totalPages = Math.ceil(totalRecords / length);
   const currentPage = Math.floor(offset / length);
   return {

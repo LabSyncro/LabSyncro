@@ -12,14 +12,17 @@ function setPagination(pageUpdater: (any) => void) {
   const newPage = pageUpdater(paginationState.value);
   paginationState.value = newPage;
 }
-const rowCount = await deviceKindService.getTotalItems();
-const pageCount = computed(() => Math.ceil(rowCount / paginationState.value.pageSize));
+const pageCount = ref(0);
 const data = ref<AdminDeviceList[]>([]);
 onMounted(async () => {
-  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_kind_id', 'device_name'])).deviceKinds;
+  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
+  data.value = res.device_kinds;
+  pageCount.value = res.totalPages;
 });
 watch([paginationState, searchText], async () => {
-  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_kind_id', 'device_name'])).deviceKinds;
+  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
+  data.value = res.device_kinds;
+  pageCount.value = res.totalPages;
 });
 </script>
 
