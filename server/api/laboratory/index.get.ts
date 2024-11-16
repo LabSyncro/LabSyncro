@@ -29,8 +29,8 @@ export default defineEventHandler<
     SELECT DISTINCT ${'labs'}.${'branch'}, ${'labs'}.${'room'}, ${'labs'}.${'timetable'}, ${'labs'}.${'admin_id'}, ${'labs'}.${'name'}, ${'users'}.${'name'} as admin_name, ${'users'}.${'email'} as admin_email, ${'users'}.${'tel'} as admin_tel
     FROM ${'labs'}
       JOIN ${'users'}
-      ON ${'labs'}.${'admin_id'} = ${'users'}.${'id'}
-    WHERE ${'labs'}.${'faculty'} = ${db.param(faculty)}
+      ON ${'labs'}.${'admin_id'} = ${'users'}.${'id'} AND ${'users'}.${'deleted_at'} IS NULL
+    WHERE ${'labs'}.${'faculty'} = ${db.param(faculty)} AND ${'labs'}.${'deleted_at'} IS NULL
   `.run(dbPool)).map(({ branch, room, timetable, admin_id, name, admin_name, admin_email, admin_tel }) => ({ branch, room, timetable, adminId: admin_id, name, adminName: admin_name, adminEmail: admin_email, adminTel: admin_tel }));
   const _branches = groupBy(labs, (lab) => lab.branch);
   const branches = [];

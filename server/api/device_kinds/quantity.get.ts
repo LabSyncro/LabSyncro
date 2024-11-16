@@ -27,7 +27,7 @@ export default defineEventHandler<
         FROM ${'labs'} l
         WHERE l.${'id'}::text = lab_id
       ) labs
-    WHERE ${'device_kinds'}.${'id'} = ${db.param(kindId)}
+    WHERE ${'device_kinds'}.${'id'} = ${db.param(kindId)} AND ${'device_kinds'}.${'deleted_at'} IS NULL
     GROUP BY ${'device_kinds'}.${'id'}
   `.run(dbPool));
   return quantity.jsonb_object_agg;
