@@ -16,12 +16,12 @@ const pageCount = ref(0);
 const data = ref<AdminDeviceList[]>([]);
 onMounted(async () => {
   const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
-  data.value = res.device_kinds;
+  data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
 });
 watch([paginationState, searchText], async () => {
   const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
-  data.value = res.device_kinds;
+  data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
 });
 </script>
