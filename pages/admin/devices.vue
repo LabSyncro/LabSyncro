@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { debounce } from 'lodash-es';
 import { columns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
 import { deviceKindService } from '~/services';
@@ -14,16 +15,13 @@ function setPagination(pageUpdater: (any) => void) {
 }
 const pageCount = ref(0);
 const data = ref<AdminDeviceList[]>([]);
-onMounted(async () => {
+const updateDeviceKinds = debounce(async () => {
   const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
   data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
-});
-watch([paginationState, searchText], async () => {
-  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
-  data.value = res.deviceKinds;
-  pageCount.value = res.totalPages;
-});
+}, 300);
+onMounted(updateDeviceKinds);
+watch([paginationState, searchText], updateDeviceKinds);
 </script>
 
 <template>

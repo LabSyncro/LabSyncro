@@ -34,7 +34,7 @@ export default defineEventHandler<
   }
   if (typeof categoryId === 'string') {
     const deviceKinds = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
+      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as categorydevice_kin
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL

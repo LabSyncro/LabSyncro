@@ -1,3 +1,4 @@
+import { NuxtLink } from '#components';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import ColumnHeader from './ColumnHeader.vue';
@@ -32,9 +33,10 @@ export const columns: ColumnDef<AdminDeviceList>[] = [
     header: ({ column }) => h(ColumnHeader, { class: 'w-[250px] sm:w-[300px]', column, title: 'Tên loại thiết bị' }),
     cell: ({ row }) =>
       h(
-        'div',
+        NuxtLink,
         {
           class: 'justify-center items-center gap-3 inline-flex',
+          href: `/devices/${row.original.id}`,
         },
         [
           h('img', {
