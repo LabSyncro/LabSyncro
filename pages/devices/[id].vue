@@ -12,6 +12,10 @@ const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 const allCategories = await categoryService.getCategories();
 const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity).map(({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` }));
 const data = ref(deviceQuantityByLabs);
+
+definePageMeta({
+  middleware: ['auth']
+});
 </script>
 
 <template>
