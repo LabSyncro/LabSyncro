@@ -59,7 +59,25 @@ watch(paginationState, async () => {
           </div>
         </div>
       </section>
-      <section class="bg-white mt-8 p-4 pb-8">
+      <section class="bg-white mt-8 p-4 py-8 pb-8">
+        <div class="flex justify-between items-stretch">
+          <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
+            <input type="search" placeholder="Nhập tên/mã thiết bị"
+              class="border-gray-300 border rounded-sm p-2 pl-10 min-w-[300px]">
+            <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+              name="i-heroicons-magnifying-glass" />
+            <button class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto lg:h-auto">
+              <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
+              <p class="hidden lg:block pl-10 pr-3">Quét QR thiết bị</p>
+            </button>
+          </div>
+          <div>
+            <button class="relative bg-tertiary-darker items-center text-white h-11 px-3 pl-10 rounded-md">
+              <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
+              <span>Bổ sung thiết bị</span>
+            </button>
+          </div>
+        </div>
         <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
           :set-pagination="setPagination" />
       </section>
