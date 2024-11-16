@@ -3,20 +3,21 @@ import { columns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
 import { deviceKindService } from '~/services';
 
-const pageIndex = ref(0);
-const pageSize = ref(10);
-function setPagination(pageUpdater: (any) => any) {
-  const newPage = pageUpdater({ pageIndex: pageIndex.value, pageSize: pageSize.value });
-  pageIndex.value = newPage.pageIndex;
-  pageSize.value = newPage.pageSize;
+const paginationState = ref({
+  pageIndex: 0,
+  pageSize: 10,
+});
+function setPagination(pageUpdater: (any) => void) {
+  const newPage = pageUpdater(paginationState.value);
+  paginationState.value = newPage;
 }
 const rowCount = await deviceKindService.getTotalItems();
 const data = ref<AdminDeviceList[]>([]);
 onMounted(async () => {
-  data.value = (await deviceKindService.getDeviceKinds(pageIndex.value * pageSize.value, pageSize.value)).deviceKinds;
+  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize)).deviceKinds;
 });
-watch([pageIndex, pageSize], async () => {
-  data.value = (await deviceKindService.getDeviceKinds(pageIndex.value * pageSize.value, pageSize.value)).deviceKinds;
+watch(paginationState, async () => {
+  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize)).deviceKinds;
 });
 </script>
 
@@ -58,8 +59,7 @@ watch([pageIndex, pageSize], async () => {
         </div>
       </section>
       <section class="bg-white mt-8 p-4 pb-8">
-        <DeviceTable :columns="columns" :data="data" :row-count="rowCount" :page-index="pageIndex" :page-size="pageSize"
-          :set-pagination="setPagination" />
+        <DeviceTable :columns="columns" :data="data" :row-count="rowCount" :pagination-state="paginationState" :set-pagination="setPagination" />
       </section>
     </main>
   </div>

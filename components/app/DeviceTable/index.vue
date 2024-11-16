@@ -24,8 +24,7 @@ interface DataTableProps {
   columns: ColumnDef<AdminDeviceList, unknown>[];
   data: AdminDeviceList[];
   rowCount: number;
-  pageIndex: number;
-  pageSize: number;
+  paginationState: Ref<{ pageIndex: number; pageSize: number }>;
   setPagination: (number) => void;
 }
 const props = defineProps<DataTableProps>();
@@ -43,10 +42,7 @@ const table = useVueTable({
     get columnFilters() { return columnFilters.value; },
     get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
-    pagination: {
-      pageIndex: props.pageIndex,
-      pageSize: props.pageSize,
-    },
+    paginationState: props.paginationState,
   },
   enableRowSelection: true,
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
@@ -62,7 +58,6 @@ const table = useVueTable({
   getFacetedUniqueValues: getFacetedUniqueValues(),
   manualPagination: true,
   rowCount: props.rowCount,
-  autoResetPageIndex: true,
 });
 </script>
 
