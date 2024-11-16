@@ -5,8 +5,8 @@ export const deviceKindService = {
         category_id: categoryId,
         offset,
         length,
-        searchText,
-        searchFields,
+        search_text: searchText,
+        search_fields: searchFields,
       },
     }));
   },
@@ -15,8 +15,8 @@ export const deviceKindService = {
       query: {
         offset,
         length,
-        searchText,
-        searchFields,
+        search_text: searchText,
+        search_fields: searchFields,
       },
     }));
   },
