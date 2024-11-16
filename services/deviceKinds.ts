@@ -1,18 +1,22 @@
 export const deviceKindService = {
-  async getDeviceKindsByCategoryId(categoryId: number, offset: number, length: number): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKindsByCategoryId(categoryId: number, offset: number, length: number, searchText: string | undefined = undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[]): Promise<{ id: number, name: string, quantity: number }[]> {
     return (await $fetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
         offset,
         length,
+        searchText,
+        searchFields,
       },
     }));
   },
-  async getDeviceKinds(offset: number, length: number): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKinds(offset: number, length: number, searchText: string | undefined = undefined, searchFields: ('device_id'  | 'device_kind_id' | 'device_name')[]): Promise<{ id: number, name: string, quantity: number }[]> {
     return (await $fetch('/api/device_kinds', {
       query: {
         offset,
         length,
+        searchText,
+        searchFields,
       },
     }));
   },

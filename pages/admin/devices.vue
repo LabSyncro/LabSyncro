@@ -7,6 +7,7 @@ const paginationState = ref({
   pageIndex: 0,
   pageSize: 10,
 });
+const searchText = ref('');
 function setPagination(pageUpdater: (any) => void) {
   const newPage = pageUpdater(paginationState.value);
   paginationState.value = newPage;
@@ -15,13 +16,11 @@ const rowCount = await deviceKindService.getTotalItems();
 const pageCount = computed(() => Math.ceil(rowCount / paginationState.value.pageSize));
 const data = ref<AdminDeviceList[]>([]);
 onMounted(async () => {
-  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize)).deviceKinds;
+  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_kind_id', 'device_name'])).deviceKinds;
 });
-watch(paginationState, async () => {
-  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize)).deviceKinds;
+watch([paginationState, searchText], async () => {
+  data.value = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_kind_id', 'device_name'])).deviceKinds;
 });
-
-const searchText = ref('');
 </script>
 
 <template>
@@ -64,11 +63,12 @@ const searchText = ref('');
       <section class="bg-white mt-8 p-4 py-8 pb-8">
         <div class="flex justify-between items-stretch">
           <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
-            <input type="search" placeholder="Nhập tên/mã thiết bị"
-              class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]" v-model="searchText">
+            <input v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
+              class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]">
             <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
               name="i-heroicons-magnifying-glass" />
-            <button class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
+            <button
+              class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
               <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
               <p class="hidden lg:block pl-10 pr-3">Quét QR thiết bị</p>
             </button>
@@ -77,7 +77,8 @@ const searchText = ref('');
             </button>
           </div>
           <div>
-            <button class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto">
+            <button
+              class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto">
               <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
               <span class="hidden md:block pl-8 pr-3">Bổ sung thiết bị</span>
             </button>
