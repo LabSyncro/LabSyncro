@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { sortBy } from 'lodash-es';
 import { deviceKindService, categoryService } from '~/services';
+import { columns } from '~/components/app/DeviceInventoryByLabTable/column';
+import type { DeviceByLab } from '~/components/app/DeviceInventoryByLabTable/schema';
 
 const route = useRoute();
 const deviceKindId = computed(() => route.params.id);
@@ -8,11 +10,8 @@ const deviceKindId = computed(() => route.params.id);
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
-const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity);
-
-definePageMeta({
-  middleware: ['auth']
-});
+const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity).map(({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` }));
+const data = ref(deviceQuantityByLabs);
 </script>
 
 <template>
@@ -46,13 +45,11 @@ definePageMeta({
         <div class="lg:block hidden">
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
-            <NuxtLink
-v-for="category in allCategories" :key="category.id"
+            <NuxtLink v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${Number.parseInt(deviceKindMeta.categoryId) === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
-              <Icon
-v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
+              <Icon v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -62,8 +59,7 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
             <div class="w-[100%] md:max-w-[300px]">
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
-                <NuxtImg
-v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
+                <NuxtImg v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
                   class="border-[1px] border-gray-200" />
               </div>
             </div>
@@ -79,8 +75,7 @@ v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
                   <p>{{ deviceKindMeta.brand || 'Không rõ' }}</p>
                 </div>
                 <div class="mt-8 font-semibold">
-                  <span
-v-if="deviceKindMeta.borrowableQuantity > 0"
+                  <span v-if="deviceKindMeta.borrowableQuantity > 0"
                     class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
                     Sẵn có
                   </span>
@@ -101,29 +96,8 @@ v-if="deviceKindMeta.borrowableQuantity > 0"
             </div>
           </section>
           <section class="bg-white p-10 mt-10">
-            <h2 class="text-xl">Tồn kho thiết bị</h2>
-            <div class="mt-10 text-normal">
-              <div class="grid grid-cols-[4fr_2fr] bg-gray-100 font-bold p-2.5 gap-3">
-                <p>Phòng thí nghiệm</p>
-                <p class="text-right">Số lượng</p>
-              </div>
-              <div
-v-for="{ name, branch, room, borrowableQuantity } in deviceQuantityByLabs" :key="name"
-                class="grid grid-cols-[2fr_2fr] p-2.5 border-top-[1px] border-gray-100 gap-3">
-                <p>{{ room }}, {{ branch }} - {{ name }}</p>
-                <p v-if="borrowableQuantity > 0" class="relative text-green-500 pl-6 sm:pl-8 text-right">
-                  <span
-                    class="absolute left-0.5 top-1 bg-green-500 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
-                    <Icon aria-hidden name="i-heroicons-check" class="text-white text-sm font-bold" />
-                  </span>
-                  {{ borrowableQuantity }} cái
-                </p>
-                <p v-else class="text-gray-dark flex items-center gap-2 justify-end">
-                  <Icon aria-hidden name="i-heroicons-archive-box-x-mark" class="text-md font-bold" />
-                  <span>Không có sẵn</span>
-                </p>
-              </div>
-            </div>
+            <h2 class="text-xl mb-8">Tồn kho thiết bị</h2>
+            <DeviceInventoryByLabTable :columns="columns" :data="data" />
           </section>
         </div>
       </div>

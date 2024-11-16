@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
 import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-vue-next';
-import type { BorrowReturnDevice } from './schema';
+import type { AdminDeviceList } from './schema';
 
 interface DataTablePaginationProps {
-  table: Table<BorrowReturnDevice>
+  table: Table<AdminDeviceList>;
 }
 
 const props = defineProps<DataTablePaginationProps>();
@@ -16,15 +16,9 @@ const handlePageSizeChange = (value: string) => {
 
 <template>
   <div class="flex items-center justify-between px-2">
-    <div class="flex-1 text-sm text-muted-foreground">
-      {{ table.getFilteredSelectedRowModel().rows.length }} of
-      {{ table.getFilteredRowModel().rows.length }} row(s) selected.
-    </div>
+    <div class="flex-1 text-sm text-muted-foreground" />
     <div class="flex items-center space-x-6 lg:space-x-8">
       <div class="flex items-center space-x-2">
-        <p class="text-sm font-medium">
-          Số hàng
-        </p>
         <Select :model-value="`${table.getState().pagination.pageSize}`" @update:model-value="handlePageSizeChange">
           <SelectTrigger class="h-8 w-[70px]">
             <SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
