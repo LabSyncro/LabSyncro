@@ -13,6 +13,10 @@ watch(categoryId, async () => {
 }, { immediate: true });
 
 const allCategories = await categoryService.getCategories();
+
+definePageMeta({
+  middleware: ['auth']
+});
 </script>
 
 <template>

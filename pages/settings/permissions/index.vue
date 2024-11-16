@@ -3,7 +3,8 @@ import { Lock, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 definePageMeta({
-  layout: 'setting'
+  layout: 'setting',
+  middleware: ['auth']
 });
 
 const permissions = ref([
