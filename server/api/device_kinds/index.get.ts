@@ -40,7 +40,11 @@ export default defineEventHandler<
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
-      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))} AND ${'devices'}.${'deleted_at'} IS NULL
+      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))} AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
+        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
+        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
+        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
+      `) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
@@ -50,7 +54,11 @@ export default defineEventHandler<
       SELECT count(*) as quantity
       FROM ${'device_kinds'}
       WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))}
-        AND EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL AND ${'devices'}.${'deleted_at'} IS NULL)
+        AND EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL AND ${'devices'}.${'deleted_at'} IS NULL) ${searchText !== undefined ? db.raw(`AND (
+        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
+        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
+        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
+      `) : db.raw('')}
       `).run(dbPool);
     const totalPages = Math.ceil(totalRecords / length);
     const currentPage = Math.floor(offset / length);
@@ -67,7 +75,11 @@ export default defineEventHandler<
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
-      WHERE ${'devices'}.${'deleted_at'} IS NULL
+      WHERE ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
+        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
+        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
+        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
+      `) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${'device_kinds'}.${'id'}
       LIMIT ${db.param(length)}
@@ -76,7 +88,11 @@ export default defineEventHandler<
   const [{ quantity: totalRecords }] = await (db.sql`
       SELECT count(*) as quantity
       FROM ${'device_kinds'}
-      WHERE EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'devices'}.${'deleted_at'} IS NULL AND ${'device_kinds'}.${'deleted_at'} IS NULL)
+      WHERE EXISTS (SELECT * FROM ${'devices'} WHERE ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'devices'}.${'deleted_at'} IS NULL AND ${'device_kinds'}.${'deleted_at'} IS NULL) ${searchText !== undefined ? db.raw(`AND (
+        (${db.param(searchFields?.includes('device_id')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.id) OR
+        (${db.param(searchFields?.includes('device_kind_id')) || false} AND '%${db.param(searchText)}%' LIKE devices.id) OR
+        (${db.param(searchFields?.includes('device_name')) || false} AND '%${db.param(searchText)}%' LIKE device_kinds.name)
+      `) : db.raw('')}
       `).run(dbPool);
   const totalPages = Math.ceil(totalRecords / length);
   const currentPage = Math.floor(offset / length);
