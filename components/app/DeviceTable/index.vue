@@ -25,11 +25,12 @@ interface DataTableProps {
   data: AdminDeviceList[];
   pageCount: number;
   paginationState: Ref<{ pageIndex: number; pageSize: number }>;
-  setPagination: (number) => void;
+  setPagination: (unknown) => void;
+  sortingState: Ref<SortingState>;
+  setSorting: (SortingState) => void;
 }
 const props = defineProps<DataTableProps>();
 
-const sorting = ref<SortingState>([]);
 const columnFilters = ref<ColumnFiltersState>([]);
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
@@ -38,14 +39,17 @@ const table = useVueTable({
   get data() { return props.data; },
   get columns() { return props.columns; },
   state: {
-    get sorting() { return sorting.value; },
+    sorting: props.sortingState,
     get columnFilters() { return columnFilters.value; },
     get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
     paginationState: props.paginationState,
   },
+  manualPagination: true,
+  pageCount: props.pageCount,
+  manualSorting: true,
   enableRowSelection: true,
-  onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
+  onSortingChange: props.setSorting,
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
   onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
@@ -56,8 +60,6 @@ const table = useVueTable({
   getSortedRowModel: getSortedRowModel(),
   getFacetedRowModel: getFacetedRowModel(),
   getFacetedUniqueValues: getFacetedUniqueValues(),
-  manualPagination: true,
-  pageCount: props.pageCount,
 });
 </script>
 

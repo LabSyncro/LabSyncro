@@ -1,19 +1,27 @@
 <script setup lang="ts">
+import type { SortingState } from '@tanstack/vue-table';
 import { debounce } from 'lodash-es';
 import { columns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
 import { deviceKindService } from '~/services';
 
+const searchText = ref('');
+
 const paginationState = ref({
   pageIndex: 0,
   pageSize: 10,
 });
-const searchText = ref('');
 function setPagination(pageUpdater: (any) => void) {
   const newPage = pageUpdater(paginationState.value);
   paginationState.value = newPage;
 }
 const pageCount = ref(0);
+
+const sortingState = ref<SortingState>([]);
+function setSorting(updater: (SortingState) => SortingState) {
+  sortingState.value = updater(sortingStae.value);
+}
+
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
   const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
@@ -85,8 +93,10 @@ watch([paginationState, searchText], updateDeviceKinds);
             </button>
           </div>
         </div>
-        <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
-          :set-pagination="setPagination" />
+        <DeviceTable :columns="columns" :data="data"
+          :page-count="pageCount" :pagination-state="paginationState" :set-pagination="setPagination"
+          :sorting-state="sortingState" :set-sorting="setSorting"
+        />
       </section>
     </main>
   </div>
