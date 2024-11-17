@@ -52,7 +52,7 @@ export default defineEventHandler<
         (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
       )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
-      ORDER BY ${sortField ? db.raw(`${sortField} ${desc ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
+      ORDER BY ${sortField ? db.raw(`${sortField} ${desc === 'true' ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
       `).run(dbPool);
@@ -87,7 +87,7 @@ export default defineEventHandler<
         (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
       )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
-      ORDER BY ${sortField ? db.raw(`${sortField} ${desc ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
+      ORDER BY ${sortField ? db.raw(`${sortField} ${desc === 'true' ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
     `).run(dbPool);

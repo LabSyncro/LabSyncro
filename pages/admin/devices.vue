@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SortingState } from '@tanstack/vue-table';
 import { debounce } from 'lodash-es';
-import { columns } from '~/components/app/DeviceTable/column';
+import { createColumns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
 import { deviceKindService } from '~/services';
 
@@ -25,31 +25,23 @@ function handlePageSizeChange(value) {
 }
 const pageCount = ref(0);
 
-const sortingState = ref<SortingState>([]);
-function setSorting(updater: (SortingState) => SortingState) {
-  const newValue = updater(sortingState.value);
-  sortingState.value = newValue;
+const sortField = ref(undefined);
+const sortOrder = ref(undefined);
+function handleSortFieldChange(value: string | undefined) {
+  sortField.value = value;
 }
-const sortField = computed(() => {
-  switch (sortingState.value[0]?.id) {
-  case 'borrowableQuantity':
-    return 'borrowable_quantity';
-  default:
-    return sortingState.value[0]?.id;
-  }
-});
-const isDesc = computed(() => {
-  return sortingState.value[0]?.desc || false;
-});
+function handleSortOrderChange(value: 'desc' | 'asc' | undefined) {
+  sortOrder.value = value;
+}
 
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
-  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value, desc: isDesc.value }));
+  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value, desc: sortOrder.value === 'asc' }));
   data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
 }, 300);
 onMounted(updateDeviceKinds);
-watch([paginationState, searchText, sortField, isDesc], updateDeviceKinds);
+watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
 </script>
 
 <template>
@@ -113,9 +105,10 @@ watch([paginationState, searchText, sortField, isDesc], updateDeviceKinds);
             </button>
           </div>
         </div>
-        <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
-          :sorting-state="sortingState" :set-sorting="setSorting"
-          @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange" />
+        <DeviceTable :columns="createColumns({ sortField, sortOrder })" :data="data" :page-count="pageCount"
+          :pagination-state="paginationState" @page-index-change="handlePageIndexChange"
+          @page-size-change="handlePageSizeChange" @sort-order-change="handleSortOrderChange"
+          @sort-field-change="handleSortFieldChange" />
       </section>
     </main>
   </div>

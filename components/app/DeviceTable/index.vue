@@ -2,7 +2,6 @@
 import type {
   ColumnDef,
   ColumnFiltersState,
-  SortingState,
   VisibilityState,
 } from '@tanstack/vue-table';
 
@@ -24,14 +23,17 @@ interface DataTableProps {
   columns: ColumnDef<AdminDeviceList, unknown>[];
   data: AdminDeviceList[];
   pageCount: number;
-  paginationState: Ref<{ pageIndex: number; pageSize: number }>;
-  sortingState: Ref<SortingState>;
-  setSorting: (SortingState) => void;
+  paginationState: { pageIndex: number; pageSize: number };
+  sortField: string | undefined;
+  sortOrder: 'desc' | 'asc' | undefined;
 }
+
 const props = defineProps<DataTableProps>();
 const emits = defineEmits<{
   'page-size-change': [number];
   'page-index-change': [number];
+  'sort-field-change': [string | undefined];
+  'sort-order-change': ['desc' | 'asc' | undefined];
 }>();
 
 const columnFilters = ref<ColumnFiltersState>([]);
@@ -42,17 +44,14 @@ const table = useVueTable({
   get data() { return props.data; },
   get columns() { return props.columns; },
   state: {
-    sorting: props.sortingState,
     get columnFilters() { return columnFilters.value; },
     get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
-    paginationState: props.paginationState,
   },
   manualPagination: true,
   pageCount: props.pageCount,
   manualSorting: true,
   enableRowSelection: true,
-  onSortingChange: props.setSorting,
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
   onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
@@ -73,7 +72,9 @@ const table = useVueTable({
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
               <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
-                :props="header.getContext()" />
+                :props="header.getContext()"
+                @sort-order-change="(value) => emits('sort-order-change', value)"
+                @sort-field-change="(value) => emits('sort-field-change', value)" />
             </TableHead>
           </TableRow>
         </TableHeader>
