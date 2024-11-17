@@ -4,18 +4,26 @@ import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-vue-nex
 import type { AdminDeviceList } from './schema';
 
 interface DataTablePaginationProps {
-  table: Table<AdminDeviceList>;
   pageCount: number;
   pageSize: number;
   pageIndex: number;
+  table: Table<AdminDeviceList>;
 }
 
 const props = defineProps<DataTablePaginationProps>();
+const emits = defineEmits<{
+  'page-size-change': [number];
+  'page-index-change': [number];
+}>();
 
-const handlePageSizeChange = (value: string) => {
-  props.table.setPageSize(Number(value));
-  props.table.resetPageIndex(true);
+
+function handlePageSizeChange (value: string) {
+  emits('page-index-change', 0);
+  emits('page-size-change', Number(value));
 };
+function handlePageIndexChange (value: number) {
+  emits('page-index-change', value);
+}
 </script>
 
 <template>
@@ -45,21 +53,21 @@ const handlePageSizeChange = (value: string) => {
       </div>
       <div class="flex items-center space-x-2">
         <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === 0"
-          @click="table.setPageIndex(0)">
+          @click="handlePageIndexChange(0)">
           <span class="sr-only">Đi đến trang đầu</span>
           <ArrowLeft class="h-4 w-4" />
         </Button>
         <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === 0"
-          @click="table.setPageIndex(pageIndex - 1)">
+          @click="handlePageIndexChange(pageIndex - 1)">
           <span class="sr-only">Đi đến trang trước</span>
           <ChevronLeft class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === pageCount - 1" @click="table.setPageIndex(pageIndex + 1)">
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === pageCount - 1" @click="handlePageIndexChange(pageIndex + 1)">
           <span class="sr-only">Đi đến trang tiếp</span>
           <ChevronRight class="h-4 w-4" />
         </Button>
         <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === pageCount - 1"
-          @click="table.setPageIndex(pageCount - 1)">
+          @click="handlePageIndexChange(pageCount - 1)">
           <span class="sr-only">Đi đến trang cuối</span>
           <ArrowRight class="h-4 w-4" />
         </Button>

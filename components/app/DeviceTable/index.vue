@@ -30,6 +30,10 @@ interface DataTableProps {
   setSorting: (SortingState) => void;
 }
 const props = defineProps<DataTableProps>();
+const emits = defineEmits<{
+  'page-size-change': [number];
+  'page-index-change': [number];
+}>();
 
 const columnFilters = ref<ColumnFiltersState>([]);
 const columnVisibility = ref<VisibilityState>({});
@@ -70,7 +74,8 @@ const table = useVueTable({
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
-              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
+              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
+                :props="header.getContext()" />
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -93,6 +98,8 @@ const table = useVueTable({
       </Table>
     </div>
 
-    <DataTablePagination :table="table" :page-index="paginationState.pageIndex" :page-size="paginationState.pageSize" :page-count="pageCount" />
+    <DataTablePagination :table="table" :page-index="paginationState.pageIndex" :page-size="paginationState.pageSize"
+      :page-count="pageCount" @page-size-change="(value) => emits('page-size-change', value)"
+      @page-index-change="(value) => emits('page-index-change', value)" />
   </div>
 </template>

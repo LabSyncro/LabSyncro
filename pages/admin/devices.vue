@@ -15,6 +15,18 @@ function setPagination(pageUpdater: (any) => void) {
   const newPage = pageUpdater(paginationState.value);
   paginationState.value = newPage;
 }
+function handlePageIndexChange(value) {
+  paginationState.value = {
+    pageIndex: value,
+    pageSize: paginationState.value.pageSize,
+  };
+}
+function handlePageSizeChange(value) {
+  paginationState.value = {
+    pageSize: value,
+    pageIndex: paginationState.value.pageIndex,
+  };
+}
 const pageCount = ref(0);
 
 const sortingState = ref<SortingState>([]);
@@ -23,10 +35,10 @@ function setSorting(updater: (SortingState) => SortingState) {
 }
 const sortField = computed(() => {
   switch (sortingState.value[0]?.id) {
-  case 'borrowableQuantity':
-    return 'borrowable_quantity';
-  default:
-    return sortingState.value[0]?.id;
+    case 'borrowableQuantity':
+      return 'borrowable_quantity';
+    default:
+      return sortingState.value[0]?.id;
   }
 });
 const isDesc = computed(() => {
@@ -105,7 +117,8 @@ watch([paginationState, searchText, sortField, isDesc], updateDeviceKinds);
           </div>
         </div>
         <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
-          :set-pagination="setPagination" :sorting-state="sortingState" :set-sorting="setSorting" />
+          :set-pagination="setPagination" :sorting-state="sortingState" :set-sorting="setSorting"
+          @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange" />
       </section>
     </main>
   </div>
