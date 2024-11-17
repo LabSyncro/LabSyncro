@@ -22,10 +22,10 @@ const DeviceKindOutputDto = Type.Object({
 type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
 
 export default defineEventHandler<
-  { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_name')[] } },
+  { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_name')[], sort_field: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean } },
   Promise<DeviceKindOutputDto>
 >(async (event) => {
-  const { category_id: categoryId, offset, length, search_fields: searchFields } = getQuery(event);
+  const { category_id: categoryId, offset, length, search_fields: searchFields, sort_field: sortField, desc } = getQuery(event);
   const searchText = getQuery(event).search_text?.replaceAll('\'', '');
   if (searchText !== undefined && !searchFields) {
     throw createError({
@@ -33,9 +33,15 @@ export default defineEventHandler<
       message: 'Bad request',
     });
   }
+  if (sortField !== undefined && !['name', 'category', 'brand', 'borrowable_quantity', 'quantity'].includes(sortField)) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request',
+    });
+  }
   if (typeof categoryId === 'string') {
     const deviceKinds = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as categorydevice_kin
+      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL
@@ -46,7 +52,7 @@ export default defineEventHandler<
         (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
       )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
-      ORDER BY ${'device_kinds'}.${'id'}
+      ORDER BY ${sortField ? db.raw(`${sortField} ${desc ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
       `).run(dbPool);
@@ -81,7 +87,7 @@ export default defineEventHandler<
         (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
       )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
-      ORDER BY ${'device_kinds'}.${'id'}
+      ORDER BY ${sortField ? db.raw(`${sortField} ${desc ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
     `).run(dbPool);
