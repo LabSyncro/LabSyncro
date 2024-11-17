@@ -1,8 +1,8 @@
 <script lang="ts">
 definePageMeta({
-  middleware: ['auth']
+  middleware: ['permission'],
+  permission: 'home:own',
 });
-
 </script>
 
 <template>

@@ -8,7 +8,6 @@ import {
 
 definePageMeta({
   layout: 'setting',
-  middleware: ['auth']
 });
 
 const users = ref([

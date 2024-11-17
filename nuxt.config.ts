@@ -25,6 +25,10 @@ export default defineNuxtConfig({
       enablePeriodically: true,
       enableOnWindowFocus: true,
     },
+    globalAppMiddleware: {
+      isEnabled: true,
+      allow404WithoutAuth: true,
+    },
   },
   eslint: {},
   css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],

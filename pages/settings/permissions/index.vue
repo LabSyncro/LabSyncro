@@ -4,7 +4,6 @@ import { ref } from 'vue';
 
 definePageMeta({
   layout: 'setting',
-  middleware: ['auth']
 });
 
 const permissions = ref([
