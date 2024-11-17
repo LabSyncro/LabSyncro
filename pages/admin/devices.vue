@@ -35,10 +35,10 @@ function setSorting(updater: (SortingState) => SortingState) {
 }
 const sortField = computed(() => {
   switch (sortingState.value[0]?.id) {
-    case 'borrowableQuantity':
-      return 'borrowable_quantity';
-    default:
-      return sortingState.value[0]?.id;
+  case 'borrowableQuantity':
+    return 'borrowable_quantity';
+  default:
+    return sortingState.value[0]?.id;
   }
 });
 const isDesc = computed(() => {
