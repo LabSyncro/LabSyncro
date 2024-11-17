@@ -10,7 +10,7 @@
         </p>
       </div>
       <div class="mt-8">
-        <Button @click="$router.push('/')" class="w-full">
+        <Button class="w-full" @click="$router.push('/')">
           Return to Dashboard
         </Button>
       </div>

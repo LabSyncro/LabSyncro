@@ -60,16 +60,17 @@ export default NuxtAuthHandler({
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
-        token.accessToken = account.access_token;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.permissions = user.permissions;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.permissions = token.permissions as string[];
+        session.user.id = token.id;
+        session.user.permissions = token.permissions;
       }
       return session;
     },
