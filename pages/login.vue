@@ -1,7 +1,10 @@
 <script lang="ts">
 definePageMeta({
   layout: 'auth',
-  middleware: ['guest']
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: '/'
+  }
 });
 </script>
 

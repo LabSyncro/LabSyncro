@@ -25,9 +25,6 @@ const generateMockData = (num: number): BorrowReturnDevice[] => {
 // Generate 20 mock devices
 const mockDevices: BorrowReturnDevice[] = generateMockData(20);
 
-definePageMeta({
-  middleware: ['auth']
-});
 </script>
 
 <template>

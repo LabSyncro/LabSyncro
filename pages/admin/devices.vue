@@ -4,9 +4,6 @@ import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
 
 const data = ref<AdminDeviceList[]>([]);
 
-definePageMeta({
-  middleware: ['auth']
-});
 </script>
 
 <template>

@@ -3,7 +3,6 @@ import { Search, Monitor, ChevronDown } from 'lucide-vue-next';
 
 definePageMeta({
   layout: 'setting',
-  middleware: ['auth']
 });
 
 const route = useRoute();
