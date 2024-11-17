@@ -48,8 +48,8 @@ export default defineEventHandler<
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))} AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
-        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
-        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')
       )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${sortField ? db.raw(`${sortField} ${desc === 'true' ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
@@ -63,8 +63,8 @@ export default defineEventHandler<
       ON ${'device_kinds'}.${'id'} = ${'devices'}.${'kind'}
       WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))}
         AND ${'device_kinds'}.${'deleted_at'} IS NULL AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
-        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
-        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')
         )`) : db.raw('')}
       `).run(dbPool);
     const totalPages = Math.ceil(totalRecords / length);
@@ -83,8 +83,8 @@ export default defineEventHandler<
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       WHERE ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
-        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
-        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+        (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')
       )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${sortField ? db.raw(`${sortField} ${desc === 'true' ? 'DESC' : 'ASC'}`) : db.raw('device_kinds.id')}
@@ -97,8 +97,8 @@ export default defineEventHandler<
     JOIN ${'device_kinds'}
     ON ${'device_kinds'}.${'id'} = ${'devices'}.${'kind'}
     WHERE ${'devices'}.${'deleted_at'} IS NULL AND ${'device_kinds'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
-      (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) LIKE '%${searchText}%') OR
-      (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) LIKE '%${searchText}%')
+      (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
+      (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')
     )`) : db.raw('')}
     `).run(dbPool);
   const totalPages = Math.ceil(totalRecords / length);
