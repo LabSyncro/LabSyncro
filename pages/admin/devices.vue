@@ -13,6 +13,7 @@ const paginationState = ref({
 });
 function setPagination(pageUpdater: (any) => void) {
   const newPage = pageUpdater(paginationState.value);
+  console.log(newPage);
   paginationState.value = newPage;
 }
 const pageCount = ref(0);

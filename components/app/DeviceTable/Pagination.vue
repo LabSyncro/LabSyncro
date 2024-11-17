@@ -14,6 +14,7 @@ const props = defineProps<DataTablePaginationProps>();
 
 const handlePageSizeChange = (value: string) => {
   props.table.setPageSize(Number(value));
+  props.table.resetPageIndex(true);
 };
 </script>
 
@@ -49,11 +50,11 @@ const handlePageSizeChange = (value: string) => {
           <ArrowLeft class="h-4 w-4" />
         </Button>
         <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === 0"
-          @click="table.previousPage()">
+          @click="table.setPageIndex(pageIndex - 1)">
           <span class="sr-only">Đi đến trang trước</span>
           <ChevronLeft class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === pageCount - 1" @click="table.nextPage()">
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === pageCount - 1" @click="table.setPageIndex(pageIndex + 1)">
           <span class="sr-only">Đi đến trang tiếp</span>
           <ChevronRight class="h-4 w-4" />
         </Button>
