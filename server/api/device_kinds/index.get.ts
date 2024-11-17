@@ -25,7 +25,8 @@ export default defineEventHandler<
   { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_name')[] } },
   Promise<DeviceKindOutputDto>
 >(async (event) => {
-  const { category_id: categoryId, offset, length, search_text: searchText, search_fields: searchFields } = getQuery(event);
+  const { category_id: categoryId, offset, length, search_fields: searchFields } = getQuery(event);
+  const searchText = getQuery(event).search_text?.replaceAll('\'', '');
   if (searchText !== undefined && !searchFields) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
