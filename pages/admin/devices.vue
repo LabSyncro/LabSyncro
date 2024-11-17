@@ -31,7 +31,8 @@ const pageCount = ref(0);
 
 const sortingState = ref<SortingState>([]);
 function setSorting(updater: (SortingState) => SortingState) {
-  sortingState.value = updater(sortingState.value);
+  const newValue = updater(sortingState.value);
+  sortingState.value = newValue;
 }
 const sortField = computed(() => {
   switch (sortingState.value[0]?.id) {
