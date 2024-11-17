@@ -56,7 +56,7 @@ watch([gridItemNo], async () => {
 
 async function fetchItem(offset: number) {
   await nextTick();
-  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1);
+  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1, {});
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,

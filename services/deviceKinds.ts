@@ -1,5 +1,5 @@
 export const deviceKindService = {
-  async getDeviceKindsByCategoryId(categoryId: number, offset: number, length: number, searchText: string | undefined = undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[]): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKindsByCategoryId(categoryId: number, offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
     return (await $fetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
@@ -7,16 +7,20 @@ export const deviceKindService = {
         length,
         search_text: searchText,
         search_fields: searchFields,
+        sort_field: sortField,
+        desc,
       },
     }));
   },
-  async getDeviceKinds(offset: number, length: number, searchText: string | undefined = undefined, searchFields: ('device_id'  | 'device_kind_id' | 'device_name')[]): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKinds(offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
     return (await $fetch('/api/device_kinds', {
       query: {
         offset,
         length,
         search_text: searchText,
         search_fields: searchFields,
+        sort_field: sortField,
+        desc,
       },
     }));
   },

@@ -19,17 +19,28 @@ const pageCount = ref(0);
 
 const sortingState = ref<SortingState>([]);
 function setSorting(updater: (SortingState) => SortingState) {
-  sortingState.value = updater(sortingStae.value);
+  sortingState.value = updater(sortingState.value);
 }
+const sortField = computed(() => {
+  switch (sortingState.value[0]?.id) {
+  case 'borrowableQuantity':
+    return 'borrowable_quantity';
+  default:
+    return sortingState.value[0]?.id;
+  }
+});
+const isDesc = computed(() => {
+  return sortingState.value[0]?.desc || false;
+});
 
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
-  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, searchText.value || undefined, ['device_id', 'device_name']));
+  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value, desc: isDesc.value }));
   data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
 }, 300);
 onMounted(updateDeviceKinds);
-watch([paginationState, searchText], updateDeviceKinds);
+watch([paginationState, searchText, sortField, isDesc], updateDeviceKinds);
 </script>
 
 <template>
@@ -93,10 +104,8 @@ watch([paginationState, searchText], updateDeviceKinds);
             </button>
           </div>
         </div>
-        <DeviceTable :columns="columns" :data="data"
-          :page-count="pageCount" :pagination-state="paginationState" :set-pagination="setPagination"
-          :sorting-state="sortingState" :set-sorting="setSorting"
-        />
+        <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
+          :set-pagination="setPagination" :sorting-state="sortingState" :set-sorting="setSorting" />
       </section>
     </main>
   </div>
