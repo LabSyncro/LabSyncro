@@ -25,7 +25,6 @@ interface DataTableProps {
   data: AdminDeviceList[];
   pageCount: number;
   paginationState: Ref<{ pageIndex: number; pageSize: number }>;
-  setPagination: (unknown) => void;
   sortingState: Ref<SortingState>;
   setSorting: (SortingState) => void;
 }
@@ -57,7 +56,6 @@ const table = useVueTable({
   onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
   onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
-  onPaginationChange: props.setPagination,
   getCoreRowModel: getCoreRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
   getPaginationRowModel: getPaginationRowModel(),

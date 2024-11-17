@@ -11,10 +11,6 @@ const paginationState = ref({
   pageIndex: 0,
   pageSize: 10,
 });
-function setPagination(pageUpdater: (any) => void) {
-  const newPage = pageUpdater(paginationState.value);
-  paginationState.value = newPage;
-}
 function handlePageIndexChange(value) {
   paginationState.value = {
     pageIndex: value,
@@ -118,7 +114,7 @@ watch([paginationState, searchText, sortField, isDesc], updateDeviceKinds);
           </div>
         </div>
         <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :pagination-state="paginationState"
-          :set-pagination="setPagination" :sorting-state="sortingState" :set-sorting="setSorting"
+          :sorting-state="sortingState" :set-sorting="setSorting"
           @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange" />
       </section>
     </main>
