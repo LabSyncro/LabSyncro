@@ -4,30 +4,41 @@ import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-vue-nex
 import type { AdminDeviceList } from './schema';
 
 interface DataTablePaginationProps {
+  pageCount: number;
+  pageSize: number;
+  pageIndex: number;
   table: Table<AdminDeviceList>;
 }
 
 const props = defineProps<DataTablePaginationProps>();
+const emits = defineEmits<{
+  'page-size-change': [number];
+  'page-index-change': [number];
+}>();
 
-const handlePageSizeChange = (value: string) => {
-  props.table.setPageSize(Number(value));
+
+function handlePageSizeChange (value: string) {
+  emits('page-index-change', 0);
+  emits('page-size-change', Number(value));
 };
+function handlePageIndexChange (value: number) {
+  emits('page-index-change', value);
+}
 </script>
 
 <template>
   <div class="flex items-center justify-between px-2">
     <div class="flex-1 text-sm text-muted-foreground">
-      {{ table.getFilteredSelectedRowModel().rows.length }} of
-      {{ table.getFilteredRowModel().rows.length }} row(s) selected.
+      {{ table.getFilteredSelectedRowModel().rows.length }} được chọn
     </div>
     <div class="flex items-center space-x-6 lg:space-x-8">
       <div class="flex items-center space-x-2">
         <p class="text-sm font-medium">
           Số hàng
         </p>
-        <Select :model-value="`${table.getState().pagination.pageSize}`" @update:model-value="handlePageSizeChange">
+        <Select :model-value="`${pageSize}`" @update:model-value="handlePageSizeChange">
           <SelectTrigger class="h-8 w-[70px]">
-            <SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
+            <SelectValue :placeholder="`${pageSize}`" />
           </SelectTrigger>
           <SelectContent side="top">
             <SelectItem v-for="pageSize in [10, 20, 30, 40, 50]" :key="pageSize" :value="`${pageSize}`">
@@ -37,29 +48,26 @@ const handlePageSizeChange = (value: string) => {
         </Select>
       </div>
       <div class="flex w-[100px] items-center justify-center text-sm font-medium">
-        Trang {{ table.getState().pagination.pageIndex + 1 }} /
-        {{ table.getPageCount() + 1 }}
+        Trang {{ pageIndex + 1 }} /
+        {{ pageCount + 1 }}
       </div>
       <div class="flex items-center space-x-2">
-        <Button
-variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanPreviousPage()"
-          @click="table.setPageIndex(0)">
+        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === 0"
+          @click="handlePageIndexChange(0)">
           <span class="sr-only">Đi đến trang đầu</span>
           <ArrowLeft class="h-4 w-4" />
         </Button>
-        <Button
-variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()"
-          @click="table.previousPage()">
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === 0"
+          @click="handlePageIndexChange(pageIndex - 1)">
           <span class="sr-only">Đi đến trang trước</span>
           <ChevronLeft class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
+        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === pageCount - 1" @click="handlePageIndexChange(pageIndex + 1)">
           <span class="sr-only">Đi đến trang tiếp</span>
           <ChevronRight class="h-4 w-4" />
         </Button>
-        <Button
-variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanNextPage()"
-          @click="table.setPageIndex(table.getPageCount() - 1)">
+        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === pageCount - 1"
+          @click="handlePageIndexChange(pageCount - 1)">
           <span class="sr-only">Đi đến trang cuối</span>
           <ArrowRight class="h-4 w-4" />
         </Button>

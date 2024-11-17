@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-vue-nex
 import type { BorrowReturnDevice } from './schema';
 
 interface DataTablePaginationProps {
-  table: Table<BorrowReturnDevice>
+  table: Table<BorrowReturnDevice>;
 }
 
 const props = defineProps<DataTablePaginationProps>();
