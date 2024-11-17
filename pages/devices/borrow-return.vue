@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { columns } from '@/components/BorrowReturnDeviceTable/column';
-import type { BorrowReturnDevice } from '@/components/BorrowReturnDeviceTable/schema';
+import { columns } from '@/components/app/BorrowReturnDeviceTable/column';
+import type { BorrowReturnDevice } from '@/components/app/BorrowReturnDeviceTable/schema';
 
 const generateMockData = (num: number): BorrowReturnDevice[] => {
   const mockData: BorrowReturnDevice[] = [];
@@ -24,6 +24,7 @@ const generateMockData = (num: number): BorrowReturnDevice[] => {
 
 // Generate 20 mock devices
 const mockDevices: BorrowReturnDevice[] = generateMockData(20);
+
 </script>
 
 <template>
@@ -43,7 +44,7 @@ const mockDevices: BorrowReturnDevice[] = generateMockData(20);
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
-    <main class="my-10 min-h-screen max-w-7xl flex-1 bg-white p-4">
+    <main class="my-10 min-h-screen flex-1 bg-white p-4">
       <Tabs default-value="borrow">
         <TabsList class="flex items-start justify-start gap-4 bg-white mb-8">
           <TabsTrigger value="borrow">

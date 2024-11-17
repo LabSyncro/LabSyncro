@@ -12,7 +12,24 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     'shadcn-nuxt',
+    '@sidebase/nuxt-auth',
   ],
+  auth: {
+    isEnabled: true,
+    disableServerSideAuth: false,
+    baseURL: 'http://localhost:3000/api/auth',
+    provider: {
+      type: 'authjs',
+    },
+    sessionRefresh: {
+      enablePeriodically: true,
+      enableOnWindowFocus: true,
+    },
+    globalAppMiddleware: {
+      isEnabled: true,
+      allow404WithoutAuth: true,
+    },
+  },
   eslint: {},
   css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
   postcss: {
@@ -22,9 +39,6 @@ export default defineNuxtConfig({
     },
   },
   components: [
-    {
-      path: './components/common',
-    },
     {
       path: './components/app',
     },

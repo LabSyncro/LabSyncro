@@ -7,7 +7,7 @@ import {
 } from 'lucide-vue-next';
 
 definePageMeta({
-  layout: 'setting'
+  layout: 'setting',
 });
 
 const users = ref([

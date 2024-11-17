@@ -12,6 +12,7 @@ const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 const allCategories = await categoryService.getCategories();
 const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity).map(({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` }));
 const data = ref(deviceQuantityByLabs);
+
 </script>
 
 <template>
@@ -45,11 +46,13 @@ const data = ref(deviceQuantityByLabs);
         <div class="lg:block hidden">
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
-            <NuxtLink v-for="category in allCategories" :key="category.id"
+            <NuxtLink
+v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${Number.parseInt(deviceKindMeta.categoryId) === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
-              <Icon v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
+              <Icon
+v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -59,7 +62,8 @@ const data = ref(deviceQuantityByLabs);
             <div class="w-[100%] md:max-w-[300px]">
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
-                <NuxtImg v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
+                <NuxtImg
+v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
                   class="border-[1px] border-gray-200" />
               </div>
             </div>
@@ -75,7 +79,8 @@ const data = ref(deviceQuantityByLabs);
                   <p>{{ deviceKindMeta.brand || 'Không rõ' }}</p>
                 </div>
                 <div class="mt-8 font-semibold">
-                  <span v-if="deviceKindMeta.borrowableQuantity > 0"
+                  <span
+v-if="deviceKindMeta.borrowableQuantity > 0"
                     class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
                     Sẵn có
                   </span>

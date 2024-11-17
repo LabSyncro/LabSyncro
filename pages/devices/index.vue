@@ -13,6 +13,7 @@ watch(categoryId, async () => {
 }, { immediate: true });
 
 const allCategories = await categoryService.getCategories();
+
 </script>
 
 <template>

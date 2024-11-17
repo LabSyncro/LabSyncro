@@ -2,7 +2,7 @@
 import { Search, Monitor, ChevronDown } from 'lucide-vue-next';
 
 definePageMeta({
-  layout: 'setting'
+  layout: 'setting',
 });
 
 const route = useRoute();
