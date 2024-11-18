@@ -9,11 +9,6 @@ import { valueUpdater } from '@/lib/utils';
 import {
   FlexRender,
   getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table';
 import DataTablePagination from './Pagination.vue';
@@ -36,31 +31,20 @@ const emits = defineEmits<{
   'sort-order-change': ['desc' | 'asc' | undefined];
 }>();
 
-const columnFilters = ref<ColumnFiltersState>([]);
-const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 
 const table = useVueTable({
   get data() { return props.data; },
   get columns() { return props.columns; },
   state: {
-    get columnFilters() { return columnFilters.value; },
-    get columnVisibility() { return columnVisibility.value; },
     get rowSelection() { return rowSelection.value; },
   },
   manualPagination: true,
   pageCount: props.pageCount,
   manualSorting: true,
   enableRowSelection: true,
-  onColumnFiltersChange: updaterOrValue => valueUpdater(updaterOrValue, columnFilters),
-  onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
   onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
   getCoreRowModel: getCoreRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFacetedRowModel: getFacetedRowModel(),
-  getFacetedUniqueValues: getFacetedUniqueValues(),
 });
 </script>
 
