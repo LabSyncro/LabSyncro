@@ -24,7 +24,7 @@ watchEffect(() => {
   activeSection.value = route.params?.role?.toString() || '';
 });
 
-const setActiveSection = (section: string, openNewtab: boolean) => {
+const setActiveSection = (section: string, openNewTab: boolean) => {
   activeSection.value = section;
   const newRoute = `/settings/permissions/group/${section}`;
   if (openNewTab) {

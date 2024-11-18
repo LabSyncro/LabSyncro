@@ -1,5 +1,5 @@
 import { Type, type Static } from '@sinclair/typebox';
-import { groupBy, mapValues } from 'lodash-es';
+import { groupBy } from 'lodash-es';
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
 

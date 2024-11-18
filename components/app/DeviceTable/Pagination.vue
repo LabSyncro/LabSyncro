@@ -10,7 +10,7 @@ interface DataTablePaginationProps {
   table: Table<AdminDeviceList>;
 }
 
-const props = defineProps<DataTablePaginationProps>();
+defineProps<DataTablePaginationProps>();
 const emits = defineEmits<{
   'page-size-change': [number];
   'page-index-change': [number];

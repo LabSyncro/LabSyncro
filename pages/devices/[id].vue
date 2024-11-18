@@ -2,7 +2,6 @@
 import { sortBy } from 'lodash-es';
 import { deviceKindService, categoryService } from '~/services';
 import { columns } from '~/components/app/DeviceInventoryByLabTable/column';
-import type { DeviceByLab } from '~/components/app/DeviceInventoryByLabTable/schema';
 
 const route = useRoute();
 const deviceKindId = computed(() => route.params.id);
