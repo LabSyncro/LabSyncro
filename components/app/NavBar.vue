@@ -11,12 +11,12 @@ function toggleDropdown (event: Event) {
     <div ref="dropdown">
       <button
         :class="`relative h-16 px-2 sm:px-8 pr-8 sm:pr-10 hover:bg-primary-darker ${isDropdownActive ? 'bg-primary-darker' : ''}`" @click="toggleDropdown">
-        Sản phẩm
+        Thiết bị
         <Icon
 aria-hidden class="absolute text-white text-sm sm:text-md top-[27px] sm:top-[26px] right-[10px]"
           :name="`${!isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up'}`" />
       </button>
-      <ProductDropdown :active="isDropdownActive" />
+      <DeviceDropdown :active="isDropdownActive" />
     </div>
     <button class="cursor-pointer h-16 px-2 sm:px-5 hover:bg-primary-darker"> Phòng thí nghiệm </button>
     <button class="cursor-pointer h-16 px-2.5 sm:px-5 hover:bg-primary-darker"> Bài viết </button>
