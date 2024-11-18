@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { SortingState } from '@tanstack/vue-table';
 import { debounce } from 'lodash-es';
 import { createColumns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
@@ -32,6 +31,25 @@ function handleSortFieldChange(value: string | undefined) {
 }
 function handleSortOrderChange(value: 'desc' | 'asc' | undefined) {
   sortOrder.value = value;
+}
+
+const rowSelection = ref<{ includeMode: boolean, rowIds: unknown[] }>({ includeMode: true, rowIds: [] });
+function selectAllRows() {
+  if (!rowSelection.value.includeMode && rowSelection.value.rowIds.length === 0) {
+    rowSelection.value.includeMode = true;
+    rowSelection.value.rowIds = [];
+    return;
+  }
+  rowSelection.value.includeMode = false;
+  rowSelection.value.rowIds = [];
+}
+function selectRow(id: unknown) {
+  const index = rowSelection.value.rowIds.indexOf(id);
+  if (index >= 0) {
+    rowSelection.value.rowIds.splice(index, 1);
+  } else {
+    rowSelection.value.rowIds.push(id);
+  }
 }
 
 const data = ref<AdminDeviceList[]>([]);
@@ -89,10 +107,10 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
             </button>
           </div>
         </div>
-        <DeviceTable :columns="createColumns({ sortField, sortOrder })" :data="data" :page-count="pageCount"
-          :pagination-state="paginationState" @page-index-change="handlePageIndexChange"
-          @page-size-change="handlePageSizeChange" @sort-order-change="handleSortOrderChange"
-          @sort-field-change="handleSortFieldChange" />
+        <DeviceTable :columns="createColumns({ sortField, sortOrder, rowSelection, selectAllRows, selectRow })"
+          :data="data" :page-count="pageCount" :pagination-state="paginationState" :row-selection="rowSelection"
+          @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
+          @sort-order-change="handleSortOrderChange" @sort-field-change="handleSortFieldChange" />
       </section>
     </main>
   </div>
