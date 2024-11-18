@@ -8,5 +8,6 @@ export default withNuxt({
     quotes: ['error', 'single'],
     '@typescript-eslint/no-explicit-any': 'warn',
     'space-before-function-paren': ['error', 'always'],
+    'vue/multi-word-component-names': ['off'],
   },
 });
