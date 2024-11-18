@@ -49,7 +49,7 @@ function handlePageIndexChange (value: number) {
       </div>
       <div class="flex w-[100px] items-center justify-center text-sm font-medium">
         Trang {{ pageIndex + 1 }} /
-        {{ pageCount + 1 }}
+        {{ pageCount }}
       </div>
       <div class="flex items-center space-x-2">
         <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === 0"
