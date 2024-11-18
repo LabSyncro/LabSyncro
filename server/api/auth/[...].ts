@@ -10,7 +10,7 @@ export default NuxtAuthHandler({
     GoogleProvider.default({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      async profile(profile: { email: string; name: string; picture: string }) {
+      async profile (profile: { email: string; name: string; picture: string }) {
         const user = await createOrUpdateUser(
           profile.email,
           profile.name,
@@ -35,7 +35,7 @@ export default NuxtAuthHandler({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: { email: string; password: string }) {
+      async authorize (credentials: { email: string; password: string }) {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await getUserByEmail(credentials.email);
@@ -60,14 +60,14 @@ export default NuxtAuthHandler({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt ({ token, user }) {
       if (user) {
         token.id = user.id;
         token.permissions = user.permissions;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session ({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
         session.user.permissions = token.permissions;

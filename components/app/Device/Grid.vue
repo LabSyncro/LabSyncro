@@ -7,7 +7,7 @@ const props = defineProps<{
 
 const gridRef = ref(null);
 const gridWidth = ref(null);
-function updateGridWidth() {
+function updateGridWidth () {
   if (!gridRef.value) {
     gridWidth.value = null;
   }
@@ -54,7 +54,7 @@ watch([gridItemNo], async () => {
   totalPages.value = Math.ceil(totalItems.value / gridItemNo.value);
 });
 
-async function fetchItem(offset: number) {
+async function fetchItem (offset: number) {
   await nextTick();
   const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1, {});
   return {
@@ -68,17 +68,17 @@ async function fetchItem(offset: number) {
 }
 
 const top = useTemplateRef('top');
-function setPage(pageNo: number) {
+function setPage (pageNo: number) {
   top.value.scrollIntoView();
   currentPage.value = pageNo;
 }
 
-function pageLeft() {
+function pageLeft () {
   if (currentPageGroup.value === 0) return;
   currentPage.value = (currentPageGroup.value - 1) * numberOfPagesShown;
 }
 
-function pageRight() {
+function pageRight () {
   const oldPage = currentPage.value;
   currentPage.value = (currentPageGroup.value + 1) * numberOfPagesShown;
   if (currentPage.value >= totalPages.value) currentPage.value = oldPage;

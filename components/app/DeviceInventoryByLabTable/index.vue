@@ -32,13 +32,13 @@ const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 
 const table = useVueTable({
-  get data() { return props.data; },
-  get columns() { return props.columns; },
+  get data () { return props.data; },
+  get columns () { return props.columns; },
   state: {
-    get sorting() { return sorting.value; },
-    get columnFilters() { return columnFilters.value; },
-    get columnVisibility() { return columnVisibility.value; },
-    get rowSelection() { return rowSelection.value; },
+    get sorting () { return sorting.value; },
+    get columnFilters () { return columnFilters.value; },
+    get columnVisibility () { return columnVisibility.value; },
+    get rowSelection () { return rowSelection.value; },
   },
   enableRowSelection: true,
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),

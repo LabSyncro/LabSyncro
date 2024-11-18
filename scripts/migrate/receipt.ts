@@ -176,7 +176,7 @@ const receiptToCopyFormat = (receipt: Receipt): string => {
   );
 };
 
-async function* generateReceiptData(
+async function* generateReceiptData (
   deviceKinds: DeviceKind[],
   userIds: string[],
   options: Required<MockReceiptOptions>,

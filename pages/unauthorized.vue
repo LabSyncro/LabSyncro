@@ -31,11 +31,11 @@ const goHome = () => {
         </p>
       </div>
       <div class="flex flex-col sm:flex-row items-center gap-4">
-        <Button @click="goBack" variant="outline" class="space-x-2">
+        <Button variant="outline" class="space-x-2" @click="goBack">
           <ArrowLeft class="w-4 h-4" />
           <span>Go Back</span>
         </Button>
-        <Button @click="goHome" class="space-x-2 bg-tertiary-darker ">
+        <Button class="space-x-2 bg-tertiary-darker " @click="goHome">
           <Home class="w-4 h-4 text-white" />
           <span class="text-white"> Return Home</span>
         </Button>

@@ -10,13 +10,13 @@ const paginationState = ref({
   pageIndex: 0,
   pageSize: 10,
 });
-function handlePageIndexChange(value) {
+function handlePageIndexChange (value) {
   paginationState.value = {
     pageIndex: value,
     pageSize: paginationState.value.pageSize,
   };
 }
-function handlePageSizeChange(value) {
+function handlePageSizeChange (value) {
   paginationState.value = {
     pageSize: value,
     pageIndex: paginationState.value.pageIndex,
@@ -26,15 +26,15 @@ const pageCount = ref(0);
 
 const sortField = ref(undefined);
 const sortOrder = ref(undefined);
-function handleSortFieldChange(value: string | undefined) {
+function handleSortFieldChange (value: string | undefined) {
   sortField.value = value;
 }
-function handleSortOrderChange(value: 'desc' | 'asc' | undefined) {
+function handleSortOrderChange (value: 'desc' | 'asc' | undefined) {
   sortOrder.value = value;
 }
 
 const rowSelection = ref<{ includeMode: boolean, rowIds: unknown[] }>({ includeMode: true, rowIds: [] });
-function selectAllRows() {
+function selectAllRows () {
   if (!rowSelection.value.includeMode && rowSelection.value.rowIds.length === 0) {
     rowSelection.value.includeMode = true;
     rowSelection.value.rowIds = [];
@@ -43,7 +43,7 @@ function selectAllRows() {
   rowSelection.value.includeMode = false;
   rowSelection.value.rowIds = [];
 }
-function selectRow(id: unknown) {
+function selectRow (id: unknown) {
   const index = rowSelection.value.rowIds.indexOf(id);
   if (index >= 0) {
     rowSelection.value.rowIds.splice(index, 1);
@@ -86,11 +86,13 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
         <h2 class="font-bold text-xl mb-8"> Tất cả loại thiết bị </h2>
         <div class="flex justify-between items-stretch">
           <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
-            <input v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
+            <input
+v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
               class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]"
               @input="handlePageIndexChange(0)"
             >
-            <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+            <Icon
+aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
               name="i-heroicons-magnifying-glass" />
             <button
               class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
@@ -109,7 +111,8 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
             </button>
           </div>
         </div>
-        <DeviceTable :columns="createColumns({ sortField, sortOrder, rowSelection, selectAllRows, selectRow })"
+        <DeviceTable
+:columns="createColumns({ sortField, sortOrder, rowSelection, selectAllRows, selectRow })"
           :data="data" :page-count="pageCount" :pagination-state="paginationState" :row-selection="rowSelection"
           @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
           @sort-order-change="handleSortOrderChange" @sort-field-change="handleSortFieldChange" />

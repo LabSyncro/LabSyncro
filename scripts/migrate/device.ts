@@ -8,7 +8,7 @@ interface LabQuantity {
   [labId: string]: number;
 }
 
-async function insertMockDevicesData() {
+async function insertMockDevicesData () {
   const { Client } = pg;
   const dbClient = new Client({
     user: process.env.DATABASE_USER,

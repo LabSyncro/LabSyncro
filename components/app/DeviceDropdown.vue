@@ -10,11 +10,11 @@ const emits = defineEmits<{
 const categories = await categoryService.getCategories();
 const hoveredCategoryId = ref(null);
 
-function onHoveredCategory(id: number) {
+function onHoveredCategory (id: number) {
   hoveredCategoryId.value = id;
 }
 
-function onMouseoutCategory(id: number) {
+function onMouseoutCategory (id: number) {
   if (hoveredCategoryId.value === id) hoveredCategoryId.value = null;
 }
 </script>

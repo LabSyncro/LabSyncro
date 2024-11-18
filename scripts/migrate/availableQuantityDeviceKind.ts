@@ -3,7 +3,7 @@ import { config as configEnv } from 'dotenv';
 
 configEnv();
 
-async function insertAvailableQuantityIntoDeviceKind() {
+async function insertAvailableQuantityIntoDeviceKind () {
   const { Client } = pg;
   const dbClient = new Client({
     user: process.env.DATABASE_USER,

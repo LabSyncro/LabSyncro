@@ -1,7 +1,7 @@
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
 
-export async function getUserByEmail(email: string) {
+export async function getUserByEmail (email: string) {
   const result = await db.sql`
   SELECT * FROM ${'users'}
   WHERE email = ${db.param(email)} AND deleted_at IS NULL
@@ -9,7 +9,7 @@ export async function getUserByEmail(email: string) {
   return result[0];
 }
 
-export async function getUserPermissions(userId: string) {
+export async function getUserPermissions (userId: string) {
   const result = await db.sql`
     SELECT DISTINCT r.name as resource_name, a.name as action_name
     FROM user_roles ur
@@ -23,7 +23,7 @@ export async function getUserPermissions(userId: string) {
   return result.map((row) => `${row.resource_name}:${row.action_name}`);
 }
 
-export async function createOrUpdateUser(
+export async function createOrUpdateUser (
   email: string,
   name: string,
   image?: string,

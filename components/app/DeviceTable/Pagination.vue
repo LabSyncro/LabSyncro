@@ -52,12 +52,14 @@ function handlePageIndexChange (value: number) {
         {{ pageCount }}
       </div>
       <div class="flex items-center space-x-2">
-        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === 0"
+        <Button
+variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === 0"
           @click="handlePageIndexChange(0)">
           <span class="sr-only">Đi đến trang đầu</span>
           <ArrowLeft class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === 0"
+        <Button
+variant="outline" class="h-8 w-8 p-0" :disabled="pageIndex === 0"
           @click="handlePageIndexChange(pageIndex - 1)">
           <span class="sr-only">Đi đến trang trước</span>
           <ChevronLeft class="h-4 w-4" />
@@ -66,7 +68,8 @@ function handlePageIndexChange (value: number) {
           <span class="sr-only">Đi đến trang tiếp</span>
           <ChevronRight class="h-4 w-4" />
         </Button>
-        <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === pageCount - 1"
+        <Button
+variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === pageCount - 1"
           @click="handlePageIndexChange(pageCount - 1)">
           <span class="sr-only">Đi đến trang cuối</span>
           <ArrowRight class="h-4 w-4" />

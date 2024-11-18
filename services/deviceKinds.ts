@@ -1,5 +1,5 @@
 export const deviceKindService = {
-  async getDeviceKindsByCategoryId(categoryId: number, offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKindsByCategoryId (categoryId: number, offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
     return (await $fetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
@@ -12,7 +12,7 @@ export const deviceKindService = {
       },
     }));
   },
-  async getDeviceKinds(offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKinds (offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
     return (await $fetch('/api/device_kinds', {
       query: {
         offset,
@@ -24,7 +24,7 @@ export const deviceKindService = {
       },
     }));
   },
-  async getTotalItems(categoryId: number): Promise<number> {
+  async getTotalItems (categoryId: number): Promise<number> {
     return (await $fetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
@@ -33,10 +33,10 @@ export const deviceKindService = {
       },
     })).totalPages;
   },
-  async getById(deviceKindId: number): Promise<Record<string, string>> {
+  async getById (deviceKindId: number): Promise<Record<string, string>> {
     return await $fetch(`/api/device_kinds/${deviceKindId}`);
   },
-  async getQuantityByLab(deviceKindId: number): Promise<Record<string, number>> {
+  async getQuantityByLab (deviceKindId: number): Promise<Record<string, number>> {
     return (await $fetch('/api/device_kinds/quantity_by_lab', { query: { kindId: deviceKindId } })).labs;
   }
 };

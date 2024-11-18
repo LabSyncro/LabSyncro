@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const listRef = ref(null);
 const listWidth = ref(null);
-function updateListWidth() {
+function updateListWidth () {
   if (!listRef.value) {
     listWidth.value = null;
   }

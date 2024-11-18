@@ -14,7 +14,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-function toggleSortOrder(column: Column<AdminDeviceList, unknown>) {
+function toggleSortOrder (column: Column<AdminDeviceList, unknown>) {
   const oldSortOrder = column.getIsSorted();
   if (oldSortOrder === 'asc') {
     column.toggleSorting(true);

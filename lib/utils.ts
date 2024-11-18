@@ -2,11 +2,11 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { Updater } from '@tanstack/vue-table';
 
-export function cn(...inputs: ClassValue[]) {
+export function cn (...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function valueUpdater<T extends Updater<unknown>>(
+export function valueUpdater<T extends Updater<unknown>> (
   updaterOrValue: T,
   ref: Ref,
 ) {
@@ -16,7 +16,7 @@ export function valueUpdater<T extends Updater<unknown>>(
       : updaterOrValue;
 }
 
-export function formatDate(value: string, isRelative: boolean = true): string {
+export function formatDate (value: string, isRelative: boolean = true): string {
   const date = new Date(value);
   const now = new Date();
 

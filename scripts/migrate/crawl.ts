@@ -2,7 +2,7 @@ import pg from 'pg';
 import { config as configEnv } from 'dotenv';
 configEnv();
 
-async function insertMockDevicesData() {
+async function insertMockDevicesData () {
   const { Client } = pg;
   const dbClient = new Client({
     user: process.env.DATABASE_USER,

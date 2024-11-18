@@ -1,4 +1,4 @@
-export function useClick(elementRef: Ref<Element>): { isActive: Ref<boolean> } {
+export function useClick (elementRef: Ref<Element>): { isActive: Ref<boolean> } {
   const isActive = ref(false);
   let isInsideClicked = false;
   function clickOutsideHandler () {

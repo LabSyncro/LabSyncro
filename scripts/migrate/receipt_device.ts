@@ -41,7 +41,7 @@ const pool = new Pool({
   max: 20,
 });
 
-async function getAvailableDevicesInBatch(
+async function getAvailableDevicesInBatch (
   deviceKindId: number,
   labId: string,
   totalNeeded: number,
@@ -67,7 +67,7 @@ async function getAvailableDevicesInBatch(
   return result.rows;
 }
 
-function determineStatus(returnedAt: Date | null): string | null {
+function determineStatus (returnedAt: Date | null): string | null {
   if (!returnedAt) return null;
 
   const statuses = ['broken', 'healthy', 'needs_fixing', 'lost'];
@@ -82,7 +82,7 @@ function determineStatus(returnedAt: Date | null): string | null {
   return 'healthy';
 }
 
-async function writeReceiptDevicesToFile(receiptDevices: ReceiptDevice[]) {
+async function writeReceiptDevicesToFile (receiptDevices: ReceiptDevice[]) {
   const fileStream = fs.createWriteStream(TEMP_FILE_PATH);
 
   for (const rd of receiptDevices) {
@@ -98,7 +98,7 @@ async function writeReceiptDevicesToFile(receiptDevices: ReceiptDevice[]) {
   });
 }
 
-async function processReceipts() {
+async function processReceipts () {
   const client = await pool.connect();
 
   try {

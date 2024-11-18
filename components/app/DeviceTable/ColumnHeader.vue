@@ -21,7 +21,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-function toggleSortOrder() {
+function toggleSortOrder () {
   if (props.sortOrder === 'asc') {
     emits('sort-field-change', props.id);
     emits('sort-order-change', 'desc');

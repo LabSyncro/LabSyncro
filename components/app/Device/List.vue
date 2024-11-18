@@ -5,7 +5,7 @@ const props = defineProps<{
 }>();
 const listRef = ref(null);
 const listWidth = ref(null);
-function updateListWidth() {
+function updateListWidth () {
   if (!listRef.value) {
     listWidth.value = null;
   }
@@ -34,7 +34,7 @@ watch([itemNo], async () => {
   totalPages.value = Math.ceil(totalItems.value / itemNo.value);
 });
 
-async function fetchItem(offset: number) {
+async function fetchItem (offset: number) {
   await nextTick();
   const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, offset, 1, {});
   return {
@@ -49,12 +49,12 @@ async function fetchItem(offset: number) {
 
 const listDirection = ref(null);
 
-function pageLeft() {
+function pageLeft () {
   listDirection.value = 'slide-right';
   currentPage.value = (currentPage.value - 1 + totalPages.value) % totalPages.value;
 }
 
-function pageRight() {
+function pageRight () {
   listDirection.value = 'slide-left';
   currentPage.value = (currentPage.value + 1) % totalPages.value;
 }

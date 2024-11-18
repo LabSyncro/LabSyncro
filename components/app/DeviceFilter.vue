@@ -7,16 +7,16 @@ const dropdownItems = [...allFaculties, { name: 'Tất cả các khoa', id: null
 const currentFacultyId = ref<null | string>(null);
 const currentFacultyName = computed(() => dropdownItems.find(({ id }) => id === currentFacultyId.value)?.name || null);
 
-function setFaculty(id: string | null) {
+function setFaculty (id: string | null) {
   currentFacultyId.value = id;
 }
 
-function toggleDropdown(event: Event) {
+function toggleDropdown (event: Event) {
   event.stopPropagation();
   isDropdownActive.value = !isDropdownActive.value;
 }
 
-function closeDropdown(event: Event) {
+function closeDropdown (event: Event) {
   event.stopPropagation();
   isDropdownActive.value = false;
 }
