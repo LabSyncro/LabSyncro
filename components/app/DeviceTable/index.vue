@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type {
   ColumnDef,
-  RowSelectionState,
 } from '@tanstack/vue-table';
 
 import {
@@ -19,8 +18,7 @@ interface DataTableProps {
   paginationState: { pageIndex: number; pageSize: number };
   sortField: string | undefined;
   sortOrder: 'desc' | 'asc' | undefined;
-  rowSelection: RowSelectionState;
-  setRowSelection: (rowSelection: RowSelectionState) => void;
+  rowSelection: { includeMode: boolean, rowIds: [] };
 }
 
 const props = defineProps<DataTableProps>();
@@ -34,19 +32,10 @@ const emits = defineEmits<{
 const table = useVueTable({
   get data() { return props.data; },
   get columns() { return props.columns; },
-  state: {
-    rowSelection: props.rowSelection,
-  },
   manualPagination: true,
   pageCount: props.pageCount,
   manualSorting: true,
   enableRowSelection: true,
-  onRowSelectionChange: (updater) => {
-    if (typeof updater === 'function') {
-      props.setRowSelection(updater(props.rowSelection));
-    }
-  },
-  getRowId: (row) => row['id'],
   getCoreRowModel: getCoreRowModel(),
 });
 </script>

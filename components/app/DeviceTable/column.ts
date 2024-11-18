@@ -6,23 +6,22 @@ import RowAction from './RowAction.vue';
 
 import type { AdminDeviceList } from './schema';
 
-export function createColumns({ sortField, sortOrder }: { sortField: Ref<string | undefined>; sortOrder: Ref<'desc' | 'asc' | undefined> }): ColumnDef<AdminDeviceList>[] {
+export function createColumns({ sortField, sortOrder, rowSelection, selectAllRows, selectRow }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: { includeMode: boolean; rowIds: unknown[] }; selectAllRows: () => void; selectRow: (unknown) => void; }): ColumnDef<AdminDeviceList>[] {
   return [
     {
       id: 'select',
-      header: ({ table }) =>
+      header: () =>
         h(Checkbox, {
           checked:
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate'),
-          'onUpdate:checked': (value: unknown) => table.toggleAllPageRowsSelected(!!value),
+            !rowSelection.includeMode && rowSelection.rowIds.length === 0,
+          'onUpdate:checked': selectAllRows,
           ariaLabel: 'Select all',
           class: 'translate-y-0.5',
         }),
       cell: ({ row }) =>
         h(Checkbox, {
-          checked: row.getIsSelected(),
-          'onUpdate:checked': (value: unknown) => row.toggleSelected(!!value),
+          checked: (rowSelection.includeMode && rowSelection.rowIds.includes(row.original.id)) || (!rowSelection.includeMode && !rowSelection.rowIds.includes(row.original.id)),
+          'onUpdate:checked': () => selectRow(row.original.id),
           ariaLabel: 'Select row',
           class: 'translate-y-0.5',
         }),
