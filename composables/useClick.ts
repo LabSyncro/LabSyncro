@@ -1,11 +1,12 @@
 export function useClick(elementRef: Ref<Element>): { isActive: Ref<boolean> } {
   const isActive = ref(false);
-  const clickOutsideHandler = () => {
-    isActive.value = false;
+  let isInsideClicked = false;
+  function clickOutsideHandler () {
+    if (!isInsideClicked) isActive.value = false;
+    isInsideClicked = false;
   };
-  const clickInsideHandler = (event: Event) => {
-    event.stopPropagation();
-    isActive.value = true;
+  function clickInsideHandler () {
+    isInsideClicked = true;
   };
 
   onMounted(() => document.addEventListener('click', clickOutsideHandler));
