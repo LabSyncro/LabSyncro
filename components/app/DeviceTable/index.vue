@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import type {
   ColumnDef,
-  ColumnFiltersState,
-  VisibilityState,
+  RowSelectionState,
 } from '@tanstack/vue-table';
 
-import { valueUpdater } from '@/lib/utils';
 import {
   FlexRender,
   getCoreRowModel,
@@ -21,6 +19,8 @@ interface DataTableProps {
   paginationState: { pageIndex: number; pageSize: number };
   sortField: string | undefined;
   sortOrder: 'desc' | 'asc' | undefined;
+  rowSelection: RowSelectionState;
+  setRowSelection: (rowSelection: RowSelectionState) => void;
 }
 
 const props = defineProps<DataTableProps>();
@@ -31,19 +31,22 @@ const emits = defineEmits<{
   'sort-order-change': ['desc' | 'asc' | undefined];
 }>();
 
-const rowSelection = ref({});
-
 const table = useVueTable({
   get data() { return props.data; },
   get columns() { return props.columns; },
   state: {
-    get rowSelection() { return rowSelection.value; },
+    rowSelection: props.rowSelection,
   },
   manualPagination: true,
   pageCount: props.pageCount,
   manualSorting: true,
   enableRowSelection: true,
-  onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
+  onRowSelectionChange: (updater) => {
+    if (typeof updater === 'function') {
+      props.setRowSelection(updater(props.rowSelection));
+    }
+  },
+  getRowId: (row) => row['id'],
   getCoreRowModel: getCoreRowModel(),
 });
 </script>
@@ -56,16 +59,14 @@ const table = useVueTable({
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
               <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
-                :props="header.getContext()"
-                @sort-order-change="(value) => emits('sort-order-change', value)"
+                :props="header.getContext()" @sort-order-change="(value) => emits('sort-order-change', value)"
                 @sort-field-change="(value) => emits('sort-field-change', value)" />
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <template v-if="table.getRowModel().rows?.length">
-            <TableRow
-v-for="row in table.getRowModel().rows" :key="row.id"
+            <TableRow v-for="row in table.getRowModel().rows" :key="row.id"
               :data-state="row.getIsSelected() && 'selected'">
               <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
                 <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />

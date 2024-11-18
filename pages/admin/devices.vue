@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import type { SortingState } from '@tanstack/vue-table';
+import type { 
+  RowSelectionState,
+} from '@tanstack/vue-table';
 import { debounce } from 'lodash-es';
 import { createColumns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
@@ -32,6 +34,12 @@ function handleSortFieldChange(value: string | undefined) {
 }
 function handleSortOrderChange(value: 'desc' | 'asc' | undefined) {
   sortOrder.value = value;
+}
+
+const rowSelection = ref<RowSelectionState>();
+function setRowSelection (rowSelection: RowSelectionState): void {
+  rowSelection.value = rowSelection;
+  console.log(rowSelection);
 }
 
 const data = ref<AdminDeviceList[]>([]);
@@ -89,10 +97,10 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
             </button>
           </div>
         </div>
-        <DeviceTable :columns="createColumns({ sortField, sortOrder })" :data="data" :page-count="pageCount"
-          :pagination-state="paginationState" @page-index-change="handlePageIndexChange"
-          @page-size-change="handlePageSizeChange" @sort-order-change="handleSortOrderChange"
-          @sort-field-change="handleSortFieldChange" />
+        <DeviceTable :columns="createColumns({ sortField, sortOrder })" :data="data" 
+          :page-count="pageCount" :pagination-state="paginationState" :row-selection="rowSelection" :set-row-selection="setRowSelection"
+          @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
+          @sort-order-change="handleSortOrderChange" @sort-field-change="handleSortFieldChange" />
       </section>
     </main>
   </div>
