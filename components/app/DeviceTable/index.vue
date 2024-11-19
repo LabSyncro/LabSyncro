@@ -48,7 +48,7 @@ const table = useVueTable({
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
               <FlexRender
-v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
+                v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
                 :props="header.getContext()" @sort-order-change="(value) => emits('sort-order-change', value)"
                 @sort-field-change="(value) => emits('sort-field-change', value)" />
             </TableHead>
@@ -57,7 +57,7 @@ v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
         <TableBody>
           <template v-if="table.getRowModel().rows?.length">
             <TableRow
-v-for="row in table.getRowModel().rows" :key="row.id"
+              v-for="row in table.getRowModel().rows" :key="row.id"
               :data-state="row.getIsSelected() && 'selected'">
               <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
                 <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
@@ -75,7 +75,7 @@ v-for="row in table.getRowModel().rows" :key="row.id"
     </div>
 
     <DataTablePagination
-:table="table" :page-index="paginationState.pageIndex" :page-size="paginationState.pageSize"
+      :table="table" :page-index="paginationState.pageIndex" :page-size="paginationState.pageSize"
       :page-count="pageCount" @page-size-change="(value) => emits('page-size-change', value)"
       @page-index-change="(value) => emits('page-index-change', value)" />
   </div>

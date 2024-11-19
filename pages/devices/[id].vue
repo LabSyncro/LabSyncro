@@ -46,12 +46,12 @@ const data = ref(deviceQuantityByLabs);
           <div class="text-sm flex flex-col shadow-lg">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
-v-for="category in allCategories" :key="category.id"
+              v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${Number.parseInt(deviceKindMeta.categoryId) === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
               <Icon
-v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
+                v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
                 name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -62,7 +62,7 @@ v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
                 <NuxtImg
-v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
+                  v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
                   class="border-[1px] border-gray-200" />
               </div>
             </div>
