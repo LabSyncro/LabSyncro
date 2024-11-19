@@ -13,7 +13,7 @@
           <Logo />
         </div>
         <div class="flex items-stretch justify-between gap-4 grow-[3]">
-          <SearchBox class="flex-1" />
+          <DeviceSearchBox class="flex-1" />
           <QrButton />
         </div>
         <div class="my-auto hidden md:flex grow-[2] gap-3 justify-end">
