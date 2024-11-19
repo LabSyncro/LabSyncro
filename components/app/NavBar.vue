@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const dropdownRef = useTemplateRef('dropdown');
 const { isActive: isDropdownActive } = useClick(dropdownRef);
-function toggleDropdown() {
+function toggleDropdown () {
   isDropdownActive.value = !isDropdownActive.value;
 }
 </script>
@@ -13,7 +13,8 @@ function toggleDropdown() {
         :class="`relative h-16 px-2 sm:px-8 pr-8 sm:pr-12 hover:bg-primary-darker ${isDropdownActive ? 'bg-primary-darker' : ''}`"
         @click="toggleDropdown">
         Thiết bị
-        <Icon aria-hidden
+        <Icon
+aria-hidden
           class="absolute text-white text-sm sm:text-md top-[27px] sm:top-[26px] right-[10px] sm:right-[16px]"
           :name="`${!isDropdownActive ? 'i-heroicons-chevron-down' : 'i-heroicons-chevron-up'}`" />
       </button>
