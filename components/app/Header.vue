@@ -13,7 +13,6 @@
           <Logo />
         </div>
         <div class="flex items-stretch justify-between gap-4 grow-[3]">
-          <DeviceFilter class="w-[120px] sm:w-[180px] h-11" />
           <SearchBox class="flex-1" />
           <QrButton />
         </div>
