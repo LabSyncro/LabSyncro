@@ -18,7 +18,7 @@ interface DataTableProps {
   paginationState: { pageIndex: number; pageSize: number };
   sortField: string | undefined;
   sortOrder: 'desc' | 'asc' | undefined;
-  rowSelection: { includeMode: boolean, rowIds: [] };
+  rowSelection: { rowIds: [] };
 }
 
 const props = defineProps<DataTableProps>();

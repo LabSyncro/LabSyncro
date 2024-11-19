@@ -33,22 +33,15 @@ function handleSortOrderChange (value: 'desc' | 'asc' | undefined) {
   sortOrder.value = value;
 }
 
-const rowSelection = ref<{ includeMode: boolean, rowIds: unknown[] }>({ includeMode: true, rowIds: [] });
-function selectAllRows () {
-  if (!rowSelection.value.includeMode && rowSelection.value.rowIds.length === 0) {
-    rowSelection.value.includeMode = true;
-    rowSelection.value.rowIds = [];
-    return;
-  }
-  rowSelection.value.includeMode = false;
-  rowSelection.value.rowIds = [];
-}
-function selectRow (id: unknown) {
-  const index = rowSelection.value.rowIds.indexOf(id);
-  if (index >= 0) {
-    rowSelection.value.rowIds.splice(index, 1);
-  } else {
-    rowSelection.value.rowIds.push(id);
+const rowSelection = ref<unknown[]>([]);
+function onSelectRows (ids: unknown[]) {
+  for (const id of ids) {
+    const index = rowSelection.value.indexOf(id);
+    if (index >= 0) {
+      rowSelection.value.splice(index, 1);
+    } else {
+      rowSelection.value.push(id);
+    }
   }
 }
 
@@ -112,7 +105,7 @@ aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
           </div>
         </div>
         <DeviceTable
-:columns="createColumns({ sortField, sortOrder, rowSelection, selectAllRows, selectRow })"
+:columns="createColumns({ sortField, sortOrder, rowSelection, onSelectRows })"
           :data="data" :page-count="pageCount" :pagination-state="paginationState" :row-selection="rowSelection"
           @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
           @sort-order-change="handleSortOrderChange" @sort-field-change="handleSortFieldChange" />
