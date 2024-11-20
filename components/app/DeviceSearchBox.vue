@@ -40,11 +40,14 @@ function focusPrevSearchItem () {
 }
 
 function goToSearchItem () {
-  if (focusedSearchItemIndex.value === null) return;
   const router = useRouter();
+  isDropdownActive.value = false;
+  if (focusedSearchItemIndex.value === null) {
+    router.push(`/devices?q=${searchText.value}`);
+    return;
+  };
   router.push(`/devices/${searchItems.value[focusedSearchItemIndex.value].id}`);
   searchText.value = '';
-  isDropdownActive.value = false;
 }
 </script>
 
