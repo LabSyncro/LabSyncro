@@ -6,10 +6,11 @@ const categoryId = computed(() => {
   const id = route.query.categoryId;
   return id && typeof id === 'string' ? Number.parseInt(id) : null;
 });
-const searchText = computed(() => {
+const querySearchText = computed(() => {
   const q = route.query.q;
   return q && typeof q === 'string' ? q : null;
 });
+const searchText = ref('');
 const categoryName = ref(undefined);
 watch(categoryId, async () => {
   if (categoryId.value === null) {
@@ -65,10 +66,22 @@ const allCategories = await categoryService.getCategories();
           </div>
         </div>
         <div class="flex-1 bg-white p-10">
-          <h2 class="text-2xl mb-8">
-            {{ categoryName }}
-          </h2>
-          <DeviceGrid :key="`${categoryId}-${searchText}`" :category-id="categoryId" :search-text="searchText" />
+          <div class="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center mb-8">
+            <h2 class="text-2xl mb-2 sm:mb-0">
+              {{ categoryName }}
+            </h2>
+            <div class="relative items-center flex gap-4 mx-auto sm:mx-0">
+              <input
+                v-model="searchText" type="search" placeholder="Nhập tên thiết bị"
+                class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
+                v-if="!querySearchText"
+              >
+              <Icon
+                aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+                name="i-heroicons-magnifying-glass" />
+            </div>
+          </div>
+          <DeviceGrid :category-id="categoryId" :search-text="searchText" />
         </div>
       </div>
     </main>
