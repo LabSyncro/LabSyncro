@@ -1,17 +1,28 @@
 <script setup lang="ts">
 import { sortBy } from 'lodash-es';
 import { deviceKindService, categoryService } from '~/services';
-import { columns } from '~/components/app/DeviceInventoryByLabTable/column';
+import { createColumns } from '~/components/app/DeviceInventoryByLabTable/column';
 
 const route = useRoute();
 const deviceKindId = computed(() => route.params.id);
-
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
-const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity).map(({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` }));
-const data = ref(deviceQuantityByLabs);
 
+const searchText = ref('');
+
+const data = ref([]);
+
+watch(searchText, async () => {
+  const res = await deviceKindService.getQuantityByLab(deviceKindId.value, { searchText: searchText.value || undefined, searchFields: ['lab_name'] });
+
+  data.value = sortBy(
+    res,
+    ({ borrowableQuantity }) => -borrowableQuantity,
+  ).map(
+    ({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` })
+  );
+}, { immediate: true });
 </script>
 
 <template>
@@ -100,8 +111,19 @@ v-if="deviceKindMeta.borrowableQuantity > 0"
             </div>
           </section>
           <section class="bg-white p-10 mt-10">
-            <h2 class="text-xl mb-8">Tồn kho thiết bị</h2>
-            <DeviceInventoryByLabTable :columns="columns" :data="data" />
+            <div class="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center mb-8">
+              <h2 class="text-xl">Tồn kho thiết bị</h2> 
+              <div class="relative items-center flex gap-4 mx-auto sm:mx-0">
+                <input
+                  v-model="searchText" type="search" placeholder="Nhập tên phòng thí nghiệm"
+                  class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
+                >
+                <Icon
+                  aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+                  name="i-heroicons-magnifying-glass" />
+              </div>
+            </div>
+            <DeviceInventoryByLabTable :columns="createColumns({ searchText })" :data="data" />
           </section>
         </div>
       </div>

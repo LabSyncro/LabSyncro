@@ -68,8 +68,7 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
           <p class="font-semibold">/</p>
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <NuxtLink class="text-normal font-bold underline text-black" href="/admin/devices">Danh sách loại thiết bị
-          </NuxtLink>
+          <NuxtLink class="text-normal font-bold underline text-black" href="/admin/devices">Danh sách loại thiết bị</NuxtLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -80,12 +79,12 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
         <div class="flex justify-between items-stretch">
           <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
             <input
-v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
+              v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
               class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]"
               @input="handlePageIndexChange(0)"
             >
             <Icon
-aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+              aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
               name="i-heroicons-magnifying-glass" />
             <button
               class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
@@ -105,7 +104,7 @@ aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
           </div>
         </div>
         <DeviceTable
-:columns="createColumns({ sortField, sortOrder, rowSelection, onSelectRows })"
+          :columns="createColumns({ sortField, sortOrder, rowSelection, onSelectRows })"
           :data="data" :page-count="pageCount" :pagination-state="paginationState" :row-selection="rowSelection"
           @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
           @sort-order-change="handleSortOrderChange" @sort-field-change="handleSortFieldChange" />
