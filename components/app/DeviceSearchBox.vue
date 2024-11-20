@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { deviceKindService } from '~/services';
+
 const searchText = ref('');
 
 const isDropdownActive = ref(false);
@@ -14,6 +16,12 @@ function closeDropdown () {
 async function handleClickOutsideOfSearchBox () {
   setTimeout(closeDropdown, 300);
 }
+
+const searchItems = ref<{ name: string; image: string }[]>([]);
+watch(searchText, async () => {
+  const data = await deviceKindService.getDeviceKinds(0, 4, { searchText: searchText.value || undefined, searchFields: ['device_kind_id', 'device_name'] });
+  searchItems.value = data.deviceKinds.map(({ name, mainImage, id }) => ({ id, name, image: mainImage }));
+});
 </script>
 
 <template>
@@ -26,7 +34,11 @@ async function handleClickOutsideOfSearchBox () {
         name="i-heroicons-magnifying-glass" />
     </div>
 
-    <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[100%]`">
+    <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] z-50`">
+      <NuxtLink v-for="item in searchItems" class="px-2 text-normal p-1 flex gap-2" :href="`/devices/${item.id}`">
+        <img :src="item.image" class="h-6">
+        <p class="line-clamp-1 ">{{ item.name }}</p>
+      </NuxtLink>
       <NuxtLink class="flex gap-1 justify-between items-center py-1 px-2 rounded-md bg-primary-darker text-white"
         href="/devices">
         <p> Xem toàn bộ thiết bị </p>
