@@ -35,7 +35,8 @@ function closeDropdown () {
         <p> Xem toàn bộ thiết bị </p>
         <Icon
           aria-hidden
-          name="i-heroicons-chevron-double-right text-lg"
+          name="i-heroicons-chevron-double-right"
+          class="text-lg"
         />
       </NuxtLink>
     </div>
