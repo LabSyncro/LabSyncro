@@ -68,7 +68,7 @@ const allCategories = await categoryService.getCategories();
           <h2 class="text-2xl mb-8">
             {{ categoryName }}
           </h2>
-          <DeviceGrid :category-id="categoryId" :search-text="searchText" />
+          <DeviceGrid :key="`${categoryId}-${searchText}`" :category-id="categoryId" :search-text="searchText" />
         </div>
       </div>
     </main>
