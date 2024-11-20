@@ -6,6 +6,10 @@ const categoryId = computed(() => {
   const id = route.query.categoryId;
   return id && typeof id === 'string' ? Number.parseInt(id) : null;
 });
+const searchText = computed(() => {
+  const q = route.query.q;
+  return q && typeof q === 'string' ? q : null;
+});
 const categoryName = ref(undefined);
 watch(categoryId, async () => {
   if (categoryId.value === null) {
@@ -64,7 +68,7 @@ const allCategories = await categoryService.getCategories();
           <h2 class="text-2xl mb-8">
             {{ categoryName }}
           </h2>
-          <DeviceGrid :category-id="categoryId" />
+          <DeviceGrid :category-id="categoryId" :search-text="searchText" />
         </div>
       </div>
     </main>
