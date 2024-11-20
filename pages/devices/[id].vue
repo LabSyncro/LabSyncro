@@ -11,14 +11,18 @@ const allCategories = await categoryService.getCategories();
 
 const searchText = ref('');
 
-const data = ref(
-  sortBy(
-    await deviceKindService.getQuantityByLab(deviceKindId.value),
+const data = ref([]);
+
+watch(searchText, async () => {
+  const res = await deviceKindService.getQuantityByLab(deviceKindId.value);
+
+  data.value = sortBy(
+    res,
     ({ borrowableQuantity }) => -borrowableQuantity,
   ).map(
     ({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` })
-  )
-);
+  );
+}, { immediate: true });
 </script>
 
 <template>
@@ -109,7 +113,7 @@ v-if="deviceKindMeta.borrowableQuantity > 0"
           <section class="bg-white p-10 mt-10">
             <div class="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center mb-8">
               <h2 class="text-xl">Tồn kho thiết bị</h2> 
-              <div class="relative items-center flex gap-4 mx-auto">
+              <div class="relative items-center flex gap-4 mx-auto sm:mx-0">
                 <input
                   v-model="searchText" type="search" placeholder="Nhập tên phòng thí nghiệm"
                   class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
