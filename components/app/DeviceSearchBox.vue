@@ -35,7 +35,7 @@ watch(searchText, async () => {
     </div>
 
     <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] z-50`">
-      <NuxtLink v-for="item in searchItems" :key="item" class="px-2 text-normal p-1 flex gap-2" :href="`/devices/${item.id}`">
+      <NuxtLink v-for="item in searchItems" :key="item" class="px-2 text-normal p-1 flex gap-2 hover:bg-gray-100" :href="`/devices/${item.id}`">
         <img :src="item.image" class="h-6">
         <HighlightText class="line-clamp-1" :text="item.name" :match-text="searchText || undefined" />
       </NuxtLink>
