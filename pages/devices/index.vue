@@ -72,9 +72,9 @@ const allCategories = await categoryService.getCategories();
             </h2>
             <div class="relative items-center flex gap-4 mx-auto sm:mx-0">
               <input
+                v-if="!querySearchText"
                 v-model="searchText" type="search" placeholder="Nhập tên thiết bị"
                 class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
-                v-if="!querySearchText"
               >
               <Icon
                 aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
