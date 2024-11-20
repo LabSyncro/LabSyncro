@@ -40,11 +40,14 @@ function focusPrevSearchItem () {
 }
 
 function goToSearchItem () {
-  if (focusedSearchItemIndex.value === null) return;
   const router = useRouter();
-  router.push(`/devices/${searchItems.value[focusedSearchItemIndex.value].id}`)
-  searchText.value = '';
   isDropdownActive.value = false;
+  if (focusedSearchItemIndex.value === null) {
+    router.push(`/devices?q=${searchText.value}`);
+    return;
+  };
+  router.push(`/devices/${searchItems.value[focusedSearchItemIndex.value].id}`);
+  searchText.value = '';
 }
 </script>
 
@@ -64,8 +67,8 @@ function goToSearchItem () {
         <HighlightText class="line-clamp-1" :text="item.name" :match-text="searchText || undefined" />
       </NuxtLink>
       <NuxtLink class="flex gap-1 justify-between items-center py-1 px-2 rounded-md bg-primary-darker text-white"
-        href="/devices">
-        <p> Xem toàn bộ thiết bị </p>
+      :href="`/devices?q=${searchText}`">
+        <p>Xem tất cả</p>
         <Icon aria-hidden name="i-heroicons-chevron-double-right" class="text-lg" />
       </NuxtLink>
     </div>

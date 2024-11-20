@@ -28,13 +28,15 @@ export const deviceKindService = {
       ttl: 600,
     }));
   },
-  async getTotalItems (categoryId: number | undefined): Promise<number> {
+  async getTotalItems (categoryId: number | undefined, { searchText = undefined, searchFields = []}: { searchText: string | undefined, searchFields: ('device_id' | 'device_name')[] }): Promise<number> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
         offset: 0,
         length: 1,
+        search_text: searchText,
+        search_fields: searchFields,
       },
       ttl: 600,
     })).totalPages;
