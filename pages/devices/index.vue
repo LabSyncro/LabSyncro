@@ -36,7 +36,7 @@ const allCategories = await categoryService.getCategories();
           <p class="font-semibold">/</p>
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <p class="text-normal font-bold underline text-black">{{ categoryName }}</p>
+        <NuxtLink class="text-normal font-bold underline text-black" :href="`/devices?categoryId=${categoryId}`">{{ categoryName }}</NuxtLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
