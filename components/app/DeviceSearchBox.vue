@@ -25,7 +25,7 @@ const numberOfSearchItemsShown = 4;
 const searchItems = ref<{ name: string; image: string }[]>([]);
 watch(searchText, async () => {
   focusedSearchItemIndex.value = null;
-  const data = await deviceKindService.getDeviceKinds(0, numberOfSearchItemsShown, { searchText: searchText.value || undefined, searchFields: ['device_kind_id', 'device_name'] });
+  const data = await deviceKindService.getDeviceKinds(0, numberOfSearchItemsShown, { searchText: searchText.value || undefined, searchFields: ['device_name'] });
   searchItems.value = data.deviceKinds.map(({ name, mainImage, id }) => ({ id, name, image: mainImage }));
 });
 
