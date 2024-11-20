@@ -5,13 +5,20 @@ import { columns } from '~/components/app/DeviceInventoryByLabTable/column';
 
 const route = useRoute();
 const deviceKindId = computed(() => route.params.id);
-
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
-const deviceQuantityByLabs = sortBy(await deviceKindService.getQuantityByLab(deviceKindId.value), ({ borrowableQuantity }) => -borrowableQuantity).map(({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` }));
-const data = ref(deviceQuantityByLabs);
 
+const searchText = ref('');
+
+const data = ref(
+  sortBy(
+    await deviceKindService.getQuantityByLab(deviceKindId.value),
+    ({ borrowableQuantity }) => -borrowableQuantity,
+  ).map(
+    ({ borrowableQuantity, branch, room, name }) => ({ borrowableQuantity, name: `${room}, ${branch} - ${name}` })
+  )
+);
 </script>
 
 <template>
@@ -100,7 +107,18 @@ v-if="deviceKindMeta.borrowableQuantity > 0"
             </div>
           </section>
           <section class="bg-white p-10 mt-10">
-            <h2 class="text-xl mb-8">Tồn kho thiết bị</h2>
+            <div class="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center mb-8">
+              <h2 class="text-xl">Tồn kho thiết bị</h2> 
+              <div class="relative items-center flex gap-4 mx-auto">
+                <input
+                  v-model="searchText" type="search" placeholder="Nhập tên phòng thí nghiệm"
+                  class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
+                >
+                <Icon
+                  aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+                  name="i-heroicons-magnifying-glass" />
+              </div>
+            </div>
             <DeviceInventoryByLabTable :columns="columns" :data="data" />
           </section>
         </div>
