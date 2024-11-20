@@ -12,7 +12,7 @@ watch(categoryId, async () => {
     categoryName.value = 'Thiết bị';
     return;
   }
-  categoryName.value = (await $fetch(`/api/categories/${categoryId.value}`)).name;
+  categoryName.value = (await categoryService.getCategory(categoryId.value)).name;
 }, { immediate: true });
 
 const allCategories = await categoryService.getCategories();
