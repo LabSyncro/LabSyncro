@@ -2,7 +2,7 @@
 import { deviceKindService } from '~/services';
 
 const props = defineProps<{
-  categoryId: string;
+  categoryId: string | null;
 }>();
 
 const gridRef = ref(null);
@@ -56,7 +56,7 @@ watch([gridItemNo], async () => {
 
 async function fetchItem (offset: number) {
   await nextTick();
-  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1, {});
+  const { deviceKinds: [deviceKind] } = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1, {}) : await deviceKindService.getDeviceKinds(offset, 1, {});
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,

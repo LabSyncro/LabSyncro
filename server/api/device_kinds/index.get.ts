@@ -39,7 +39,7 @@ export default defineEventHandler<
           message: 'Bad request',
         });
       }
-      if (typeof categoryId === 'string') {
+      if (!Number.isNaN(Number.parseInt(categoryId, 10))) {
         const deviceKinds = await (db.sql`
       SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
       FROM ${'devices'}
@@ -47,7 +47,7 @@ export default defineEventHandler<
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
-      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))} AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
+      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId, 10))} AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
         (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
         (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')
       )`) : db.raw('')}
@@ -61,7 +61,7 @@ export default defineEventHandler<
       FROM ${'devices'}
       JOIN ${'device_kinds'}
       ON ${'device_kinds'}.${'id'} = ${'devices'}.${'kind'}
-      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId))}
+      WHERE ${'category_id'} = ${db.param(Number.parseInt(categoryId, 10))}
         AND ${'device_kinds'}.${'deleted_at'} IS NULL AND ${'devices'}.${'deleted_at'} IS NULL ${searchText !== undefined ? db.raw(`AND (
         (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
         (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')

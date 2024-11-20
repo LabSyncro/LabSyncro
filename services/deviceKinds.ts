@@ -1,6 +1,7 @@
 export const deviceKindService = {
   async getDeviceKindsByCategoryId (categoryId: number, offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
-    return (await $fetch('/api/device_kinds', {
+    const { $cachedFetch } = useNuxtApp();
+    return (await $cachedFetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
         offset,
@@ -10,10 +11,12 @@ export const deviceKindService = {
         sort_field: sortField,
         desc,
       },
+      ttl: 600,
     }));
   },
   async getDeviceKinds (offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
-    return (await $fetch('/api/device_kinds', {
+    const { $cachedFetch } = useNuxtApp();
+    return (await $cachedFetch('/api/device_kinds', {
       query: {
         offset,
         length,
@@ -22,21 +25,29 @@ export const deviceKindService = {
         sort_field: sortField,
         desc,
       },
+      ttl: 600,
     }));
   },
-  async getTotalItems (categoryId: number): Promise<number> {
-    return (await $fetch('/api/device_kinds', {
+  async getTotalItems (categoryId: number | undefined): Promise<number> {
+    const { $cachedFetch } = useNuxtApp();
+    return (await $cachedFetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
         offset: 0,
         length: 1,
       },
+      ttl: 600,
     })).totalPages;
   },
   async getById (deviceKindId: number): Promise<Record<string, string>> {
-    return await $fetch(`/api/device_kinds/${deviceKindId}`);
+    const { $cachedFetch } = useNuxtApp();
+    return await $cachedFetch(`/api/device_kinds/${deviceKindId}`, { ttl: 600 });
   },
   async getQuantityByLab (deviceKindId: number): Promise<Record<string, number>> {
-    return (await $fetch('/api/device_kinds/quantity_by_lab', { query: { kindId: deviceKindId } })).labs;
+    const { $cachedFetch } = useNuxtApp();
+    return (await $cachedFetch('/api/device_kinds/quantity_by_lab', {
+      query: { kindId: deviceKindId },
+      ttl: 0,
+    })).labs;
   }
 };
