@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { sortBy } from 'lodash-es';
 import { deviceKindService, categoryService } from '~/services';
-import { columns } from '~/components/app/DeviceInventoryByLabTable/column';
+import { createColumns } from '~/components/app/DeviceInventoryByLabTable/column';
 
 const route = useRoute();
 const deviceKindId = computed(() => route.params.id);
@@ -123,7 +123,7 @@ v-if="deviceKindMeta.borrowableQuantity > 0"
                   name="i-heroicons-magnifying-glass" />
               </div>
             </div>
-            <DeviceInventoryByLabTable :columns="columns" :data="data" />
+            <DeviceInventoryByLabTable :columns="createColumns({ searchText })" :data="data" />
           </section>
         </div>
       </div>
