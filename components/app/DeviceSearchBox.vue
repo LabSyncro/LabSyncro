@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const searchText = ref('');
+
 const isDropdownActive = ref(false);
 
 function openDropdown () {
@@ -19,6 +21,7 @@ function closeDropdown () {
         placeholder="Tên loại thiết bị"
         @focus="openDropdown"
         @blur="closeDropdown"
+        v-model="searchText"
       >
       <Icon
         aria-hidden
