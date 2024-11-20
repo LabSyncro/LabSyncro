@@ -24,7 +24,7 @@ export const deviceKindService = {
       },
     }));
   },
-  async getTotalItems (categoryId: number): Promise<number> {
+  async getTotalItems (categoryId: number | undefined): Promise<number> {
     return (await $fetch('/api/device_kinds', {
       query: {
         category_id: categoryId,
