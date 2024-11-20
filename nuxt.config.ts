@@ -42,6 +42,9 @@ export default defineNuxtConfig({
     {
       path: './components/app',
     },
+    {
+      path: './components/common',
+    },
   ],
   shadcn: {
     /**
