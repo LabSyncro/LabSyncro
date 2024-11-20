@@ -14,7 +14,7 @@ const searchText = ref('');
 const data = ref([]);
 
 watch(searchText, async () => {
-  const res = await deviceKindService.getQuantityByLab(deviceKindId.value);
+  const res = await deviceKindService.getQuantityByLab(deviceKindId.value, { searchText: searchText.value || undefined, searchFields: ['lab_name'] });
 
   data.value = sortBy(
     res,

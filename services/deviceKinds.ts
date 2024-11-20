@@ -43,10 +43,10 @@ export const deviceKindService = {
     const { $cachedFetch } = useNuxtApp();
     return await $cachedFetch(`/api/device_kinds/${deviceKindId}`, { ttl: 600 });
   },
-  async getQuantityByLab (deviceKindId: number): Promise<Record<string, number>> {
+  async getQuantityByLab (deviceKindId: number, { searchText = undefined, searchFields = [] }: { searchText: string | undefined, searchFields: ('lab_name')[] }): Promise<Record<string, number>> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds/quantity_by_lab', {
-      query: { kindId: deviceKindId },
+      query: { kindId: deviceKindId, search_text: searchText, search_fields: searchFields },
       ttl: 0,
     })).labs;
   }
