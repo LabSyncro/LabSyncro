@@ -1,3 +1,15 @@
+<script setup lang="ts">
+const isDropdownActive = ref(false);
+
+function openDropdown () {
+  isDropdownActive.value = true;
+}
+
+function closeDropdown () {
+  isDropdownActive.value = false;
+}
+</script>
+
 <template>
   <div class="relative">
     <div class="relative">
@@ -5,6 +17,8 @@
         class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 pr-3 rounded-md text-md placeholder:text-normal"
         type="search"
         placeholder="Tên loại thiết bị"
+        @focus="openDropdown"
+        @blur="closeDropdown"
       >
       <Icon
         aria-hidden
@@ -13,7 +27,7 @@
       />
     </div>
 
-    <div class="absolute bg-white p-1 mt-1 w-[100%] flex flex-col gap-1">
+    <div :class="`${isDropdownActive ? 'flex': 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[100%]`">
       <NuxtLink class="flex gap-1 justify-between items-center py-1 px-2 rounded-md bg-primary-darker text-white" href="/devices">
         <p> Xem toàn bộ thiết bị </p>
         <Icon
