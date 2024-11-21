@@ -30,7 +30,7 @@ const totalItems = ref(0);
 const currentPage = ref(0);
 
 watch([itemNo], async () => {
-  totalItems.value = await deviceKindService.getTotalItems(props.category.id);
+  totalItems.value = await deviceKindService.getTotalItems(props.category.id, {});
   totalPages.value = Math.ceil(totalItems.value / itemNo.value);
 });
 
