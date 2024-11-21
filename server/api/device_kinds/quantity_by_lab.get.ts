@@ -1,22 +1,11 @@
-import { Type, type Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
 import { BAD_REQUEST_CODE } from '~/constants';
 import { dbPool } from '~/server/db';
-
-const DeviceQuantityByLabOutputDto = Type.Object({
-  labs: Type.Array(Type.Object({
-    name: Type.String(),
-    branch: Type.String(),
-    room: Type.String(),
-    borrowableQuantity: Type.Number(),
-  })),
-});
-
-type DeviceQuantityByLabOutputDto = Static<typeof DeviceQuantityByLabOutputDto>;
+import type { DeviceQuantityByLabDto } from '~/lib/api_schema';
 
 export default defineEventHandler<
   { query: { kindId: string, search_text?: string, search_fields?: ('lab_name')[] } },
-  Promise<DeviceQuantityByLabOutputDto>
+  Promise<DeviceQuantityByLabDto>
     >(async (event) => {
       const { kindId, search_text: searchText, search_fields: searchFields } = getQuery(event);
       if (searchText !== undefined && !searchFields) {

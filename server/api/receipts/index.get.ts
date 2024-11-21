@@ -1,31 +1,10 @@
-import { Type, type Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
-
-const LabOutputDto = Type.Object({
-  branches: Type.Array(
-    Type.Object({
-      name: Type.String(),
-      labs: Type.Array(
-        Type.Object({
-          branch: Type.String(),
-          timetable: Type.Record(Type.String(), Type.Array(Type.String())),
-          adminId: Type.String(),
-          adminName: Type.String(),
-          adminTel: Type.String(),
-          name: Type.String(),
-          room: Type.String(),
-        }),
-      ),
-    }),
-  ),
-});
-
-type LabOutputDto = Static<typeof LabOutputDto>;
+import type { ReceiptResourceDto } from '~/lib/api_schema';
 
 export default defineEventHandler<
   { query: { faculty: string } },
-  Promise<LabOutputDto>
+  Promise<ReceiptResourceDto>
 >(async (event) => {
   const { faculty } = getQuery(event);
   const labs = (

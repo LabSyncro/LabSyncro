@@ -1,29 +1,11 @@
-import { Type } from '@sinclair/typebox';
-import type { Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
 import { BAD_REQUEST_CODE } from '~/constants';
+import { type ListOfDeviceKindResourceDto } from '~/lib/api_schema';
 import { dbPool } from '~/server/db';
-
-const DeviceKindOutputDto = Type.Object({
-  deviceKinds: Type.Array(Type.Object({
-    id: Type.String(),
-    name: Type.String(),
-    brand: Type.Optional(Type.String()),
-    manufacturer: Type.Optional(Type.String()),
-    mainImage: Type.String(),
-    subImages: Type.Array(Type.String()),
-    quantity: Type.String(),
-    borrowableQuantity: Type.String(),
-  })),
-  totalPages: Type.Number(),
-  currentPage: Type.Number(),
-});
-
-type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
 
 export default defineEventHandler<
   { query: { category_id?: number, offset: number, length: number, search_text?: string, search_fields?: ('device_id' | 'device_name')[], sort_field: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean } },
-  Promise<DeviceKindOutputDto>
+  Promise<ListOfDeviceKindResourceDto>
     >(async (event) => {
       const { category_id: categoryId, offset, length, search_fields: searchFields, sort_field: sortField, desc } = getQuery(event);
       const searchText = getQuery(event).search_text?.replaceAll('\'', '');

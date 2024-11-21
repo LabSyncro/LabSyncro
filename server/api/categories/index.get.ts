@@ -1,18 +1,8 @@
-import { Type } from '@sinclair/typebox';
-import type { Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
+import type { ListOfCategoryResourceDto } from '~/lib/api_schema';
 import { dbPool } from '~/server/db';
 
-const CategoryOutputDto = Type.Object({
-  categories: Type.Array(Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-  })),
-});
-
-type CategoryOutputDto = Static<typeof CategoryOutputDto>;
-
-export default defineEventHandler<Promise<CategoryOutputDto>>(async () => {
+export default defineEventHandler<Promise<ListOfCategoryResourceDto>>(async () => {
   const categories = (await db.select('categories', {}).run(dbPool)).map(({ name, id }) => ({ id, name }));
   return {
     categories,

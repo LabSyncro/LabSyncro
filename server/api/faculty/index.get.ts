@@ -1,17 +1,8 @@
-import { Type, type Static } from '@sinclair/typebox';
+import type { FacultyResourceDto } from '~/lib/api_schema';
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
 
-const FacultyOutputDto = Type.Object({
-  faculties: Type.Array(Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-  })),
-});
-
-type FacultyOutputDto = Static<typeof FacultyOutputDto>;
-
-export default defineEventHandler<Promise<FacultyOutputDto>>(async () => {
+export default defineEventHandler<Promise<FacultyResourceDto>>(async () => {
   const faculties = (await db.sql`
     SELECT DISTINCT ${'labs'}.${'faculty'}
     FROM ${'labs'}

@@ -1,27 +1,10 @@
-import { Type } from '@sinclair/typebox';
-import type { Static } from '@sinclair/typebox';
 import * as db from 'zapatos/db';
 import { NOT_FOUND_CODE } from '~/constants';
 import { dbPool } from '~/server/db';
-
-const DeviceKindOutputDto = Type.Object({
-  id: Type.Number(),
-  unit: Type.String(),
-  name: Type.String(),
-  brand: Type.Optional(Type.String()),
-  manufacturer: Type.Optional(Type.String()),
-  mainImage: Type.String(),
-  subImages: Type.Array(Type.String()),
-  quantity: Type.String(),
-  categoryId: Type.String(),
-  categoryName: Type.String(),
-  description: Type.String(),
-});
-
-type DeviceKindOutputDto = Static<typeof DeviceKindOutputDto>;
+import type { DeviceKindResourceDto } from '~/lib/api_schema';
 
 export default defineEventHandler<
-  Promise<DeviceKindOutputDto>
+  Promise<DeviceKindResourceDto>
 >(async (event) => {
   const deviceKindId = Number.parseInt(getRouterParam(event, 'id')!);
   try {
