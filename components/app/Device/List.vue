@@ -3,18 +3,8 @@ import { deviceKindService } from '~/services';
 const props = defineProps<{
   category: { id: string; name: string };
 }>();
-const listRef = ref<HTMLDivElement | null>(null);
-const listWidth = ref<number | null>(null);
-function updateListWidth () {
-  if (!listRef.value) {
-    listWidth.value = null;
-  }
-  listWidth.value = listRef.value!.offsetWidth;
-}
-onMounted(() => updateListWidth());
-onMounted(() => document.defaultView!.addEventListener('resize', updateListWidth));
-onUnmounted(() => document.defaultView!.removeEventListener('resize', updateListWidth));
-const ITEM_WIDTH = 180;
+const listWidth = useWidth(useTemplateRef('listRef'));
+const itemWidth = 180;
 const numberOfItemsShown = computed(() => {
   if (!listWidth.value) {
     return null;
@@ -22,7 +12,7 @@ const numberOfItemsShown = computed(() => {
   if (listWidth.value < 50) {
     return 0;
   }
-  return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
+  return Math.floor((listWidth.value - 75) / (itemWidth + 10));
 });
 
 const totalPages = ref(0);
@@ -83,7 +73,7 @@ function pageRight () {
       <TransitionGroup class="flex justify-around gap-2 min-h-64" :name="listDirection || ''" tag="div">
           <div v-for="i in [...Array(numberOfItemsShown).keys()]" :key="i + currentPage * numberOfItemsShown!">
             <DeviceSuspenseItem
-              v-if="i + currentPage * numberOfItemsShown! < totalItems" :width="`${ITEM_WIDTH}px`"
+              v-if="i + currentPage * numberOfItemsShown! < totalItems" :width="`${itemWidth}px`"
               :fetch-fn="() => fetchItem(i + currentPage * numberOfItemsShown!)" />
           </div>
       </TransitionGroup>
