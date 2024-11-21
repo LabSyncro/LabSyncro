@@ -48,7 +48,7 @@ export const deviceKindService = {
   async getQuantityByLab (deviceKindId: number, { searchText = undefined, searchFields = [] }: { searchText: string | undefined, searchFields: ('lab_name')[] }): Promise<Record<string, number>> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds/quantity_by_lab', {
-      query: { kindId: deviceKindId, search_text: searchText, search_fields: searchFields },
+      query: { kind_id: deviceKindId, search_text: searchText, search_fields: searchFields },
       ttl: 0,
     })).labs;
   }

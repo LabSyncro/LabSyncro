@@ -1,28 +1,13 @@
-import { Type, type Static } from '@sinclair/typebox';
+import { Value } from '@sinclair/typebox/value';
 import { groupBy } from 'lodash-es';
 import * as db from 'zapatos/db';
+import { INTERNAL_SERVER_ERROR_CODE } from '~/constants';
+import { LabResourceDto } from '~/lib/api_schema';
 import { dbPool } from '~/server/db';
-
-const LabOutputDto = Type.Object({
-  branches: Type.Array(Type.Object({
-    name: Type.String(),
-    labs: Type.Array(Type.Object({
-      branch: Type.String(),
-      timetable: Type.Record(Type.String(), Type.Array(Type.String())),
-      adminId: Type.String(),
-      adminName: Type.String(),
-      adminTel: Type.String(),
-      name: Type.String(),
-      room: Type.String(),
-    })),
-  })),
-});
-
-type LabOutputDto = Static<typeof LabOutputDto>;
 
 export default defineEventHandler<
   { query: { faculty: string } },
-  Promise<LabOutputDto>
+  Promise<LabResourceDto>
 >(async (event) => {
   const { faculty } = getQuery(event);
   const labs = (await db.sql`
@@ -41,7 +26,14 @@ export default defineEventHandler<
       labs: value,
     });
   }
-  return {
-    branches,
-  };
+
+  const output = { branches };
+
+  if (!Value.Check(LabResourceDto, output)) {
+    throw createError({
+      statusCode: INTERNAL_SERVER_ERROR_CODE,
+      message: 'Internal server error: the returned output does not conform to the schema',
+    });
+  }
+  return output;
 });
