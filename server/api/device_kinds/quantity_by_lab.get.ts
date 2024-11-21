@@ -17,15 +17,15 @@ type DeviceQuantityByLabOutputDto = Static<typeof DeviceQuantityByLabOutputDto>;
 export default defineEventHandler<
   { query: { kindId: string, search_text?: string, search_fields?: ('lab_name')[] } },
   Promise<DeviceQuantityByLabOutputDto>
->(async (event) => {
-  const { kindId, search_text: searchText, search_fields: searchFields } = getQuery(event);
-  if (searchText !== undefined && !searchFields) {
-    throw createError({
-      statusCode: BAD_REQUEST_CODE,
-      message: 'Bad request',
-    });
-  }
-  const labs = (await db.sql`
+    >(async (event) => {
+      const { kindId, search_text: searchText, search_fields: searchFields } = getQuery(event);
+      if (searchText !== undefined && !searchFields) {
+        throw createError({
+          statusCode: BAD_REQUEST_CODE,
+          message: 'Bad request',
+        });
+      }
+      const labs = (await db.sql`
     SELECT labs.name, labs.branch, labs.room, sum(CASE WHEN devices.status = 'healthy' THEN 1 ELSE 0 END)::int as borrowableQuantity
     FROM labs
       JOIN devices ON labs.id = devices.lab_id
@@ -37,5 +37,5 @@ export default defineEventHandler<
       )`) : db.raw('')}
     GROUP BY labs.id
   `.run(dbPool));
-  return { labs };
-});
+      return { labs };
+    });
