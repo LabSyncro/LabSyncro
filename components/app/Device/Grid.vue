@@ -17,7 +17,7 @@ function updateGridWidth () {
 onMounted(() => updateGridWidth());
 onMounted(() => document.defaultView.addEventListener('resize', updateGridWidth));
 onUnmounted(() => document.defaultView.removeEventListener('resize', updateGridWidth));
-const ITEM_WIDTH = 180;
+const itemWidth = 180;
 const cols = computed(() => {
   if (!gridWidth.value) {
     return null;
@@ -25,7 +25,7 @@ const cols = computed(() => {
   if (gridWidth.value < 50) {
     return 0;
   }
-  return Math.min(Math.floor((gridWidth.value - 50) / (ITEM_WIDTH + 10)), 5);
+  return Math.min(Math.floor((gridWidth.value - 50) / (itemWidth + 10)), 5);
 });
 const rows = computed(() => {
   if (!gridWidth.value) {
@@ -38,7 +38,7 @@ const rows = computed(() => {
   default: return 5;
   }
 });
-const gridItemNo = computed(() => {
+const numberOfGridItems = computed(() => {
   if (!cols.value) {
     return null;
   }
@@ -50,15 +50,18 @@ watch(
   async () => totalItems.value = await deviceKindService.getTotalItems(props.categoryId, { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] }),
   { immediate: true },
 );
-const totalPages = computed(() => Math.ceil(totalItems.value / gridItemNo.value));
+const totalPages = computed(() => Math.ceil(totalItems.value / numberOfGridItems.value));
 const currentPage = ref(0);
 const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
 async function fetchItem (offset: number) {
   await nextTick();
+  const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value);
+  const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value;
   const options = { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] };
-  const { deviceKinds: [deviceKind] } = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1, options) : await deviceKindService.getDeviceKinds(offset, 1, options);
+  const res = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, pageNumberOfItem, numberOfGridItems.value, options) : await deviceKindService.getDeviceKinds(pageNumberOfItem, numberOfGridItems.value, options);
+  const deviceKind = res.deviceKinds[offsetInPage];
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
@@ -95,10 +98,12 @@ function pageRight () {
     <div v-else>
       <span ref="top" />
       <div :class="`grid grid-cols-${cols} gap-4 justify-items-center`" role="grid">
-        <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${props.searchText}-${i + currentPage * gridItemNo}`">
+        <div
+v-for="i in [...Array(numberOfGridItems).keys()]"
+          :key="`${props.categoryId}-${props.searchText}-${i + currentPage * numberOfGridItems}`">
           <DeviceSuspenseItem
-v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
-            :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" /> 
+v-if="i + currentPage * numberOfGridItems < totalItems" :width="`${itemWidth}px`"
+            :fetch-fn="() => fetchItem(i + currentPage * numberOfGridItems)" />
         </div>
       </div>
       <div class="flex justify-center gap-0 mt-10">

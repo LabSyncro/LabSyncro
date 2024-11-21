@@ -11,21 +11,21 @@ onMounted(() => updateListWidth());
 onMounted(() => document.defaultView.addEventListener('resize', updateListWidth));
 onUnmounted(() => document.defaultView.removeEventListener('resize', updateListWidth));
 
-const ITEM_WIDTH = 330;
-const itemNo = computed(() => {
+const itemWidth = 330;
+const numberOfItemsShown = computed(() => {
   if (!listWidth.value) {
     return null;
   }
   if (listWidth.value < 50) {
     return 0;
   }
-  return Math.floor((listWidth.value - 30) / (ITEM_WIDTH + 10));
+  return Math.floor((listWidth.value - 30) / (itemWidth + 10));
 });
 const items = computed(() => {
-  if (!itemNo.value) {
+  if (!numberOfItemsShown.value) {
     return [];
   }
-  return [...Array(itemNo.value).keys()].map(() => ({
+  return [...Array(numberOfItemsShown.value).keys()].map(() => ({
     departmentName: 'Department Name',
     title: 'Phương pháp Nghiên cứu Khoa học',
     summary: `

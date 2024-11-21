@@ -15,7 +15,7 @@ onMounted(() => updateListWidth());
 onMounted(() => document.defaultView.addEventListener('resize', updateListWidth));
 onUnmounted(() => document.defaultView.removeEventListener('resize', updateListWidth));
 const ITEM_WIDTH = 180;
-const itemNo = computed(() => {
+const numberOfItemsShown = computed(() => {
   if (!listWidth.value) {
     return null;
   }
@@ -29,14 +29,17 @@ const totalPages = ref(0);
 const totalItems = ref(0);
 const currentPage = ref(0);
 
-watch([itemNo], async () => {
+watch([numberOfItemsShown], async () => {
   totalItems.value = await deviceKindService.getTotalItems(props.category.id, {});
-  totalPages.value = Math.ceil(totalItems.value / itemNo.value);
+  totalPages.value = Math.ceil(totalItems.value / numberOfItemsShown.value);
 });
 
 async function fetchItem (offset: number) {
   await nextTick();
-  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, offset, 1, {});
+  const pageNumberOfItem = Math.floor(offset / numberOfItemsShown.value);
+  const offsetInPage = offset -  pageNumberOfItem * numberOfItemsShown.value;
+  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, pageNumberOfItem, numberOfItemsShown.value, {});
+  const deviceKind = res.deviceKinds[offsetInPage];
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
@@ -78,10 +81,10 @@ function pageRight () {
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
       <TransitionGroup class="flex justify-around gap-2 min-h-64" :name="listDirection" tag="div">
-          <div v-for="i in [...Array(itemNo).keys()]" :key="i + currentPage * itemNo">
+          <div v-for="i in [...Array(numberOfItemsShown).keys()]" :key="i + currentPage * numberOfItemsShown">
             <DeviceSuspenseItem
-              v-if="i + currentPage * itemNo < totalItems" :width="`${ITEM_WIDTH}px`"
-              :fetch-fn="() => fetchItem(i + currentPage * itemNo)" />
+              v-if="i + currentPage * numberOfItemsShown < totalItems" :width="`${ITEM_WIDTH}px`"
+              :fetch-fn="() => fetchItem(i + currentPage * numberOfItemsShown)" />
           </div>
       </TransitionGroup>
       <button
