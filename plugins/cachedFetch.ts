@@ -37,7 +37,7 @@ export default defineNuxtPlugin(() => {
 
     const response = await $fetch.raw(url, options);
 
-    if (response.status > 400) {
+    if (response.status < 400) {
       return response._data;
     }
 
