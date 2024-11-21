@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import type { Row } from '@tanstack/vue-table';
 import { MoreHorizontal } from 'lucide-vue-next';
-import { AdminDeviceListSchema, type AdminDeviceList } from './schema';
+import { DeviceByLabSchema, type DeviceByLab } from './schema';
 import { Value } from '@sinclair/typebox/value';
 
 interface DataTableRowActionsProps {
-  row: Row<AdminDeviceList>;
+  row: Row<DeviceByLab>;
 }
 const props = defineProps<DataTableRowActionsProps>();
 
 computed(() => {
   const data = props.row.original;
 
-  if (Value.Check(AdminDeviceListSchema, data)) {
-    return data as AdminDeviceList;
+  if (Value.Check(DeviceByLabSchema, data)) {
+    return data as DeviceByLab;
   } else {
-    throw new Error('Invalid AdminDeviceList passed to the data table');
+    throw new Error('Invalid DeviceByLab passed to the data table');
   }
 });
 </script>

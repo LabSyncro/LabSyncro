@@ -11,7 +11,7 @@ import {
 const avatar = ref<null | string>(null);
 
 onMounted(async () => {
-  avatar.value = await userService.getAvatar();
+  avatar.value = userService.getAvatar();
 });
 </script>
 

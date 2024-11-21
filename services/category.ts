@@ -1,5 +1,5 @@
 export const categoryService = {
-  async getCategories (): Promise<{ id: number, name: string }[]> {
+  async getCategories (): Promise<{ id: string, name: string }[]> {
     const { $cachedFetch } = useNuxtApp();
     const { categories } = await $cachedFetch('/api/categories');
     return categories;

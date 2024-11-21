@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { Column } from '@tanstack/vue-table';
 import { cn } from '@/lib/utils';
-import type { AdminDeviceList } from './schema';
+import type { DeviceByLab } from './schema';
 
 interface DataTableColumnHeaderProps {
-  column: Column<AdminDeviceList, unknown>;
+  column: Column<DeviceByLab, unknown>;
   title: string;
 }
 
@@ -14,7 +14,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-function toggleSortOrder (column: Column<AdminDeviceList, unknown>) {
+function toggleSortOrder (column: Column<DeviceByLab, unknown>) {
   const oldSortOrder = column.getIsSorted();
   if (oldSortOrder === 'asc') {
     column.toggleSorting(true);

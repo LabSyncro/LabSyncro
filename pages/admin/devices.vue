@@ -6,30 +6,22 @@ import { deviceKindService } from '~/services';
 
 const searchText = ref('');
 
-const paginationState = ref({
-  pageIndex: 0,
-  pageSize: 10,
-});
-function handlePageIndexChange (value) {
-  paginationState.value = {
-    pageIndex: value,
-    pageSize: paginationState.value.pageSize,
-  };
+const pageIndex = ref(0);
+const pageSize = ref(10);
+function handlePageIndexChange (value: number) {
+  pageIndex.value = value;
 }
-function handlePageSizeChange (value) {
-  paginationState.value = {
-    pageSize: value,
-    pageIndex: paginationState.value.pageIndex,
-  };
+function handlePageSizeChange (value: number) {
+  pageSize.value = value;
 }
 const pageCount = ref(0);
 
-const sortField = ref(undefined);
-const sortOrder = ref(undefined);
-function handleSortFieldChange (value: string | undefined) {
+const sortField = ref<string | null>(null);
+const sortOrder = ref<'desc' | 'asc' | null>(null);
+function handleSortFieldChange (value: string | null) {
   sortField.value = value;
 }
-function handleSortOrderChange (value: 'desc' | 'asc' | undefined) {
+function handleSortOrderChange (value: 'desc' | 'asc' | null) {
   sortOrder.value = value;
 }
 
@@ -47,12 +39,12 @@ function onSelectRows (ids: unknown[]) {
 
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
-  const res = (await deviceKindService.getDeviceKinds(paginationState.value.pageIndex * paginationState.value.pageSize, paginationState.value.pageSize, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value, desc: sortOrder.value === 'asc' }));
+  const res = (await deviceKindService.getDeviceKinds(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value as any, desc: sortOrder.value === 'asc' }));
   data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
 }, 300);
 onMounted(updateDeviceKinds);
-watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
+watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds);
 </script>
 
 <template>
@@ -104,10 +96,10 @@ watch([paginationState, searchText, sortField, sortOrder], updateDeviceKinds);
           </div>
         </div>
         <DeviceTable
-          :columns="createColumns({ sortField, sortOrder, rowSelection, onSelectRows })"
-          :data="data" :page-count="pageCount" :pagination-state="paginationState" :row-selection="rowSelection"
+          :columns="createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows })"
+          :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex" :row-selection="rowSelection"
           @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
-          @sort-order-change="handleSortOrderChange" @sort-field-change="handleSortFieldChange" />
+          @sort-order-change="handleSortOrderChange as any" @sort-field-change="handleSortFieldChange as any" />
       </section>
     </main>
   </div>

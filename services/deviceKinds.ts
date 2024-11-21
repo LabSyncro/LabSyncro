@@ -1,5 +1,20 @@
+import type { DeviceKindResourceDto, DeviceQuantityByLabDto, ListOfDeviceKindResourceDto } from '~/lib/api_schema';
+
 export const deviceKindService = {
-  async getDeviceKindsByCategoryId (categoryId: number, offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_kind_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKindsByCategoryId (
+    categoryId: string, offset: number, length: number,
+    {
+      searchText = undefined,
+      searchFields = [],
+      sortField = undefined,
+      desc = false
+    }: {
+      searchText?: string,
+      searchFields?: ('device_id' | 'device_name')[],
+      sortField?: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity',
+      desc?: boolean,
+    }
+  ): Promise<ListOfDeviceKindResourceDto> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds', {
       query: {
@@ -14,7 +29,20 @@ export const deviceKindService = {
       ttl: 600,
     }));
   },
-  async getDeviceKinds (offset: number, length: number, { searchText = undefined, searchFields = [], sortField = undefined, desc = false }: { searchText: string | undefined, searchFields: ('device_id' | 'device_name')[], sortField: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity' | undefined, desc: boolean }): Promise<{ id: number, name: string, quantity: number }[]> {
+  async getDeviceKinds (
+    offset: number, length: number,
+    {
+      searchText = undefined,
+      searchFields = [],
+      sortField = undefined,
+      desc = false
+    }: {
+      searchText?: string,
+      searchFields?: ('device_id' | 'device_name')[],
+      sortField?: 'name' | 'category' | 'brand' | 'borrowable_quantity' | 'quantity',
+      desc?: boolean,
+    }
+  ): Promise<ListOfDeviceKindResourceDto> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds', {
       query: {
@@ -28,7 +56,16 @@ export const deviceKindService = {
       ttl: 600,
     }));
   },
-  async getTotalItems (categoryId: number | undefined, { searchText = undefined, searchFields = []}: { searchText: string | undefined, searchFields: ('device_id' | 'device_name')[] }): Promise<number> {
+  async getTotalItems (
+    categoryId: string | undefined,
+    {
+      searchText = undefined,
+      searchFields = []
+    }: {
+      searchText?: string,
+      searchFields?: ('device_id' | 'device_name')[],
+    }
+  ): Promise<number> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds', {
       query: {
@@ -41,11 +78,20 @@ export const deviceKindService = {
       ttl: 600,
     })).totalPages;
   },
-  async getById (deviceKindId: number): Promise<Record<string, string>> {
+  async getById (deviceKindId: number): Promise<DeviceKindResourceDto> {
     const { $cachedFetch } = useNuxtApp();
     return await $cachedFetch(`/api/device_kinds/${deviceKindId}`, { ttl: 600 });
   },
-  async getQuantityByLab (deviceKindId: number, { searchText = undefined, searchFields = [] }: { searchText: string | undefined, searchFields: ('lab_name')[] }): Promise<Record<string, number>> {
+  async getQuantityByLab (
+    deviceKindId: number,
+    {
+      searchText = undefined,
+      searchFields = []
+    }: {
+      searchText: string | undefined,
+      searchFields: ('lab_name')[]
+    }
+  ): Promise<DeviceQuantityByLabDto['labs']> {
     const { $cachedFetch } = useNuxtApp();
     return (await $cachedFetch('/api/device_kinds/quantity_by_lab', {
       query: { kind_id: deviceKindId, search_text: searchText, search_fields: searchFields },

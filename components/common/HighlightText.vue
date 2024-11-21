@@ -8,7 +8,7 @@ const props = defineProps<{
 <template>
   <p v-if="matchText">
     <span
-v-for="(fragment, index) in props.text.split(new RegExp(`(${props.matchText.replaceAll('(', '\\(')})`, 'ig'))"
+v-for="(fragment, index) in props.text.split(new RegExp(`(${matchText!.replaceAll('(', '\\(')})`, 'ig'))"
       :key="index">
       <span :class="index % 2 ? 'text-tertiary-dark' : ''">{{ fragment }}</span>
     </span>

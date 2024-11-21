@@ -2,7 +2,7 @@
 const props = defineProps<{
   fetchFn: () => Promise<{
     thumbnailUrl: string;
-    manufacturer?: string;
+    manufacturer: string | null;
     title: string;
     quantity: number;
     unit: string;

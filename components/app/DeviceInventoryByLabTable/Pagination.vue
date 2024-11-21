@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
 import { ChevronLeft, ChevronRight, ArrowLeft, ArrowRight } from 'lucide-vue-next';
-import type { AdminDeviceList } from './schema';
+import type { DeviceByLab } from './schema';
 
 interface DataTablePaginationProps {
-  table: Table<AdminDeviceList>;
+  table: Table<DeviceByLab>;
 }
 
 const props = defineProps<DataTablePaginationProps>();

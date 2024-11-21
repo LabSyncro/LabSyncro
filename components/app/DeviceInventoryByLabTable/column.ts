@@ -1,7 +1,6 @@
 import { HighlightText, Icon } from '#components';
 import type { ColumnDef } from '@tanstack/vue-table';
 import ColumnHeader from './ColumnHeader.vue';
-
 import type { DeviceByLab } from './schema';
 
 export function createColumns ({ searchText }: { searchText: string }): ColumnDef<DeviceByLab>[] {
@@ -18,7 +17,7 @@ export function createColumns ({ searchText }: { searchText: string }): ColumnDe
           [
             h(
               HighlightText,
-              { text: row.getValue('name'), matchText: searchText, class: 'text-slate-500 text-sm font-normal leading-none' },
+              { text: row.getValue('name') as string, matchText: searchText, class: 'text-slate-500 text-sm font-normal leading-none' },
             ),
           ],
         ),

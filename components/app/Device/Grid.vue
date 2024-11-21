@@ -6,17 +6,18 @@ const props = defineProps<{
   searchText: string | null;
 }>();
 
-const gridRef = ref(null);
-const gridWidth = ref(null);
+const gridRef = ref<null | HTMLDivElement>(null);
+const gridWidth = ref<null | number>(null);
 function updateGridWidth () {
   if (!gridRef.value) {
     gridWidth.value = null;
+    return;
   }
   gridWidth.value = gridRef.value.offsetWidth;
 }
 onMounted(() => updateGridWidth());
-onMounted(() => document.defaultView.addEventListener('resize', updateGridWidth));
-onUnmounted(() => document.defaultView.removeEventListener('resize', updateGridWidth));
+onMounted(() => document.defaultView!.addEventListener('resize', updateGridWidth));
+onUnmounted(() => document.defaultView!.removeEventListener('resize', updateGridWidth));
 const itemWidth = 180;
 const cols = computed(() => {
   if (!gridWidth.value) {
@@ -42,25 +43,25 @@ const numberOfGridItems = computed(() => {
   if (!cols.value) {
     return null;
   }
-  return cols.value * rows.value;
+  return cols.value * rows.value!;
 });
 const totalItems = ref(0);
 watch(
   () => [props.categoryId, props.searchText],
-  async () => totalItems.value = await deviceKindService.getTotalItems(props.categoryId, { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] }),
+  async () => totalItems.value = await deviceKindService.getTotalItems(props.categoryId!, { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] }),
   { immediate: true },
 );
-const totalPages = computed(() => Math.ceil(totalItems.value / numberOfGridItems.value));
+const totalPages = computed(() => Math.ceil(totalItems.value / numberOfGridItems.value!));
 const currentPage = ref(0);
 const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
-async function fetchItem (offset: number) {
+async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, quantity: number, unit: string, id: string }> {
   await nextTick();
-  const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value);
-  const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value;
-  const options = { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] };
-  const res = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, pageNumberOfItem, numberOfGridItems.value, options) : await deviceKindService.getDeviceKinds(pageNumberOfItem, numberOfGridItems.value, options);
+  const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value!);
+  const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value!;
+  const options = { searchText: props.searchText || undefined, searchFields: ['device_id' as const, 'device_name' as const] };
+  const res = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, pageNumberOfItem, numberOfGridItems.value!, options) : await deviceKindService.getDeviceKinds(pageNumberOfItem, numberOfGridItems.value!, options);
   const deviceKind = res.deviceKinds[offsetInPage];
   return {
     thumbnailUrl: deviceKind.mainImage,
@@ -74,7 +75,7 @@ async function fetchItem (offset: number) {
 
 const top = useTemplateRef('top');
 function setPage (pageNo: number) {
-  top.value.scrollIntoView();
+  top.value!.scrollIntoView();
   currentPage.value = pageNo;
 }
 
@@ -99,11 +100,11 @@ function pageRight () {
       <span ref="top" />
       <div :class="`grid grid-cols-${cols} gap-4 justify-items-center`" role="grid">
         <div
-v-for="i in [...Array(numberOfGridItems).keys()]"
-          :key="`${props.categoryId}-${props.searchText}-${i + currentPage * numberOfGridItems}`">
+          v-for="i in [...Array(numberOfGridItems).keys()]"
+          :key="`${props.categoryId}-${props.searchText}-${i + currentPage * numberOfGridItems!}`">
           <DeviceSuspenseItem
-v-if="i + currentPage * numberOfGridItems < totalItems" :width="`${itemWidth}px`"
-            :fetch-fn="() => fetchItem(i + currentPage * numberOfGridItems)" />
+            v-if="i + currentPage * numberOfGridItems! < totalItems" :width="`${itemWidth}px`"
+            :fetch-fn="() => fetchItem(i + currentPage * numberOfGridItems!)" />
         </div>
       </div>
       <div class="flex justify-center gap-0 mt-10">
