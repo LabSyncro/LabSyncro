@@ -6,18 +6,7 @@ const props = defineProps<{
   searchText: string | null;
 }>();
 
-const gridRef = ref<null | HTMLDivElement>(null);
-const gridWidth = ref<null | number>(null);
-function updateGridWidth () {
-  if (!gridRef.value) {
-    gridWidth.value = null;
-    return;
-  }
-  gridWidth.value = gridRef.value.offsetWidth;
-}
-onMounted(() => updateGridWidth());
-onMounted(() => document.defaultView!.addEventListener('resize', updateGridWidth));
-onUnmounted(() => document.defaultView!.removeEventListener('resize', updateGridWidth));
+const gridWidth = useWidth(useTemplateRef('gridRef'));
 const itemWidth = 180;
 const cols = computed(() => {
   if (!gridWidth.value) {
