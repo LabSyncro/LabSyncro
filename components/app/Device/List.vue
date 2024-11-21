@@ -36,7 +36,10 @@ watch([numberOfItemsShown], async () => {
 
 async function fetchItem (offset: number) {
   await nextTick();
-  const { deviceKinds: [deviceKind] } = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, offset, 1, {});
+  const pageNumberOfItem = Math.floor(offset / numberOfItemsShown.value);
+  const offsetInPage = offset -  pageNumberOfItem * numberOfItemsShown.value;
+  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, pageNumberOfItem, numberOfItemsShown.value, {});
+  const deviceKind = res.deviceKinds[offsetInPage];
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,

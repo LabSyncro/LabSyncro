@@ -57,8 +57,11 @@ const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfP
 
 async function fetchItem (offset: number) {
   await nextTick();
+  const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value);
+  const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value;
   const options = { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] };
-  const { deviceKinds: [deviceKind] } = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, offset, 1, options) : await deviceKindService.getDeviceKinds(offset, 1, options);
+  const res = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, pageNumberOfItem, numberOfGridItems.value, options) : await deviceKindService.getDeviceKinds(pageNumberOfItem, numberOfGridItems.value, options);
+  const deviceKind = res.deviceKinds[offsetInPage];
   return {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
