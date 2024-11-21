@@ -18,11 +18,11 @@ async function handleClickOutsideOfSearchBox () {
   setTimeout(closeDropdown, 300);
 }
 
-const focusedSearchItemIndex = ref(null);
+const focusedSearchItemIndex = ref<number | null>(null);
 
 const numberOfSearchItemsShown = 4;
 
-const searchItems = ref<{ name: string; image: string }[]>([]);
+const searchItems = ref<{ id: string; name: string; image: string }[]>([]);
 watch(searchText, async () => {
   focusedSearchItemIndex.value = null;
   const data = await deviceKindService.getDeviceKinds(0, numberOfSearchItemsShown, { searchText: searchText.value || undefined, searchFields: ['device_name'] });
@@ -68,7 +68,7 @@ aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
     </div>
 
     <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] z-50`">
-      <NuxtLink v-for="(item, index) in searchItems" :key="item" :class="`px-2 text-normal p-1 flex gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" :href="`/devices/${item.id}`">
+      <NuxtLink v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" :href="`/devices/${item.id}`">
         <img :src="item.image" class="h-6">
         <HighlightText class="line-clamp-1" :text="item.name" :match-text="searchText || undefined" />
       </NuxtLink>

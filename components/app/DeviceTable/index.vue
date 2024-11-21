@@ -2,7 +2,6 @@
 import type {
   ColumnDef,
 } from '@tanstack/vue-table';
-
 import {
   FlexRender,
   getCoreRowModel,
@@ -15,18 +14,19 @@ interface DataTableProps {
   columns: ColumnDef<AdminDeviceList, unknown>[];
   data: AdminDeviceList[];
   pageCount: number;
-  paginationState: { pageIndex: number; pageSize: number };
-  sortField: string | undefined;
-  sortOrder: 'desc' | 'asc' | undefined;
-  rowSelection: { rowIds: [] };
+  pageIndex: number;
+  pageSize: number;
+  sortField: string | null;
+  sortOrder: 'desc' | 'asc' | null;
+  rowSelection: unknown[];
 }
 
 const props = defineProps<DataTableProps>();
 const emits = defineEmits<{
   'page-size-change': [number];
   'page-index-change': [number];
-  'sort-field-change': [string | undefined];
-  'sort-order-change': ['desc' | 'asc' | undefined];
+  'sort-field-change': [string | null];
+  'sort-order-change': ['desc' | 'asc' | null];
 }>();
 
 const table = useVueTable({
@@ -75,7 +75,7 @@ const table = useVueTable({
     </div>
 
     <DataTablePagination
-      :table="table" :page-index="paginationState.pageIndex" :page-size="paginationState.pageSize"
+      :table="table" :page-index="pageIndex" :page-size="pageSize"
       :page-count="pageCount" @page-size-change="(value) => emits('page-size-change', value)"
       @page-index-change="(value) => emits('page-index-change', value)" />
   </div>

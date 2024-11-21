@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import type { Static } from '@sinclair/typebox';
 
 export const CategoryResourceDto = Type.Object({
-  id: Type.Number(),
+  id: Type.String(),
   name: Type.String(),
 });
 

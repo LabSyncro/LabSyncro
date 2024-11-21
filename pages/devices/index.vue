@@ -11,7 +11,7 @@ const querySearchText = computed(() => {
   return q && typeof q === 'string' ? q : null;
 });
 const searchText = ref('');
-const categoryName = ref(undefined);
+const categoryName = ref(null);
 watch(categoryId, async () => {
   if (categoryId.value === null) {
     categoryName.value = 'Thiết bị';

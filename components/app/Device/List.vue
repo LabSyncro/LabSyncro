@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { deviceKindService } from '~/services';
 const props = defineProps<{
-  category: { id: number; name: string };
+  category: { id: string; name: string };
 }>();
-const listRef = ref(null);
-const listWidth = ref(null);
+const listRef = ref<HTMLDivElement | null>(null);
+const listWidth = ref<number | null>(null);
 function updateListWidth () {
   if (!listRef.value) {
     listWidth.value = null;
   }
-  listWidth.value = listRef.value.offsetWidth;
+  listWidth.value = listRef.value!.offsetWidth;
 }
 onMounted(() => updateListWidth());
-onMounted(() => document.defaultView.addEventListener('resize', updateListWidth));
-onUnmounted(() => document.defaultView.removeEventListener('resize', updateListWidth));
+onMounted(() => document.defaultView!.addEventListener('resize', updateListWidth));
+onUnmounted(() => document.defaultView!.removeEventListener('resize', updateListWidth));
 const ITEM_WIDTH = 180;
 const numberOfItemsShown = computed(() => {
   if (!listWidth.value) {
@@ -31,14 +31,14 @@ const currentPage = ref(0);
 
 watch([numberOfItemsShown], async () => {
   totalItems.value = await deviceKindService.getTotalItems(props.category.id, {});
-  totalPages.value = Math.ceil(totalItems.value / numberOfItemsShown.value);
+  totalPages.value = Math.ceil(totalItems.value / numberOfItemsShown.value!);
 });
 
-async function fetchItem (offset: number) {
+async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, quantity: number, unit: string, id: string }> {
   await nextTick();
-  const pageNumberOfItem = Math.floor(offset / numberOfItemsShown.value);
-  const offsetInPage = offset -  pageNumberOfItem * numberOfItemsShown.value;
-  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, pageNumberOfItem, numberOfItemsShown.value, {});
+  const pageNumberOfItem = Math.floor(offset / numberOfItemsShown.value!);
+  const offsetInPage = offset -  pageNumberOfItem * numberOfItemsShown.value!;
+  const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, pageNumberOfItem, numberOfItemsShown.value!, {});
   const deviceKind = res.deviceKinds[offsetInPage];
   return {
     thumbnailUrl: deviceKind.mainImage,
@@ -50,7 +50,7 @@ async function fetchItem (offset: number) {
   };
 }
 
-const listDirection = ref(null);
+const listDirection = ref<'slide-right' | 'slide-left' | null>(null);
 
 function pageLeft () {
   listDirection.value = 'slide-right';
@@ -80,11 +80,11 @@ function pageRight () {
         @click="pageLeft">
         <Icon aria-hidden name="i-heroicons-chevron-left" />
       </button>
-      <TransitionGroup class="flex justify-around gap-2 min-h-64" :name="listDirection" tag="div">
-          <div v-for="i in [...Array(numberOfItemsShown).keys()]" :key="i + currentPage * numberOfItemsShown">
+      <TransitionGroup class="flex justify-around gap-2 min-h-64" :name="listDirection || ''" tag="div">
+          <div v-for="i in [...Array(numberOfItemsShown).keys()]" :key="i + currentPage * numberOfItemsShown!">
             <DeviceSuspenseItem
-              v-if="i + currentPage * numberOfItemsShown < totalItems" :width="`${ITEM_WIDTH}px`"
-              :fetch-fn="() => fetchItem(i + currentPage * numberOfItemsShown)" />
+              v-if="i + currentPage * numberOfItemsShown! < totalItems" :width="`${ITEM_WIDTH}px`"
+              :fetch-fn="() => fetchItem(i + currentPage * numberOfItemsShown!)" />
           </div>
       </TransitionGroup>
       <button
