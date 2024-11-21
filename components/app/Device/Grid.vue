@@ -17,7 +17,7 @@ function updateGridWidth () {
 onMounted(() => updateGridWidth());
 onMounted(() => document.defaultView.addEventListener('resize', updateGridWidth));
 onUnmounted(() => document.defaultView.removeEventListener('resize', updateGridWidth));
-const ITEM_WIDTH = 180;
+const itemWidth = 180;
 const cols = computed(() => {
   if (!gridWidth.value) {
     return null;
@@ -25,7 +25,7 @@ const cols = computed(() => {
   if (gridWidth.value < 50) {
     return 0;
   }
-  return Math.min(Math.floor((gridWidth.value - 50) / (ITEM_WIDTH + 10)), 5);
+  return Math.min(Math.floor((gridWidth.value - 50) / (itemWidth + 10)), 5);
 });
 const rows = computed(() => {
   if (!gridWidth.value) {
@@ -97,7 +97,7 @@ function pageRight () {
       <div :class="`grid grid-cols-${cols} gap-4 justify-items-center`" role="grid">
         <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${props.searchText}-${i + currentPage * gridItemNo}`">
           <DeviceSuspenseItem
-v-if="i + currentPage * gridItemNo < totalItems" :width="`${ITEM_WIDTH}px`"
+v-if="i + currentPage * gridItemNo < totalItems" :width="`${itemWidth}px`"
             :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" /> 
         </div>
       </div>

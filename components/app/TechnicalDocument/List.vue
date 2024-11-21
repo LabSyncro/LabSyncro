@@ -11,7 +11,7 @@ onMounted(() => updateListWidth());
 onMounted(() => document.defaultView.addEventListener('resize', updateListWidth));
 onUnmounted(() => document.defaultView.removeEventListener('resize', updateListWidth));
 
-const ITEM_WIDTH = 330;
+const itemWidth = 330;
 const numberOfItemsShown = computed(() => {
   if (!listWidth.value) {
     return null;
@@ -19,7 +19,7 @@ const numberOfItemsShown = computed(() => {
   if (listWidth.value < 50) {
     return 0;
   }
-  return Math.floor((listWidth.value - 30) / (ITEM_WIDTH + 10));
+  return Math.floor((listWidth.value - 30) / (itemWidth + 10));
 });
 const items = computed(() => {
   if (!numberOfItemsShown.value) {
