@@ -38,7 +38,7 @@ const rows = computed(() => {
   default: return 5;
   }
 });
-const gridItemNo = computed(() => {
+const numberOfGridItems = computed(() => {
   if (!cols.value) {
     return null;
   }
@@ -50,7 +50,7 @@ watch(
   async () => totalItems.value = await deviceKindService.getTotalItems(props.categoryId, { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] }),
   { immediate: true },
 );
-const totalPages = computed(() => Math.ceil(totalItems.value / gridItemNo.value));
+const totalPages = computed(() => Math.ceil(totalItems.value / numberOfGridItems.value));
 const currentPage = ref(0);
 const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
@@ -95,10 +95,12 @@ function pageRight () {
     <div v-else>
       <span ref="top" />
       <div :class="`grid grid-cols-${cols} gap-4 justify-items-center`" role="grid">
-        <div v-for="i in [...Array(gridItemNo).keys()]" :key="`${props.categoryId}-${props.searchText}-${i + currentPage * gridItemNo}`">
+        <div
+v-for="i in [...Array(numberOfGridItems).keys()]"
+          :key="`${props.categoryId}-${props.searchText}-${i + currentPage * numberOfGridItems}`">
           <DeviceSuspenseItem
-v-if="i + currentPage * gridItemNo < totalItems" :width="`${itemWidth}px`"
-            :fetch-fn="() => fetchItem(i + currentPage * gridItemNo)" /> 
+v-if="i + currentPage * numberOfGridItems < totalItems" :width="`${itemWidth}px`"
+            :fetch-fn="() => fetchItem(i + currentPage * numberOfGridItems)" />
         </div>
       </div>
       <div class="flex justify-center gap-0 mt-10">
