@@ -1,6 +1,8 @@
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
-import type { ReceiptResourceDto } from '~/lib/api_schema';
+import { ReceiptResourceDto } from '~/lib/api_schema';
+import { Value } from '@sinclair/typebox/value';
+import { INTERNAL_SERVER_ERROR_CODE } from '~/constants';
 
 export default defineEventHandler<
   { query: { faculty: string } },
@@ -45,7 +47,14 @@ export default defineEventHandler<
       labs: value,
     });
   }
-  return {
-    branches,
-  };
+  
+  const output = { branches };
+
+  if (!Value.Check(ReceiptResourceDto, output)) {
+    throw createError({
+      statusCode: INTERNAL_SERVER_ERROR_CODE,
+      message: 'Internal server error: the returned output does not conform to the schema',
+    });
+  }
+  return output;
 });

@@ -56,11 +56,11 @@ export const DeviceQuantityByLabDto = Type.Object({
 export type DeviceQuantityByLabDto = Static<typeof DeviceQuantityByLabDto>;
 
 export const DeviceKindResourceDto = Type.Object({
-  id: Type.Number(),
+  id: Type.String(),
   unit: Type.String(),
   name: Type.String(),
-  brand: Type.Optional(Type.String()),
-  manufacturer: Type.Optional(Type.String()),
+  brand: Type.Union([Type.String(), Type.Null()]),
+  manufacturer: Type.Union([Type.String(), Type.Null()]),
   mainImage: Type.String(),
   subImages: Type.Array(Type.String()),
   quantity: Type.String(),
@@ -75,12 +75,14 @@ export const ListOfDeviceKindResourceDto = Type.Object({
   deviceKinds: Type.Array(Type.Object({
     id: Type.String(),
     name: Type.String(),
-    brand: Type.Optional(Type.String()),
-    manufacturer: Type.Optional(Type.String()),
+    brand: Type.Union([Type.String(), Type.Null()]),
+    manufacturer: Type.Union([Type.String(), Type.Null()]),
     mainImage: Type.String(),
     subImages: Type.Array(Type.String()),
-    quantity: Type.String(),
-    borrowableQuantity: Type.String(),
+    quantity: Type.Number(),
+    borrowableQuantity: Type.Number(),
+    category: Type.String(),
+    unit: Type.String(),
   })),
   totalPages: Type.Number(),
   currentPage: Type.Number(),

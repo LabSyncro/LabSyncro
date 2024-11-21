@@ -1,14 +1,22 @@
 import * as db from 'zapatos/db';
-import { NOT_FOUND_CODE } from '~/constants';
+import { BAD_REQUEST_CODE, INTERNAL_SERVER_ERROR_CODE, NOT_FOUND_CODE } from '~/constants';
 import { dbPool } from '~/server/db';
-import type { DeviceKindResourceDto } from '~/lib/api_schema';
+import { DeviceKindResourceDto } from '~/lib/api_schema';
+import { Type } from '@sinclair/typebox';
+import { Value } from '@sinclair/typebox/value';
 
 export default defineEventHandler<
   Promise<DeviceKindResourceDto>
 >(async (event) => {
-  const deviceKindId = Number.parseInt(getRouterParam(event, 'id')!);
-  try {
-    const [deviceKind] = await (db.sql`
+  const deviceKindId = Value.Convert(Type.Number(), getRouterParam(event, 'id'));
+  if (typeof deviceKindId !== 'number') {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request: Expect :id route param to be a number',
+    });
+  }
+
+  const [deviceKind] = await (db.sql`
       SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
       FROM ${'devices'}
         JOIN ${'device_kinds'}
@@ -19,23 +27,32 @@ export default defineEventHandler<
       GROUP BY ${'device_kinds'}.${'id'}, ${'categories'}.${'id'}
       `).run(dbPool);
 
-    return {
-      id: deviceKind.id,
-      unit: deviceKind.unit,
-      name: deviceKind.name,
-      brand: deviceKind.brand,
-      manufacturer: deviceKind.manufacturer,
-      mainImage: deviceKind.image.main_image,
-      subImages: deviceKind.image.sub_images,
-      quantity: deviceKind.quantity,
-      categoryId: deviceKind.category_id,
-      categoryName: deviceKind.category_name,
-      description: deviceKind.description,
-    };
-  } catch {
+  if (!deviceKind) {
     throw createError({
       statusCode: NOT_FOUND_CODE,
       message: 'Device kind not found!',
     });
   }
+
+  const output = {
+    id: deviceKind.id,
+    unit: deviceKind.unit,
+    name: deviceKind.name,
+    brand: deviceKind.brand,
+    manufacturer: deviceKind.manufacturer,
+    mainImage: deviceKind.image.main_image,
+    subImages: deviceKind.image.sub_images,
+    quantity: deviceKind.quantity,
+    categoryId: deviceKind.category_id,
+    categoryName: deviceKind.category_name,
+    description: deviceKind.description,
+  };
+  if (!Value.Check(DeviceKindResourceDto, output)) {
+    throw createError({
+      statusCode: INTERNAL_SERVER_ERROR_CODE,
+      message: 'Internal server error: the returned output does not conform to the schema',
+    });
+  }
+  return output;
+
 });
