@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { deviceKindService } from '~/services';
+import { ITEM_WIDTH } from './constants';
 
 const props = defineProps<{
   categoryId: string | null;
@@ -7,7 +8,6 @@ const props = defineProps<{
 }>();
 
 const gridWidth = useWidth(useTemplateRef('gridRef'));
-const itemWidth = 180;
 const cols = computed(() => {
   if (!gridWidth.value) {
     return null;
@@ -15,7 +15,7 @@ const cols = computed(() => {
   if (gridWidth.value < 50) {
     return 0;
   }
-  return Math.min(Math.floor((gridWidth.value - 50) / (itemWidth + 10)), 5);
+  return Math.min(Math.floor((gridWidth.value - 50) / (ITEM_WIDTH + 10)), 5);
 });
 const rows = computed(() => {
   if (!gridWidth.value) {
@@ -92,7 +92,7 @@ function pageRight () {
           v-for="i in [...Array(numberOfGridItems).keys()]"
           :key="`${props.categoryId}-${props.searchText}-${i + currentPage * numberOfGridItems!}`">
           <DeviceSuspenseItem
-            v-if="i + currentPage * numberOfGridItems! < totalItems" :width="`${itemWidth}px`"
+            v-if="i + currentPage * numberOfGridItems! < totalItems" :width="`${ITEM_WIDTH}px`"
             :fetch-fn="() => fetchItem(i + currentPage * numberOfGridItems!)" />
         </div>
       </div>
