@@ -25,7 +25,7 @@ export default defineEventHandler<
     });
   }
 
-  const output = { name, id };
+  const output = { name, id: id?.toString() };
 
   if (!Value.Check(CategoryResourceDto, output)) {
     throw createError({
