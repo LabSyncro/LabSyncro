@@ -45,7 +45,7 @@ export function createColumns({ sortField, sortOrder, rowSelection, onSelectRows
           [
             h(
               'p',
-              { class: 'p-1 px-2 bg-gray-100 border border-gray-300 rounded-md text-normal font-normal leading-none' },
+              { class: 'p-1 px-2 text-nowrap bg-gray-100 border border-gray-300 rounded-md text-normal font-normal leading-none' },
               `${row.original.id.slice(0, 4)} ${row.original.id.slice(4)}`.toUpperCase(),
             ),
             h(
