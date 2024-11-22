@@ -26,7 +26,7 @@ export const deviceKindService = {
         sort_field: sortField,
         desc,
       },
-      ttl: 600,
+      ttl: 60,
     }));
   },
   async getDeviceKinds (
@@ -53,7 +53,7 @@ export const deviceKindService = {
         sort_field: sortField,
         desc,
       },
-      ttl: 600,
+      ttl: 60,
     }));
   },
   async getTotalItems (
@@ -75,7 +75,7 @@ export const deviceKindService = {
         search_text: searchText,
         search_fields: searchFields,
       },
-      ttl: 600,
+      ttl: 60,
     })).totalPages;
   },
   async getById (deviceKindId: string): Promise<DeviceKindResourceDto> {
@@ -97,5 +97,7 @@ export const deviceKindService = {
       query: { kind_id: deviceKindId, search_text: searchText, search_fields: searchFields },
       ttl: 0,
     })).labs;
+  },
+  async deleteByIds (ids: string[]): Promise<void> {
   }
 };
