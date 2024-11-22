@@ -6,7 +6,7 @@ import RowAction from './RowAction.vue';
 
 import type { AdminDeviceList } from './schema';
 
-export function createColumns({ sortField, sortOrder, rowSelection, onSelectRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; }): ColumnDef<AdminDeviceList>[] {
+export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; }): ColumnDef<AdminDeviceList>[] {
   return [
     {
       accessorKey: 'select',
