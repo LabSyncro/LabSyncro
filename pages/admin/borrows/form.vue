@@ -35,21 +35,47 @@
                 <p class="hidden 2xl:block">Quét mã người mượn</p>
               </button>
             </div>
-              <form>
-                <div class="mb-6">
-                  <label class="text-slate-dark mb-2 block">Họ và tên *</label>
-                  <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1.5">
-                </div>
-                <div class="mb-6">
-                  <label class="text-slate-dark mb-2 block">Mã số sinh viên *</label>
-                  <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1.5">
-                </div>
-                <div class="mb-6">
-                  <label class="text-slate-dark mb-2 block">Vai trò *</label>
-                  <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1.5">
-                </div>
-              </form>
+            <form>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Họ và tên *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Mã số sinh viên *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Vai trò *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+            </form>
           </div>
+          <div class="bg-white p-4">
+            <h2 class="text-lg mb-6">Thông tin mượn</h2>
+            <form>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Ngày mượn *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Ngày hẹn trả *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+              <div class="mb-4">
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả *</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+              </div>
+            </form>
+          </div>
+
         </div>
       </div>
     </main>
