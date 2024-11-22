@@ -9,6 +9,7 @@ async function deleteData (ids: string[]) {
 
 async function fetchData (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }): Promise<{ data: unknown[], totalPages: number }> {
   const res = await deviceKindService.getDeviceKinds(offset, length, { searchText: options.searchText, searchFields: options.searchFields as any[], sortField: options.sortField as any, desc: options.desc });
+  console.log(res);
   return {
     data: res.deviceKinds,
     totalPages: res.totalPages,

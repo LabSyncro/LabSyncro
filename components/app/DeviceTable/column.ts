@@ -22,7 +22,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
           h(
             'p',
             { class: 'line-clamp-2 text-slate-500 text-normal leading-6 font-normal' },
-            row.getValue('name'),
+            row.original.name,
           ),
         ],
       ),
@@ -33,7 +33,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
     cell: ({ row }) => h(
       'p',
       { class: 'text-slate-500 text-sm font-normal leading-tight text-right' },
-      row.getValue('borrowableQuantity'),
+      row.original.borrowableQuantity,
     ),
   },
   {
@@ -43,7 +43,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
       return h(
         'p',
         { class: 'text-slate-500 text-sm font-normal leading-tight text-right' },
-        row.getValue('quantity'),
+        row.original.quantity,
       );
     },
   },
