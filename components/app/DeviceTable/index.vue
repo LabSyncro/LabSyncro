@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { deviceKindService } from '~/services';
+import { columns } from './column';
+import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
 async function deleteData (ids: string[]) {
   await deviceKindService.deleteByIds(ids);
@@ -12,8 +14,8 @@ async function fetchData (offset: number, length: number, options: { desc?: bool
     totalPages: res.totalPages,
   };
 }
-
 </script>
 
 <template>
+  <DataTable :fetch-fn="fetchData" :delete-fn="deleteData" :columns="columns as AugmentedColumnDef<unknown>[]" />
 </template>
