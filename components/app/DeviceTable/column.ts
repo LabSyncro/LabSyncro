@@ -9,6 +9,7 @@ import type { AdminDeviceList } from './schema';
 export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; }): ColumnDef<AdminDeviceList>[] {
   return [
     {
+      accessorKey: 'select',
       id: 'select',
       header: ({ table }) =>
         h(Checkbox, {
