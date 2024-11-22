@@ -1,5 +1,5 @@
 import * as db from 'zapatos/db';
-import { BAD_REQUEST_CODE, INTERNAL_SERVER_ERROR_CODE, NOT_FOUND_CODE } from '~/constants';
+import { INTERNAL_SERVER_ERROR_CODE, NOT_FOUND_CODE } from '~/constants';
 import { dbPool } from '~/server/db';
 import { DeviceKindResourceDto } from '~/lib/api_schema';
 import { Type } from '@sinclair/typebox';
@@ -8,13 +8,7 @@ import { Value } from '@sinclair/typebox/value';
 export default defineEventHandler<
   Promise<DeviceKindResourceDto>
 >(async (event) => {
-  const deviceKindId = Value.Convert(Type.Number(), getRouterParam(event, 'id'));
-  if (typeof deviceKindId !== 'number') {
-    throw createError({
-      statusCode: BAD_REQUEST_CODE,
-      message: 'Bad request: Expect :id route param to be a number',
-    });
-  }
+  const deviceKindId = Value.Convert(Type.String(), getRouterParam(event, 'id'));
 
   const [deviceKind] = await (db.sql`
       SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
