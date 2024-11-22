@@ -35,7 +35,7 @@ function toggleSortOrder () {
 </script>
 
 <template>
-  <div v-if="column.getCanSort()" :class="cn('flex items-center space-x-2', $attrs.class ?? '')">
+  <div :class="cn('flex items-center space-x-2', $attrs.class ?? '')">
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <Button variant="ghost" size="sm" class="relative h-8 data-[state=open]:bg-accent text-md pr-8 text-black" @click="toggleSortOrder()">
@@ -46,9 +46,5 @@ function toggleSortOrder () {
         </Button>
       </DropdownMenuTrigger>
     </DropdownMenu>
-  </div>
-
-  <div v-else :class="$attrs.class">
-    {{ title }}
   </div>
 </template>
