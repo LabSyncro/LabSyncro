@@ -39,7 +39,7 @@ function onSelectRows (ids: unknown[]) {
 
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
-  const res = (await deviceKindService.getDeviceKinds(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value as any, desc: sortOrder.value === 'asc' }));
+  const res = (await deviceKindService.getDeviceKinds(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value || undefined as any, desc: sortOrder.value === 'asc' }));
   data.value = res.deviceKinds;
   pageCount.value = res.totalPages;
 }, 300);
