@@ -75,7 +75,7 @@ const table = useVueTable({
     </div>
 
     <DataTablePagination
-      :table="table" :page-index="pageIndex" :page-size="pageSize"
+      :table="table" :page-index="pageIndex" :page-size="pageSize" :rows-selected="rowSelection.length"
       :page-count="pageCount" @page-size-change="(value) => emits('page-size-change', value)"
       @page-index-change="(value) => emits('page-index-change', value)" />
   </div>
