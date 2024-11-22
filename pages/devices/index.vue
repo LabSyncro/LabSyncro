@@ -4,14 +4,14 @@ import { categoryService } from '~/services';
 const route = useRoute();
 const categoryId = computed(() => {
   const id = route.query.categoryId;
-  return id && typeof id === 'string' ? Number.parseInt(id) : null;
+  return id && typeof id === 'string' ? id : null;
 });
 const querySearchText = computed(() => {
   const q = route.query.q;
   return q && typeof q === 'string' ? q : null;
 });
 const searchText = ref('');
-const categoryName = ref(null);
+const categoryName = ref<string | null>(null);
 watch(categoryId, async () => {
   if (categoryId.value === null) {
     categoryName.value = 'Thiết bị';
