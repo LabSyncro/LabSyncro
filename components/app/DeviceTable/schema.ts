@@ -10,5 +10,4 @@ export const AdminDeviceListSchema = Type.Object({
   quantity: Type.Number(),
 });
 
-// Define the TypeScript type
 export type AdminDeviceList = Static<typeof AdminDeviceListSchema>;

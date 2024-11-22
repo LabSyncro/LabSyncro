@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es';
-import { createColumns } from '~/components/app/DeviceTable/column';
-import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
-import { deviceKindService } from '~/services';
+import { createColumns, type AugmentedColumnDef } from './column';
+
+const props = defineProps<{
+  deleteFn?: (ids: string[]) => Promise<void>;
+  fetchFn: (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }) => Promise<{ data: unknown[], totalPages: number }>,
+  columns: AugmentedColumnDef<unknown>[],
+}>();
 
 const searchText = ref('');
 
@@ -60,12 +64,12 @@ function onDeleteRow (id: string) {
   rowsToDelete.value = [id];
 }
 async function onConfirmDelete () {
-  await deviceKindService.deleteByIds(rowsToDelete.value);
+  await props.deleteFn!(rowsToDelete.value);
   rowsToDelete.value.forEach((id) => {
     const index = rowSelection.value.indexOf(id);
     if (index > -1) rowSelection.value.splice(index);
   });
-  updateDeviceKinds();
+  updateData();
   rowsToDelete.value = [];
   isDeleteModalActive.value = false;
 }
@@ -73,24 +77,25 @@ function closeDeleteModal () {
   isDeleteModalActive.value = false;
 }
 
-const data = ref<AdminDeviceList[]>([]);
-const updateDeviceKinds = debounce(async () => {
-  const res = (await deviceKindService.getDeviceKinds(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value || undefined as any, desc: sortOrder.value === 'asc' }));
-  data.value = res.deviceKinds;
+const data = ref<unknown[]>([]);
+const updateData = debounce(async () => {
+  const res = await props.fetchFn(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value || undefined as any, desc: sortOrder.value === 'asc' });
+  data.value = res.data;
   pageCount.value = res.totalPages;
 }, 300);
-onMounted(updateDeviceKinds);
-watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds);
+onMounted(updateData);
+watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
 </script>
 
 <template>
   <div>
     <div v-if="isDeleteModalActive" class="fixed top-4 z-50 left-0 w-[100vw] h-[100vh] p-10 flex justify-end items-end">
       <div class="bg-white p-4 shadow-[0_0px_16px_-3px_rgba(0,0,0,0.3)]">
-        <p class="mb-4">Bạn có chắc chắn muốn xoá {{ rowsToDelete.length }} loại thiết bị?</p>
+        <p class="mb-4">Bạn có chắc chắn muốn xoá {{ rowsToDelete.length }} bản ghi?</p>
         <div class="flex gap-3 justify-end">
           <button class="bg-gray-300 p-1.5 px-3 rounded-md text-normal" @click="closeDeleteModal">Hủy bỏ</button>
-          <button class="bg-red-500 text-white p-1.5 px-3 rounded-md text-normal" @click="onConfirmDelete">Xác nhận</button>
+          <button class="bg-red-500 text-white p-1.5 px-3 rounded-md text-normal" @click="onConfirmDelete">Xác
+            nhận</button>
         </div>
       </div>
     </div>
@@ -117,8 +122,10 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds
         </button>
       </div>
     </div>
-    <DeviceTable :columns="createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows })" :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex"
-      :row-selection="rowSelection" @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
+    <DataTableCore
+      :columns="createColumns(columns as AugmentedColumnDef<any>[], { deletable: !!deleteFn, sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows })"
+      :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex" :row-selection="rowSelection"
+      @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
       @sort-order-change="handleSortOrderChange as any" @sort-field-change="handleSortFieldChange as any" />
   </div>
 </template>
