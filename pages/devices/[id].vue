@@ -4,14 +4,14 @@ import { deviceKindService, categoryService } from '~/services';
 import { createColumns } from '~/components/app/DeviceInventoryByLabTable/column';
 
 const route = useRoute();
-const deviceKindId = computed(() => route.params.id);
+const deviceKindId = computed(() => route.params.id.toString());
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 
 const allCategories = await categoryService.getCategories();
 
 const searchText = ref('');
 
-const data = ref([]);
+const data = ref<{ borrowableQuantity: number; name: string }[]>([]);
 
 watch(searchText, async () => {
   const res = await deviceKindService.getQuantityByLab(deviceKindId.value, { searchText: searchText.value || undefined, searchFields: ['lab_name'] });
@@ -58,11 +58,11 @@ watch(searchText, async () => {
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
               v-for="category in allCategories" :key="category.id"
-              :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${Number.parseInt(deviceKindMeta.categoryId) === category.id ? 'bg-slate-light' : 'bg-white'}`"
+              :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${deviceKindMeta.categoryId === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="`/devices?categoryId=${category.id}`">
               {{ category.name }}
               <Icon
-                v-if="Number.parseInt(deviceKindMeta.categoryId) === category.id" aria-hidden
+                v-if="deviceKindMeta.categoryId === category.id" aria-hidden
                 name="i-heroicons-check" class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -90,7 +90,7 @@ watch(searchText, async () => {
                 </div>
                 <div class="mt-8 font-semibold">
                   <span
-v-if="deviceKindMeta.borrowableQuantity > 0"
+                    v-if="deviceKindMeta.borrowableQuantity > 0"
                     class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
                     Sẵn có
                   </span>

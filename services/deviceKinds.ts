@@ -78,12 +78,12 @@ export const deviceKindService = {
       ttl: 600,
     })).totalPages;
   },
-  async getById (deviceKindId: number): Promise<DeviceKindResourceDto> {
+  async getById (deviceKindId: string): Promise<DeviceKindResourceDto> {
     const { $cachedFetch } = useNuxtApp();
     return await $cachedFetch(`/api/device_kinds/${deviceKindId}`, { ttl: 600 });
   },
   async getQuantityByLab (
-    deviceKindId: number,
+    deviceKindId: string,
     {
       searchText = undefined,
       searchFields = []

@@ -17,7 +17,7 @@ export default defineEventHandler<
   }
 
   const [deviceKind] = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*) as ${'quantity'}, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
+      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'devices'}.${'deleted_at'} IS NULL
