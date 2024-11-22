@@ -75,7 +75,11 @@
               </div>
             </form>
           </div>
-
+          <div class="flex justify-end">
+            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4">
+              Xác nhận mượn
+            </button>
+          </div>
         </div>
       </div>
     </main>
