@@ -12,12 +12,14 @@ export function createColumns({ sortField, sortOrder, rowSelection, onSelectRows
       accessorKey: 'select',
       id: 'select',
       header: ({ table }) =>
-        h(Checkbox, {
-          checked: table.getCoreRowModel().rows.every((row) => rowSelection.includes(row.original.id)),
-          'onUpdate:checked': () => onSelectRows(table.getCoreRowModel().rows.map((row) => row.original.id)),
-          ariaLabel: 'Select all',
-          class: 'translate-y-0.5',
-        }),
+        h('div', { class: 'flex items-center' },
+          [h(Checkbox, {
+            checked: table.getCoreRowModel().rows.every((row) => rowSelection.includes(row.original.id)),
+            'onUpdate:checked': () => onSelectRows(table.getCoreRowModel().rows.map((row) => row.original.id)),
+            ariaLabel: 'Select all',
+            class: 'translate-y-0.5',
+          })],
+        ),
       cell: ({ row }) =>
         h('div', { class: 'flex items-center' },
           [h(Checkbox, {
