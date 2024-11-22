@@ -4,29 +4,33 @@ import { createColumns } from '~/components/app/DeviceTable/column';
 import type { AdminDeviceList } from '~/components/app/DeviceTable/schema';
 import { deviceKindService } from '~/services';
 
+const props = defineProps<{
+  readOnly: boolean;
+}>();
+
 const searchText = ref('');
 
 const pageIndex = ref(0);
 const pageSize = ref(10);
-function handlePageIndexChange(value: number) {
+function handlePageIndexChange (value: number) {
   pageIndex.value = value;
 }
-function handlePageSizeChange(value: number) {
+function handlePageSizeChange (value: number) {
   pageSize.value = value;
 }
 const pageCount = ref(0);
 
 const sortField = ref<string | null>(null);
 const sortOrder = ref<'desc' | 'asc' | null>(null);
-function handleSortFieldChange(value: string | null) {
+function handleSortFieldChange (value: string | null) {
   sortField.value = value;
 }
-function handleSortOrderChange(value: 'desc' | 'asc' | null) {
+function handleSortOrderChange (value: 'desc' | 'asc' | null) {
   sortOrder.value = value;
 }
 
 const rowSelection = ref<unknown[]>([]);
-function onSelectRows(ids: unknown[]) {
+function onSelectRows (ids: unknown[]) {
   for (const id of ids) {
     const index = rowSelection.value.indexOf(id);
     if (index >= 0) {
@@ -64,7 +68,7 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
         </button>
       </div>
-      <div>
+      <div v-if="!readOnly">
         <button
           class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />

@@ -15,5 +15,19 @@
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
+
+    <main class="my-10">
+      <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
+        <div>
+          <div class="bg-white p-4">
+            <h2 class="text-lg">Danh sách mượn</h2>
+
+          </div>
+        </div>
+        <div class="flex flex-col gap-8">
+          <div class="bg-white p-4"></div>
+        </div>
+      </div> 
+    </main>
   </div>
 </template>

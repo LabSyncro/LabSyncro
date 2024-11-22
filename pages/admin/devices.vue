@@ -19,7 +19,7 @@
     <main class="my-10">
       <section class="bg-white mt-8 p-4 py-8 pb-8">
         <h2 class="font-bold text-xl mb-8"> Tất cả loại thiết bị </h2>
-        <DeviceTableSection />
+        <DeviceTableSection :read-only="false" />
       </section>
     </main>
   </div>
