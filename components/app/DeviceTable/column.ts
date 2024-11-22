@@ -93,13 +93,13 @@ export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRow
       accessorKey: 'delete',
       id: 'delete',
       header: ({ table }) =>
-        h('div', { class: 'flex items-center', onClick: () => onDeleteSelectedRows(table.getCoreRowModel().rows.map((row) => row.original.id)) },
+        h('div', { class: 'flex items-center hover:cursor-pointer', onClick: () => onDeleteSelectedRows(table.getCoreRowModel().rows.map((row) => row.original.id)) },
           [
             h(Icon, { name: 'i-heroicons-trash', class: `${rowSelection.length === 0 ? 'hidden' : 'block' } ml-4 text-danger-darker text-lg font-bold` }),
           ],
         ),
       cell: ({ row }) =>
-        h('div', { class: 'flex items-center', onClick: () => onDeleteRow(row.original.id) },
+        h('div', { class: 'flex items-center hover:cursor-pointer', onClick: () => onDeleteRow(row.original.id) },
           [
             h(Icon, { name: 'i-heroicons-trash', class: 'ml-4 text-danger-darker text-lg font-bold' }),
           ],
