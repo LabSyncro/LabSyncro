@@ -68,16 +68,6 @@ export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRow
         ),
     },
     {
-      accessorKey: 'brand',
-      header: ({ column }) => h(ColumnHeader, { id: 'brand', sortField, sortOrder, column, title: 'Thương hiệu' }),
-      cell: ({ row }) =>
-        h(
-          'span',
-          { class: 'text-slate-500 text-sm font-normal leading-tight' },
-          row.getValue('brand'),
-        ),
-    },
-    {
       accessorKey: 'borrowableQuantity',
       header: ({ column }) => h(ColumnHeader, { id: 'borrowable_quantity', sortField, sortOrder, column, title: 'Có thể mượn' }),
       cell: ({ row }) => h(
