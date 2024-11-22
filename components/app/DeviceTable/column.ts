@@ -1,11 +1,10 @@
-import { NuxtLink } from '#components';
+import { Icon, NuxtLink } from '#components';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import ColumnHeader from './ColumnHeader.vue';
-import RowAction from './RowAction.vue';
 import type { AdminDeviceList } from './schema';
 
-export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows, onSelectAllRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; onSelectAllRows: (_: unknown[]) => void }): ColumnDef<AdminDeviceList>[] {
+export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; onSelectAllRows: (_: unknown[]) => void ; onDeleteRow: (_: unknown) => void; onDeleteSelectedRows: (_: unknown[]) => void }): ColumnDef<AdminDeviceList>[] {
   return [
     {
       accessorKey: 'select',
@@ -91,8 +90,22 @@ export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRow
       },
     },
     {
-      id: 'actions',
-      cell: ({ row }) => h(RowAction, { row }),
+      accessorKey: 'delete',
+      id: 'delete',
+      header: ({ table }) =>
+        h('div', { class: 'flex items-center', onClick: () => onDeleteSelectedRows(table.getCoreRowModel().rows.map((row) => row.original.id)) },
+          [
+            h(Icon, { name: 'i-heroicons-trash', class: `${rowSelection.length === 0 ? 'hidden' : 'block' } ml-4 text-danger-darker text-lg font-bold` }),
+          ],
+        ),
+      cell: ({ row }) =>
+        h('div', { class: 'flex items-center', onClick: () => onDeleteRow(row.original.id) },
+          [
+            h(Icon, { name: 'i-heroicons-trash', class: 'ml-4 text-danger-darker text-lg font-bold' }),
+          ],
+        ),
+      enableSorting: false,
+      enableHiding: false,
     },
   ];
 }

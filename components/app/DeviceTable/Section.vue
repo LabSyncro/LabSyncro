@@ -6,7 +6,7 @@ import { deviceKindService } from '~/services';
 
 const props = defineProps<{
   readOnly: boolean;
-  columns?: (keyof AdminDeviceList | 'select')[];
+  columns?: (keyof AdminDeviceList | 'select' | 'delete')[];
 }>();
 
 const searchText = ref('');
@@ -53,6 +53,10 @@ function onSelectAllRows (ids: unknown[]) {
     }
   }
 }
+function onDeleteSelectedRows () {
+}
+function onDeleteRow (id: unknown) {
+}
 
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
@@ -64,7 +68,7 @@ onMounted(updateDeviceKinds);
 watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds);
 
 const columns = computed(() => {
-  const defs = createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection: rowSelection.value, onSelectRows, onSelectAllRows });
+  const defs = createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection: rowSelection.value, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows });
   if (props.columns === undefined) {
     return defs;
   }
