@@ -20,8 +20,8 @@
       <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
         <div>
           <div class="bg-white p-4">
-            <h2 class="text-lg">Danh sách mượn</h2>
-
+            <h2 class="text-lg mb-6">Danh sách mượn</h2>
+            <DeviceTableSection :read-only="true" :columns="['name', 'category', 'borrowableQuantity']" />
           </div>
         </div>
         <div class="flex flex-col gap-8">

@@ -6,6 +6,7 @@ import { deviceKindService } from '~/services';
 
 const props = defineProps<{
   readOnly: boolean;
+  columns?: (keyof AdminDeviceList)[];
 }>();
 
 const searchText = ref('');
@@ -49,6 +50,15 @@ const updateDeviceKinds = debounce(async () => {
 }, 300);
 onMounted(updateDeviceKinds);
 watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds);
+
+const columns = computed(() => {
+  const defs = createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection: rowSelection.value, onSelectRows });
+  if (props.columns === undefined) {
+    return defs;
+  }
+  // @ts-expect-error "implicit accessorKey field when defining TanStack columns"
+  return defs.filter(({ accessorKey }) => props.columns?.includes(accessorKey));
+});
 </script>
 
 <template>
@@ -64,11 +74,11 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
           <p class="hidden lg:block pl-10 pr-3">Quét QR thiết bị</p>
         </button>
-        <button class="relative md:hidden bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11">
+        <button v-if="!props.readOnly" class="relative md:hidden bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
         </button>
       </div>
-      <div v-if="!readOnly">
+      <div v-if="!props.readOnly">
         <button
           class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
@@ -76,10 +86,8 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds
         </button>
       </div>
     </div>
-    <DeviceTable
-      :columns="createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows })"
-      :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex" :row-selection="rowSelection"
-      @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
+    <DeviceTable :columns="columns" :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex"
+      :row-selection="rowSelection" @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
       @sort-order-change="handleSortOrderChange as any" @sort-field-change="handleSortFieldChange as any" />
   </div>
 </template>
