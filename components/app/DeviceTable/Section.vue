@@ -6,7 +6,7 @@ import { deviceKindService } from '~/services';
 
 const props = defineProps<{
   readOnly: boolean;
-  columns?: (keyof AdminDeviceList)[];
+  columns?: (keyof AdminDeviceList | 'select')[];
 }>();
 
 const searchText = ref('');

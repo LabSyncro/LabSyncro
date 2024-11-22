@@ -22,7 +22,7 @@
         <div>
           <div class="bg-white p-4">
             <h2 class="text-lg mb-6">Danh sách mượn</h2>
-            <DeviceTableSection :read-only="true" :columns="['name', 'category', 'borrowableQuantity']" />
+            <DeviceTableSection :read-only="true" :columns="['select', 'name', 'category', 'borrowableQuantity']" />
           </div>
         </div>
         <div class="flex flex-col gap-8 min-w-[350px]">
