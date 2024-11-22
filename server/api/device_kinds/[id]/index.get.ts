@@ -17,7 +17,7 @@ export default defineEventHandler<
   }
 
   const [deviceKind] = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
+      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, ${'categories'}.${'id'} as category_id, ${'categories'}.${'name'} as category_name
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'devices'}.${'deleted_at'} IS NULL
@@ -43,6 +43,7 @@ export default defineEventHandler<
     mainImage: deviceKind.image.main_image,
     subImages: deviceKind.image.sub_images,
     quantity: deviceKind.quantity,
+    borrowableQuantity: deviceKind.borrowable_quantity,
     categoryId: deviceKind.category_id,
     categoryName: deviceKind.category_name,
     description: deviceKind.description,

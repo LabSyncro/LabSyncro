@@ -6,6 +6,7 @@ import { createColumns } from '~/components/app/DeviceInventoryByLabTable/column
 const route = useRoute();
 const deviceKindId = computed(() => route.params.id.toString());
 const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
+console.log(deviceKindMeta);
 
 const allCategories = await categoryService.getCategories();
 
