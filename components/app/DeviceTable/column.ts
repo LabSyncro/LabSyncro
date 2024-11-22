@@ -3,7 +3,6 @@ import type { ColumnDef } from '@tanstack/vue-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import ColumnHeader from './ColumnHeader.vue';
 import RowAction from './RowAction.vue';
-
 import type { AdminDeviceList } from './schema';
 
 export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; }): ColumnDef<AdminDeviceList>[] {

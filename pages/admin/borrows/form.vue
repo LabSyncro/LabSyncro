@@ -18,8 +18,8 @@
     </Breadcrumb>
 
     <main class="my-10">
-      <div class="flex flex-col lg:flex-row gap-8">
-        <div>
+      <div class="flex flex-col xl:flex-row gap-8">
+        <div class="flex-1">
           <div class="bg-white p-4">
             <h2 class="text-lg mb-6">Danh sách mượn</h2>
             <DeviceTableSection :read-only="true" :columns="['select', 'name', 'category', 'borrowableQuantity']" />
