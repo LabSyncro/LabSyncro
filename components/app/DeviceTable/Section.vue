@@ -53,15 +53,29 @@ function onSelectAllRows (ids: string[]) {
     }
   }
 }
-async function onDeleteSelectedRows () {
-  await deviceKindService.deleteByIds(rowSelection.value);
-  rowSelection.value = [];
-  updateDeviceKinds();
+
+const rowsToDelete = ref<string[]>([]);
+const isDeleteModalActive = ref(false);
+function onDeleteSelectedRows () {
+  isDeleteModalActive.value = true;
+  rowsToDelete.value = [...rowSelection.value];
 }
-async function onDeleteRow (id: string) {
-  await deviceKindService.deleteByIds([id]);
-  rowSelection.value = rowSelection.value.filter((rowId) => rowId !== id); 
+function onDeleteRow (id: string) {
+  isDeleteModalActive.value = true;
+  rowsToDelete.value = [id];
+}
+async function onConfirmDelete () {
+  await deviceKindService.deleteByIds(rowsToDelete.value);
+  rowsToDelete.value.forEach((id) => {
+    const index = rowSelection.value.indexOf(id);
+    if (index > -1) rowSelection.value.splice(index);
+  });
   updateDeviceKinds();
+  rowsToDelete.value = [];
+  isDeleteModalActive.value = false;
+}
+function closeDeleteModal () {
+  isDeleteModalActive.value = false;
 }
 
 const data = ref<AdminDeviceList[]>([]);
@@ -85,6 +99,15 @@ const columns = computed(() => {
 
 <template>
   <div>
+    <div v-if="isDeleteModalActive" class="fixed top-4 z-50 left-0 w-[100vw] h-[100vh] p-10 flex justify-end items-end">
+      <div class="bg-white p-4 shadow-[0_0px_16px_-3px_rgba(0,0,0,0.3)]">
+        <p class="mb-4">Bạn có chắc chắn muốn xoá {{ rowsToDelete.length }} loại thiết bị?</p>
+        <div class="flex gap-3 justify-end">
+          <button class="bg-gray-300 p-1.5 px-3 rounded-md text-normal" @click="closeDeleteModal">Hủy bỏ</button>
+          <button class="bg-red-500 text-white p-1.5 px-3 rounded-md text-normal" @click="onConfirmDelete">Xác nhận</button>
+        </div>
+      </div>
+    </div>
     <div class="flex justify-between items-stretch">
       <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
         <input v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"

@@ -45,7 +45,7 @@ const allCategories = await categoryService.getCategories();
     <main class="my-10">
       <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
         <div>
-          <div class="text-normal flex flex-col shadow-lg">
+          <div class="text-normal flex flex-col">
             <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
             <NuxtLink
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === null ? 'bg-slate-light' : 'bg-white'}`"
