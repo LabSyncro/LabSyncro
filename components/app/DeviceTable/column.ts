@@ -55,21 +55,6 @@ export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRow
         ),
     },
     {
-      accessorKey: 'category',
-      header: ({ column }) =>
-        h(ColumnHeader, {
-          column,
-          title: 'Phân nhóm',
-          id: 'category', sortField, sortOrder,
-        }),
-      cell: ({ row }) =>
-        h(
-          'span',
-          { class: 'text-slate-500 text-sm font-normal leading-tight' },
-          row.getValue('category'),
-        ),
-    },
-    {
       accessorKey: 'borrowableQuantity',
       header: ({ column }) => h(ColumnHeader, { id: 'borrowable_quantity', sortField, sortOrder, column, title: 'Còn' }),
       cell: ({ row }) => h(
