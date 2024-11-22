@@ -30,7 +30,7 @@ function handlePageIndexChange (value: number) {
 <template>
   <div class="flex items-center justify-between px-2">
     <div class="flex-1 text-sm text-muted-foreground">
-      {{ rowsSelected }} được chọn
+      <span class="hidden sm:block">{{ rowsSelected }} được chọn</span>
     </div>
     <div class="flex items-center space-x-6 lg:space-x-8">
       <div class="flex items-center space-x-2">
