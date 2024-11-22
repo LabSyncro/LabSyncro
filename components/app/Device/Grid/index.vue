@@ -37,7 +37,7 @@ const numberOfGridItems = computed(() => {
 const totalItems = ref(0);
 watch(
   () => [props.categoryId, props.searchText],
-  async () => totalItems.value = await deviceKindService.getTotalItems(props.categoryId!, { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] }),
+  async () => totalItems.value = await deviceKindService.getTotalItems(props.categoryId || undefined, { searchText: props.searchText || undefined, searchFields: ['device_id', 'device_name'] }),
   { immediate: true },
 );
 const totalPages = computed(() => Math.ceil(totalItems.value / numberOfGridItems.value!));
