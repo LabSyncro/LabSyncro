@@ -99,5 +99,9 @@ export const deviceKindService = {
     })).labs;
   },
   async deleteByIds (ids: string[]): Promise<void> {
-  }
+    await $fetch('/api/device_kinds', {
+      method: 'DELETE',
+      body: { ids },
+    });
+  },
 };

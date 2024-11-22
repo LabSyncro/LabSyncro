@@ -26,6 +26,6 @@ export default defineEventHandler<
   await db.sql`
     UPDATE ${'device_kinds'}
     SET ${'deleted_at'} = ${db.param(new Date(Date.now()))}
-    WHERE ${'id'} IN ${db.param(ids)} AND ${'deleted_at'} IS NULL
+    WHERE ${'id'} = ANY (${db.param(ids)}) AND ${'deleted_at'} IS NULL
   `.run(dbPool);
 });

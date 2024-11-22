@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import ColumnHeader from './ColumnHeader.vue';
 import type { AdminDeviceList } from './schema';
 
-export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; onSelectAllRows: (_: unknown[]) => void ; onDeleteRow: (_: unknown) => void; onDeleteSelectedRows: (_: unknown[]) => void }): ColumnDef<AdminDeviceList>[] {
+export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: string[]; onSelectRows: (_: string[]) => void; onSelectAllRows: (_: string[]) => void ; onDeleteRow: (_: string) => void; onDeleteSelectedRows: (_: string[]) => void }): ColumnDef<AdminDeviceList>[] {
   return [
     {
       accessorKey: 'select',

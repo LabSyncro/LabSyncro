@@ -30,8 +30,8 @@ function handleSortOrderChange (value: 'desc' | 'asc' | null) {
   sortOrder.value = value;
 }
 
-const rowSelection = ref<unknown[]>([]);
-function onSelectRows (ids: unknown[]) {
+const rowSelection = ref<string[]>([]);
+function onSelectRows (ids: string[]) {
   for (const id of ids) {
     const index = rowSelection.value.indexOf(id);
     if (index >= 0) {
@@ -41,7 +41,7 @@ function onSelectRows (ids: unknown[]) {
     }
   }
 }
-function onSelectAllRows (ids: unknown[]) {
+function onSelectAllRows (ids: string[]) {
   if (ids.every((id) => rowSelection.value.includes(id))) {
     ids.forEach((id) => rowSelection.value.splice(rowSelection.value.indexOf(id)));
     return;
@@ -53,9 +53,15 @@ function onSelectAllRows (ids: unknown[]) {
     }
   }
 }
-function onDeleteSelectedRows () {
+async function onDeleteSelectedRows () {
+  await deviceKindService.deleteByIds(rowSelection.value);
+  rowSelection.value = [];
+  updateDeviceKinds();
 }
-function onDeleteRow (id: unknown) {
+async function onDeleteRow (id: string) {
+  await deviceKindService.deleteByIds([id]);
+  rowSelection.value = rowSelection.value.filter((rowId) => rowId !== id); 
+  updateDeviceKinds();
 }
 
 const data = ref<AdminDeviceList[]>([]);
