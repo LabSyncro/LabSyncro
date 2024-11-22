@@ -55,7 +55,7 @@ watch(searchText, async () => {
       <div class="flex gap-16">
         <div class="lg:block hidden">
           <div class="text-sm flex flex-col shadow-lg">
-            <p class="bg-black text-white min-w-[190px] px-5 py-1">Danh mục</p>
+            <p class="bg-black text-white min-w-[190px] xl:min-w-[340px] px-5 py-1">Danh mục</p>
             <NuxtLink
               v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${deviceKindMeta.categoryId === category.id ? 'bg-slate-light' : 'bg-white'}`"
@@ -67,7 +67,7 @@ watch(searchText, async () => {
             </NuxtLink>
           </div>
         </div>
-        <div>
+        <div class="flex-1">
           <section class="bg-white p-10 flex flex-col md:flex-row gap-8 md:gap-16">
             <div class="w-[100%] md:max-w-[300px]">
               <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
