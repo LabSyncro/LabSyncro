@@ -5,7 +5,7 @@ import { ListOfCategoryResourceDto } from '~/lib/api_schema';
 import { dbPool } from '~/server/db';
 
 export default defineEventHandler<Promise<ListOfCategoryResourceDto>>(async () => {
-  const categories = (await db.select('categories', {}).run(dbPool)).map(({ name, id }) => ({ id, name }));
+  const categories = (await db.select('categories', {}).run(dbPool)).map(({ name, id }) => ({ id: id.toString(), name }));
 
   const output = { categories };
 

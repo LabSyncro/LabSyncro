@@ -6,6 +6,7 @@ const categoryId = computed(() => {
   const id = route.query.categoryId;
   return id && typeof id === 'string' ? id : null;
 });
+
 const querySearchText = computed(() => {
   const q = route.query.q;
   return q && typeof q === 'string' ? q : null;
