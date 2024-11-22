@@ -45,7 +45,7 @@ const currentPage = ref(0);
 const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
-async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, quantity: number, unit: string, id: string }> {
+async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string }> {
   await nextTick();
   const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value!);
   const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value!;
@@ -56,7 +56,7 @@ async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manuf
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
     title: deviceKind.name,
-    quantity: deviceKind.quantity,
+    borrowableQuantity: deviceKind.borrowableQuantity,
     unit: deviceKind.unit,
     id: deviceKind.id,
   };

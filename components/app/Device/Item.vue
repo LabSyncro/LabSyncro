@@ -4,7 +4,7 @@ const props = defineProps<{
     thumbnailUrl: string;
     manufacturer: string | null;
     title: string;
-    quantity: number;
+    borrowableQuantity: number;
     unit: string;
     id: string;
   }>
@@ -25,7 +25,7 @@ const item = await props.fetchFn();
           <Icon aria-hidden class="absolute text-sm top-1" name="i-heroicons-check" />
           <span class="ml-4">
             Sẵn có:
-            <span class="font-semibold">{{ item.quantity }}</span>
+            <span class="font-semibold">{{ item.borrowableQuantity }}</span>
             {{ item.unit }}
           </span>
         </p>
