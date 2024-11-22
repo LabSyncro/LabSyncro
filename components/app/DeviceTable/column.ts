@@ -5,7 +5,7 @@ import ColumnHeader from './ColumnHeader.vue';
 import RowAction from './RowAction.vue';
 import type { AdminDeviceList } from './schema';
 
-export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; }): ColumnDef<AdminDeviceList>[] {
+export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRows, onSelectAllRows }: { sortField: string | undefined; sortOrder: 'desc' | 'asc' | undefined; rowSelection: unknown[]; onSelectRows: (_: unknown[]) => void; onSelectAllRows: (_: unknown[]) => void }): ColumnDef<AdminDeviceList>[] {
   return [
     {
       accessorKey: 'select',
@@ -14,7 +14,7 @@ export function createColumns ({ sortField, sortOrder, rowSelection, onSelectRow
         h('div', { class: 'flex items-center' },
           [h(Checkbox, {
             checked: table.getCoreRowModel().rows.every((row) => rowSelection.includes(row.original.id)),
-            'onUpdate:checked': () => onSelectRows(table.getCoreRowModel().rows.map((row) => row.original.id)),
+            'onUpdate:checked': () => onSelectAllRows(table.getCoreRowModel().rows.map((row) => row.original.id)),
             ariaLabel: 'Select all',
             class: 'translate-y-0.5',
           })],

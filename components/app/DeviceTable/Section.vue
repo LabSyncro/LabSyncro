@@ -41,6 +41,18 @@ function onSelectRows (ids: unknown[]) {
     }
   }
 }
+function onSelectAllRows (ids: unknown[]) {
+  if (ids.every((id) => rowSelection.value.includes(id))) {
+    ids.forEach((id) => rowSelection.value.splice(rowSelection.value.indexOf(id)));
+    return;
+  }
+  for (const id of ids) {
+    const index = rowSelection.value.indexOf(id);
+    if (index === -1) {
+      rowSelection.value.push(id);
+    }
+  }
+}
 
 const data = ref<AdminDeviceList[]>([]);
 const updateDeviceKinds = debounce(async () => {
@@ -52,7 +64,7 @@ onMounted(updateDeviceKinds);
 watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateDeviceKinds);
 
 const columns = computed(() => {
-  const defs = createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection: rowSelection.value, onSelectRows });
+  const defs = createColumns({ sortField: sortField as any, sortOrder: sortOrder as any, rowSelection: rowSelection.value, onSelectRows, onSelectAllRows });
   if (props.columns === undefined) {
     return defs;
   }
