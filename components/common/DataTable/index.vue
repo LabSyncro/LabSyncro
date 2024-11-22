@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es';
-import { deviceKindService } from '~/services';
 import { createColumns, type AugmentedColumnDef } from './column';
 
 const props = defineProps<{
@@ -65,7 +64,7 @@ function onDeleteRow (id: string) {
   rowsToDelete.value = [id];
 }
 async function onConfirmDelete () {
-  await deviceKindService.deleteByIds(rowsToDelete.value);
+  await props.deleteFn!(rowsToDelete.value);
   rowsToDelete.value.forEach((id) => {
     const index = rowSelection.value.indexOf(id);
     if (index > -1) rowSelection.value.splice(index);
