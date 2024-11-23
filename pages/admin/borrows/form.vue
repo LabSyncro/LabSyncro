@@ -84,7 +84,7 @@ function deleteDeviceKinds (kindIds: string[]) {
               <CheckoutQrButton />
               <CheckoutDeviceSelectModal :kind-id="currentDeviceKindId" :selected-devices="selectedDevices" @close-modal="closeModal" @device-add="addDevice" @device-delete="deleteDevice" />
             </div>
-            <CheckoutDeviceKindTable :cart="devicesInCart" @device-kinds-delete="deleteDeviceKinds" />
+            <CheckoutDeviceKindTable :cart="devicesInCart" @device-kinds-delete="deleteDeviceKinds" @device-kind-link-click="openModalForDeviceId" />
           </div>
         </div>
         <div class="flex flex-col gap-8 min-w-[350px]">
