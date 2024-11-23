@@ -8,6 +8,7 @@ const props = defineProps<{
   addTriggerFn?: () => void,
   columns: AugmentedColumnDef<unknown>[],
   qrable: boolean;
+  searchable: boolean;
 }>();
 
 const searchText = ref('');
@@ -96,13 +97,12 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
         <p class="mb-4">Bạn có chắc chắn muốn xoá {{ rowsToDelete.length }} bản ghi?</p>
         <div class="flex gap-3 justify-end">
           <button class="bg-gray-300 p-1.5 px-3 rounded-md text-normal" @click="closeDeleteModal">Hủy bỏ</button>
-          <button class="bg-red-500 text-white p-1.5 px-3 rounded-md text-normal" @click="onConfirmDelete">Xác
-            nhận</button>
+          <button class="bg-red-500 text-white p-1.5 px-3 rounded-md text-normal" @click="onConfirmDelete">Xác nhận</button>
         </div>
       </div>
     </div>
     <div class="flex justify-between items-stretch">
-      <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
+      <div v-if="searchable" class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
         <input v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
           class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]"
           @input="handlePageIndexChange(0)">
@@ -118,7 +118,8 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
       </div>
       <div>
         <button
-          class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto" @click="addClickFn">
+          v-if="addTriggerFn"
+          class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto" @click="addTriggerFn">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
           <span class="hidden md:block pl-8 pr-3">Thêm</span>
         </button>
