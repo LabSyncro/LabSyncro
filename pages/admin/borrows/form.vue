@@ -73,11 +73,12 @@ const now = new Date(Date.now());
 const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth()}${now.getDay()}/${Date.now().toString().slice(10)}`);
 const borrowDateInput = ref(now.toISOString().substr(0, 10));
 const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
-const borrowLabIdInput = ref('');
+const borrowLabInput = ref('');
+const borrowLabId = ref<string | null>(null);
 const returnDateInput = ref('');
 const returnDate = computed(() => new Date(Date.parse(returnDateInput.value)));
-const returnLabIdInput = ref('');
-
+const returnLabInput = ref('');
+const returnLabId = ref<string | null>(null);
 </script>
 
 <template>
