@@ -1,18 +1,8 @@
 <script setup lang="ts">
-import { userService } from '@/services';
 import { ChevronDown } from 'lucide-vue-next';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
-const avatar = ref<null | string>(null);
+const { data, signOut } = useAuth();;
 
-onMounted(async () => {
-  avatar.value = userService.getAvatar();
-});
 </script>
 
 <template>
@@ -21,9 +11,9 @@ onMounted(async () => {
       <DropdownMenuTrigger>
         <div class="flex items-center cursor-pointer">
           <div class="h-9 w-9 rounded-full border-slate-dark border-[2px] bg-primary-lighter relative">
-            <img class="h-[100%] aspect-auto inline-block rounded-full" :src="avatar || ''" alt="User's avatar">
-            <div
-class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2px] top-6 right-[-2px]"
+            <img class="h-[100%] aspect-auto inline-block rounded-full" :src="data?.user?.image || ''"
+              alt="User's avatar">
+            <div class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2px] top-6 right-[-2px]"
               aria-hidden />
           </div>
           <ChevronDown class="h-4 w-4 ml-2 text-gray-500" :stroke-width="3" />
@@ -33,11 +23,12 @@ class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2p
       <DropdownMenuContent class="w-56">
         <div class="flex items-center p-2 border-b">
           <div class="h-8 w-8 rounded-full bg-gray-200 mr-2">
-            <img :src="avatar || ''" class="h-full w-full rounded-full" alt="User's avatar">
+            <img :src="data?.user?.image || ''" class="h-full w-full rounded-full" alt="User's avatar">
           </div>
           <div class="flex flex-col">
-            <span class="text-md font-medium">Phu Nguyen</span>
-            <span class="text-normal text-gray-500">Quản trị viên</span>
+            <span class="text-md font-medium">{{ data?.user?.name }}</span>
+            <span class="text-normal text-gray-500">{{ data?.user?.roles.includes('Quản trị viên') && 'Quản trị viên'
+              }}</span>
           </div>
         </div>
 
@@ -47,7 +38,7 @@ class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2p
           </DropdownMenuItem>
         </NuxtLink>
 
-        <DropdownMenuItem class="text-red-600 cursor-pointer hover:!bg-red-400">
+        <DropdownMenuItem class="text-red-600 cursor-pointer hover:!bg-red-400" @click="signOut({ callbackUrl: '/' })">
           <span class="text-normal">Đăng xuất</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

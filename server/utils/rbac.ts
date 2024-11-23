@@ -23,6 +23,17 @@ export async function getUserPermissions (userId: string) {
   return result.map((row) => `${row.resource_name}:${row.action_name}`);
 }
 
+export async function getUserRoles (userId: string) {
+  const result = await db.sql`
+    SELECT ro.name as role_name
+    FROM user_roles ur
+    JOIN roles ro ON ur.role_id = ro.id
+    WHERE ur.user_id = ${db.param(userId)}
+  `.run(dbPool);
+
+  return result.map((row) => row.role_name);
+}
+
 export async function createOrUpdateUser (
   email: string,
   name: string,

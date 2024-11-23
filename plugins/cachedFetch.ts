@@ -2,7 +2,7 @@ import queryString from 'query-string';
 
 const cacheName = 'nuxt-cache';
 
-async function isUrlCached(url: string, ttl: number): Promise<boolean> {
+async function isUrlCached (url: string, ttl: number): Promise<boolean> {
   const cache = await caches.open(cacheName);
 
   const cachedResponse = await cache.match(url);
@@ -21,7 +21,7 @@ async function isUrlCached(url: string, ttl: number): Promise<boolean> {
   return true;
 }
 
-function resolveUrl(url: string, options: { query: Record<string, unknown> }): string {
+function resolveUrl (url: string, options: { query: Record<string, unknown> }): string {
   return `${url}?${queryString.stringify(options.query || {})}`;
 }
 

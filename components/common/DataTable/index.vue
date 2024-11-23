@@ -110,7 +110,8 @@ onMounted(() => filterBoxRef.value?.focus());
         <input v-model="searchText" ref="filterBox" type="search" placeholder="Nhập tên/mã thiết bị"
           class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]"
           @input="handlePageIndexChange(0)">
-        <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+        <Icon
+aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
           name="i-heroicons-magnifying-glass" />
         <button v-if="qrable" class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
