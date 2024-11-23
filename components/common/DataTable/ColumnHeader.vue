@@ -32,6 +32,7 @@ function toggleSortOrder () {
     emits('sort-order-change', 'asc');
   }
 }
+
 </script>
 
 <template>
@@ -40,9 +41,11 @@ function toggleSortOrder () {
       <DropdownMenuTrigger as-child>
         <Button variant="ghost" size="sm" class="relative h-8 data-[state=open]:bg-accent text-md pr-8 text-black" @click="toggleSortOrder()">
           <span>{{ title }}</span>
-          <Icon v-if="sortField === id && sortOrder === 'asc'" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrow-long-down" />
-          <Icon v-else-if="sortField === id && sortOrder === 'desc'" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrow-long-up" />
-          <Icon v-else-if="sortField !== id" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrows-up-down" />
+          <span v-if="column.columnDef.enableSorting">
+            <Icon v-if="sortField === id && sortOrder === 'asc'" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrow-long-down" />
+            <Icon v-else-if="sortField === id && sortOrder === 'desc'" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrow-long-up" />
+            <Icon v-else-if="sortField !== id" aria-hidden class="text-xl absolute right-1" name="i-heroicons-arrows-up-down" />
+          </span>
         </Button>
       </DropdownMenuTrigger>
     </DropdownMenu>
