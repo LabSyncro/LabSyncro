@@ -58,7 +58,7 @@ export default defineEventHandler<
         ${categoryId !== undefined ? db.raw(`device_kinds.category_id = ${categoryId}`) : db.raw('TRUE')} AND
         ${'devices'}.${'deleted_at'} IS NULL
         ${searchText !== undefined ? db.raw(`AND (
-          (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%') OR
+          (${searchFields?.includes('device_id') || false} AND devices.kind || '/' || devices.id ILIKE '%${searchText}%') OR
           (${searchFields?.includes('device_name') || false} AND CAST(device_kinds.name AS TEXT) ILIKE '%${searchText}%')
         )`) : db.raw('')}
       GROUP BY ${'device_kinds'}.${'id'}

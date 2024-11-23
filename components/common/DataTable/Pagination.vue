@@ -6,7 +6,6 @@ interface DataTablePaginationProps {
   pageCount: number;
   pageSize: number;
   pageIndex: number;
-  rowsSelected: number;
   table: Table<any>;
 }
 
@@ -27,10 +26,7 @@ function handlePageIndexChange (value: number) {
 </script>
 
 <template>
-  <div class="flex items-center justify-between px-2">
-    <div class="flex-1 text-sm text-muted-foreground">
-      <span class="hidden sm:block">{{ rowsSelected }} được chọn</span>
-    </div>
+  <div v-if="pageCount" class="flex items-center">
     <div class="flex items-center space-x-6 lg:space-x-8">
       <div class="flex items-center space-x-2">
         <p class="text-sm font-medium">
@@ -77,4 +73,5 @@ variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="pageIndex === pa
       </div>
     </div>
   </div>
+  <div v-else />
 </template>
