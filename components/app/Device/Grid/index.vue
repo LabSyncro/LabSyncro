@@ -45,14 +45,14 @@ const currentPage = ref(0);
 const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
-async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string }> {
+async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string } | undefined> {
   await nextTick();
   const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value!);
   const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value!;
   const options = { searchText: props.searchText || undefined, searchFields: ['device_id' as const, 'device_name' as const] };
   const res = props.categoryId !== null ? await deviceKindService.getDeviceKindsByCategoryId(props.categoryId, pageNumberOfItem, numberOfGridItems.value!, options) : await deviceKindService.getDeviceKinds(pageNumberOfItem, numberOfGridItems.value!, options);
   const deviceKind = res.deviceKinds[offsetInPage];
-  return {
+  return deviceKind && {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
     title: deviceKind.name,

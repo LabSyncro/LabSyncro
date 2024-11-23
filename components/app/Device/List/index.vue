@@ -20,13 +20,13 @@ const totalItems = await deviceKindService.getTotalItems(props.category.id, {});
 const totalPages = computed(() => Math.ceil(totalItems / numberOfItemsShown.value!));
 const currentPage = ref(0);
 
-async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string }> {
+async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string } | undefined> {
   await nextTick();
   const pageNumberOfItem = Math.floor(offset / numberOfItemsShown.value!);
   const offsetInPage = offset -  pageNumberOfItem * numberOfItemsShown.value!;
   const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, pageNumberOfItem, numberOfItemsShown.value!, {});
   const deviceKind = res.deviceKinds[offsetInPage];
-  return {
+  return deviceKind && {
     thumbnailUrl: deviceKind.mainImage,
     manufacturer: deviceKind.manufacturer,
     title: deviceKind.name,

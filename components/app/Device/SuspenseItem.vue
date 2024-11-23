@@ -7,7 +7,7 @@ const props = defineProps<{
     borrowableQuantity: number;
     unit: string;
     id: string;
-  }>,
+  } | undefined>,
   width: string;
 }>();
 </script>
