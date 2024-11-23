@@ -7,10 +7,7 @@ const props = defineProps<{
 }>();
 const listWidth = useWidth(useTemplateRef('listRef'));
 const numberOfItemsShown = computed(() => {
-  if (!listWidth.value) {
-    return null;
-  }
-  if (listWidth.value < 50) {
+  if (!listWidth.value || listWidth.value < 50) {
     return 0;
   }
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
@@ -21,7 +18,6 @@ const totalPages = computed(() => Math.ceil(totalItems / numberOfItemsShown.valu
 const currentPage = ref(0);
 
 async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string } | undefined> {
-  await nextTick();
   const pageNumberOfItem = Math.floor(offset / numberOfItemsShown.value!);
   const offsetInPage = offset -  pageNumberOfItem * numberOfItemsShown.value!;
   const res = await deviceKindService.getDeviceKindsByCategoryId(props.category.id, pageNumberOfItem, numberOfItemsShown.value!, {});

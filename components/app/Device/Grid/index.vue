@@ -30,7 +30,7 @@ const rows = computed(() => {
 });
 const numberOfGridItems = computed(() => {
   if (!cols.value) {
-    return null;
+    return 0;
   }
   return cols.value * rows.value!;
 });
@@ -46,7 +46,6 @@ const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
 async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string } | undefined> {
-  await nextTick();
   const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value!);
   const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value!;
   const options = { searchText: props.searchText || undefined, searchFields: ['device_id' as const, 'device_name' as const] };
