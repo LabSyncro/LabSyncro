@@ -73,12 +73,16 @@ const now = new Date(Date.now());
 const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth()}${now.getDay()}/${Date.now().toString().slice(10)}`);
 const borrowDateInput = ref(now.toISOString().substr(0, 10));
 const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
-const borrowLabInput = ref('');
 const borrowLabId = ref<string | null>(null);
+function setBorrowLabId (id: string) {
+  borrowLabId.value = id;
+}
 const returnDateInput = ref('');
 const returnDate = computed(() => new Date(Date.parse(returnDateInput.value)));
-const returnLabInput = ref('');
 const returnLabId = ref<string | null>(null);
+function setReturnLabId (id: string) {
+  returnLabId.value = id;
+}
 </script>
 
 <template>
@@ -152,7 +156,7 @@ const returnLabId = ref<string | null>(null);
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
+                <CheckoutLabSearchBox @select="setBorrowLabId"/>
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Ngày hẹn trả *</label>
@@ -160,7 +164,7 @@ const returnLabId = ref<string | null>(null);
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
+                <CheckoutLabSearchBox @select="setReturnLabId" />
               </div>
             </form>
           </div>
