@@ -9,6 +9,7 @@ const props = defineProps<{
   columns: AugmentedColumnDef<unknown>[],
   qrable: boolean;
   searchable: boolean;
+  selectable: boolean;
 }>();
 
 const searchText = ref('');
@@ -126,7 +127,7 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
       </div>
     </div>
     <DataTableCore
-      :columns="createColumns(columns as AugmentedColumnDef<any>[], { deletable: !!deleteFn, sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows })"
+      :columns="createColumns(columns as AugmentedColumnDef<any>[], { selectable, deletable: !!deleteFn, sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows })"
       :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex" :row-selection="rowSelection"
       @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
       @sort-order-change="handleSortOrderChange as any" @sort-field-change="handleSortFieldChange as any" />

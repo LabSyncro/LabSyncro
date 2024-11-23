@@ -17,5 +17,5 @@ async function fetchData (offset: number, length: number, options: { desc?: bool
 </script>
 
 <template>
-  <DataTable :searchable="false" :qrable="false" :fetch-fn="fetchData" :delete-fn="deleteData" :columns="columns as AugmentedColumnDef<unknown>[]" />
+  <DataTable :selectable="false" :searchable="false" :qrable="false" :fetch-fn="fetchData" :delete-fn="deleteData" :columns="columns as AugmentedColumnDef<unknown>[]" />
 </template>

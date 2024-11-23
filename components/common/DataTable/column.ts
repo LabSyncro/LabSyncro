@@ -7,6 +7,7 @@ export type AugmentedColumnDef<T> = Omit<ColumnDef<T>, 'header'> & { id: string,
 
 export function createColumns<T extends { id: string }> (
   dataColumns: AugmentedColumnDef<T>[], {
+    selectable,
     deletable,
     sortField,
     sortOrder,
@@ -16,6 +17,7 @@ export function createColumns<T extends { id: string }> (
     onDeleteRow,
     onDeleteSelectedRows
   }: {
+    selectable: boolean,
     deletable: boolean,
     sortField: string | undefined;
     sortOrder: 'desc' | 'asc' | undefined;
@@ -69,7 +71,7 @@ export function createColumns<T extends { id: string }> (
   };
 
   return [
-    ...(deletable ? [selectCol] : []),
+    ...(selectable ? [selectCol] : []),
     ...dataColumns.map((colWithoutHeader: AugmentedColumnDef<T>) => {
       const colWithHeader: ColumnDef<T> = {
         ...colWithoutHeader,

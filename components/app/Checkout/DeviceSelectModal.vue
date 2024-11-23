@@ -17,6 +17,7 @@ const deviceKindMeta = await deviceKindService.getById(props.id);
           <Icon class="text-lg" aria-hidden name="i-heroicons-x-mark" />
         </div>
       </div>
+      <CheckoutDeviceSelectTable />
     </div>
   </div>
 </template>
