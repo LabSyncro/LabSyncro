@@ -1,3 +1,12 @@
+<script setup lang="ts">
+const currentDeviceId = ref<string | null>(null);
+
+function openModalForDeviceId (id: string) {
+  currentDeviceId.value = id;
+  console.log(id);
+}
+</script>
+
 <template>
   <div class="mx-6 sm:mx-16 my-10">
     <Breadcrumb>
@@ -22,6 +31,11 @@
         <div class="flex-1">
           <div class="bg-white p-4">
             <h2 class="text-lg mb-6">Danh sách mượn</h2>
+            <div class="flex gap-4 mb-6">
+              <CheckoutDeviceSearchBox @device-select="openModalForDeviceId" />
+              <CheckoutQrButton />
+              <CheckoutDeviceSelectModal v-if="currentDeviceId" :id="currentDeviceId" />
+            </div>
             <CheckoutDeviceKindTable />
           </div>
         </div>
