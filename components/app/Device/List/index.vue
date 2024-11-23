@@ -16,11 +16,9 @@ const numberOfItemsShown = computed(() => {
   return Math.floor((listWidth.value - 75) / (ITEM_WIDTH + 10));
 });
 
-const totalItems = ref(0);
-const totalPages = computed(() => Math.ceil(totalItems.value / numberOfItemsShown.value!));
+const totalItems = await deviceKindService.getTotalItems(props.category.id, {});
+const totalPages = computed(() => Math.ceil(totalItems / numberOfItemsShown.value!));
 const currentPage = ref(0);
-
-watch([numberOfItemsShown], async () => totalItems.value = await deviceKindService.getTotalItems(props.category.id, {}));
 
 async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string }> {
   await nextTick();
