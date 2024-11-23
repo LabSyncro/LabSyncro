@@ -3,7 +3,7 @@ import type { DeviceKindResourceDto } from '~/lib/api_schema';
 import { deviceKindService } from '~/services';
 
 const props = defineProps<{
-  id?: string;
+  id: string | null;
 }>();
 
 const emits = defineEmits<{
