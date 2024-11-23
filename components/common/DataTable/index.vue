@@ -103,10 +103,12 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
     </div>
     <div class="flex justify-between items-stretch">
       <div class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
-        <input v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
+        <input
+v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
           class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]"
           @input="handlePageIndexChange(0)">
-        <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+        <Icon
+aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
           name="i-heroicons-magnifying-glass" />
         <button v-if="qrable" class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
