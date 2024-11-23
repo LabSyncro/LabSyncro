@@ -5,7 +5,9 @@ import { createColumns, type AugmentedColumnDef } from './column';
 const props = defineProps<{
   deleteFn?: (ids: string[]) => Promise<void>;
   fetchFn: (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }) => Promise<{ data: unknown[], totalPages: number }>,
+  addTriggerFn?: () => void,
   columns: AugmentedColumnDef<unknown>[],
+  qrable: boolean;
 }>();
 
 const searchText = ref('');
@@ -106,9 +108,9 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
           @input="handlePageIndexChange(0)">
         <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
           name="i-heroicons-magnifying-glass" />
-        <button class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
+        <button v-if="qrable" class="relative bg-slate-200 border border-slate-400 text-slate-dark rounded-md w-11 h-11 lg:w-auto">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
-          <p class="hidden lg:block pl-10 pr-3">Quét QR thiết bị</p>
+          <p class="hidden lg:block pl-10 pr-3">Quét QR</p>
         </button>
         <button class="relative md:hidden bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
@@ -116,9 +118,9 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
       </div>
       <div>
         <button
-          class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto">
+          class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto" @click="addClickFn">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
-          <span class="hidden md:block pl-8 pr-3">Bổ sung thiết bị</span>
+          <span class="hidden md:block pl-8 pr-3">Thêm</span>
         </button>
       </div>
     </div>
