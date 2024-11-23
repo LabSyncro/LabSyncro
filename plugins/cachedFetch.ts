@@ -32,6 +32,7 @@ export default defineNuxtPlugin(() => {
 
     const cachedResponse = await cache.match(resolvedUrl);
     if (await isUrlCached(resolvedUrl, options.ttl || 0)) {
+      cachedResponse?.headers.set('x-sw-cache-timestamp', new Date(Date.now()).toString());
       return cachedResponse!.json();
     }
 
