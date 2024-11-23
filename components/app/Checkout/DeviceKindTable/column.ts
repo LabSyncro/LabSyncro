@@ -10,7 +10,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
       h(
         'p',
         { class: 'text-normal pl-3' },
-        [`${row.original.id.slice(0, 4)} ${row.original.id.slice(4)}`.toUpperCase()],
+        [row.original.id.toUpperCase()],
       ),
   },
   {

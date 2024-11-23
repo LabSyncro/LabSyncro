@@ -4,7 +4,7 @@ import { createColumns, type AugmentedColumnDef } from './column';
 
 const props = defineProps<{
   deleteFn?: (ids: string[]) => Promise<void>;
-  fetchFn: (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }) => Promise<{ data: unknown[], totalPages: number }>,
+  fetchFn: (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string }) => Promise<{ data: unknown[], totalPages: number }>,
   addTriggerFn?: () => void,
   columns: AugmentedColumnDef<unknown>[],
   qrable: boolean;
@@ -83,12 +83,15 @@ function closeDeleteModal () {
 
 const data = ref<unknown[]>([]);
 const updateData = debounce(async () => {
-  const res = await props.fetchFn(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, searchFields: ['device_id', 'device_name'], sortField: sortField.value || undefined as any, desc: sortOrder.value === 'asc' });
+  const res = await props.fetchFn(pageIndex.value * pageSize.value, pageSize.value, { searchText: searchText.value || undefined, sortField: sortField.value || undefined as any, desc: sortOrder.value === 'asc' });
   data.value = res.data;
   pageCount.value = res.totalPages;
 }, 300);
 onMounted(updateData);
 watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
+
+const filterBoxRef = useTemplateRef('filterBox');
+onMounted(() => filterBoxRef.value?.focus());
 </script>
 
 <template>
@@ -104,7 +107,7 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
     </div>
     <div class="flex justify-between items-stretch">
       <div v-if="searchable" class="relative items-center flex gap-4 m-auto md:m-0 md:mb-8 mb-8">
-        <input v-model="searchText" type="search" placeholder="Nhập tên/mã thiết bị"
+        <input v-model="searchText" ref="filterBox" type="search" placeholder="Nhập tên/mã thiết bị"
           class="border-gray-300 border rounded-sm p-2 pl-10 w-[250px] sm:w-[300px] md:w-[350px] lg:w-[400px]"
           @input="handlePageIndexChange(0)">
         <Icon aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
@@ -113,7 +116,9 @@ watch([pageSize, pageIndex, searchText, sortField, sortOrder], updateData);
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-qr-code" />
           <p class="hidden lg:block pl-10 pr-3">Quét QR</p>
         </button>
-        <button class="relative md:hidden bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11">
+        <button
+          v-if="addTriggerFn"
+          class="relative md:hidden bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
         </button>
       </div>

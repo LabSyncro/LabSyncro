@@ -19,7 +19,7 @@ function closeDropdown () {
 }
 
 async function handleClickOutsideOfSearchBox () {
-  closeDropdown();
+  setTimeout(closeDropdown, 200);
 }
 
 const focusedSearchItemIndex = ref<number | null>(null);
@@ -62,7 +62,7 @@ function unfocusSearchItem () {
       <input
         v-model="searchText"
         class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 pr-3 rounded-md text-md placeholder:text-normal"
-        type="search" placeholder="Tên/Mã loại thiết bị" @click="openDropdown" @blur="handleClickOutsideOfSearchBox" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="goToSearchItem(searchItems[focusedSearchItemIndex!].id)" @keydown.esc="unfocusSearchItem">
+        type="search" placeholder="Tên/Mã loại thiết bị" @click="openDropdown" @blur="handleClickOutsideOfSearchBox" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && goToSearchItem(searchItems[focusedSearchItemIndex!].id)" @keydown.esc="unfocusSearchItem">
       <Icon
         aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
         name="i-heroicons-magnifying-glass" />
@@ -72,7 +72,7 @@ function unfocusSearchItem () {
       <a v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex justify-start gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" @click="goToSearchItem(searchItems[index].id)">
         <img :src="item.image" class="h-6">
         <p class="p-1 px-2 text-nowrap bg-gray-100 border border-gray-300 rounded-md text-normal font-normal leading-none">
-          {{ `${item.id.slice(0, 4)} ${item.id.slice(4)}`.toUpperCase() }}
+          {{ item.id.toUpperCase() }}
         </p>
         <HighlightText class="line-clamp-1" :text="item.name" :match-text="searchText || undefined" />
       </a>
