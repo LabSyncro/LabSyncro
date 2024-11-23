@@ -70,7 +70,7 @@ function unfocusSearchItem () {
 
     <div :class="`${isDropdownActive && searchItems.length ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[150%] z-50 shadow-[0_0px_16px_-3px_rgba(0,0,0,0.3)]`">
       <a v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex justify-start gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" @click="goToSearchItem(searchItems[index].id)">
-        <img :src="item.image" class="h-6">
+        <img :src="item.image" class="h-6 w-6 block">
         <p class="p-1 px-2 text-nowrap bg-gray-100 border border-gray-300 rounded-md text-normal font-normal leading-none">
           {{ item.id.toUpperCase() }}
         </p>
