@@ -46,7 +46,9 @@ const numberOfPagesShown = 5;
 const currentPageGroup = computed(() => Math.floor(currentPage.value / numberOfPagesShown));
 
 async function fetchItem (offset: number): Promise<{ thumbnailUrl: string, manufacturer: string | null, title: string, borrowableQuantity: number, unit: string, id: string }> {
+  console.log('before tick', offset);
   await nextTick();
+  console.log('afte tick', offset);
   const pageNumberOfItem = Math.floor(offset / numberOfGridItems.value!);
   const offsetInPage = offset -  pageNumberOfItem * numberOfGridItems.value!;
   const options = { searchText: props.searchText || undefined, searchFields: ['device_id' as const, 'device_name' as const] };
@@ -101,30 +103,30 @@ function pageRight () {
           <Icon aria-hidden class="text-normal" name="i-heroicons-chevron-left" />
         </button>
         <button
-v-if="currentPageGroup !== 0" class="text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100"
+          v-if="currentPageGroup !== 0" class="text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100"
           @click="setPage(0)">
           1
         </button>
         <div
-v-if="currentPageGroup !== 0"
+          v-if="currentPageGroup !== 0"
           class="flex justify-center items-center text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100">
           ...
         </div>
         <div v-for="i in [...Array(numberOfPagesShown).keys()]" :key="currentPageGroup * numberOfPagesShown + i">
           <button
-v-if="currentPageGroup * numberOfPagesShown + i < totalPages"
+            v-if="currentPageGroup * numberOfPagesShown + i < totalPages"
             :class="`h-[100%] text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100 ${currentPageGroup * numberOfPagesShown + i === currentPage ? 'bg-green-500 text-white' : ''}`"
             @click="setPage(currentPageGroup * numberOfPagesShown + i)">
             {{ currentPageGroup * numberOfPagesShown + i + 1 }}
           </button>
         </div>
         <div
-v-if="(currentPageGroup + 1) * numberOfPagesShown < totalPages"
+          v-if="(currentPageGroup + 1) * numberOfPagesShown < totalPages"
           class="flex justify-center items-center text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100">
           ...
         </div>
         <button
-v-if="(currentPageGroup + 1) * numberOfPagesShown < totalPages"
+          v-if="(currentPageGroup + 1) * numberOfPagesShown < totalPages"
           class="text-sm px-2.5 border-[1px] border-l-[0px] border-gray-100" @click="setPage(totalPages - 1)">
           {{ totalPages }}
         </button>
