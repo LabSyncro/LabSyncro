@@ -1,8 +1,8 @@
 import { NuxtLink } from '#components';
-import type { AdminDeviceList } from './schema';
+import type { DeviceInCartList } from './schema';
 import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
-export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
+export const columns: AugmentedColumnDef<DeviceInCartList>[] = [
   {
     id: 'id',
     title: 'Mã loại thiết bị',
@@ -21,6 +21,16 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
         'p',
         { class: 'line-clamp-2 text-slate-500 text-normal leading-6 font-normal' },
         row.original.name,
+      ),
+  },
+  {
+    id: 'quantity',
+    title: 'SL',
+    cell: ({ row }) =>
+      h(
+        'p',
+        { class: 'line-clamp-2 text-slate-500 text-right text-normal leading-6 font-normal' },
+        row.original.quantity,
       ),
   },
 ];

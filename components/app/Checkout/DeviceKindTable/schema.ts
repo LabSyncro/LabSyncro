@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import type { Static } from '@sinclair/typebox';
 
-export const AdminDeviceListSchema = Type.Object({
+export const DeviceInCartList = Type.Object({
   id: Type.String(),
   mainImage: Type.String(),
   name: Type.String(),
@@ -10,4 +10,4 @@ export const AdminDeviceListSchema = Type.Object({
   quantity: Type.Number(),
 });
 
-export type AdminDeviceList = Static<typeof AdminDeviceListSchema>;
+export type DeviceInCartList = Static<typeof DeviceInCartList>;

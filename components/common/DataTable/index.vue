@@ -133,7 +133,7 @@ onMounted(() => filterBoxRef.value?.focus());
     </div>
     <DataTableCore
       :columns="createColumns(columns as AugmentedColumnDef<any>[], { selectable, deletable: !!deleteFn, sortField: sortField as any, sortOrder: sortOrder as any, rowSelection, onSelectRows, onSelectAllRows, onDeleteRow, onDeleteSelectedRows })"
-      :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex" :row-selection="rowSelection"
+      :data="data" :page-count="pageCount" :page-size="pageSize" :page-index="pageIndex" :row-selection="rowSelection" :selectable="selectable"
       @page-index-change="handlePageIndexChange" @page-size-change="handlePageSizeChange"
       @sort-order-change="handleSortOrderChange as any" @sort-field-change="handleSortFieldChange as any" />
   </div>

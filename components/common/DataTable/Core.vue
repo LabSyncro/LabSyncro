@@ -17,6 +17,7 @@ interface DataTableProps {
   pageSize: number;
   sortField: string | null;
   sortOrder: 'desc' | 'asc' | null;
+  selectable: boolean;
   rowSelection: unknown[];
 }
 
@@ -73,9 +74,14 @@ const table = useVueTable({
       </Table>
     </div>
 
-    <DataTablePagination
-      :table="table" :page-index="pageIndex" :page-size="pageSize" :rows-selected="rowSelection.length"
-      :page-count="pageCount" @page-size-change="(value) => emits('page-size-change', value)"
-      @page-index-change="(value) => emits('page-index-change', value)" />
+    <div class="text-sm text-slate flex items-center justify-between">
+      <div class="hidden sm:block">
+        <span v-if="selectable"> {{ rowSelection.length }} được chọn </span>
+      </div>
+      <DataTablePagination
+        :table="table" :page-index="pageIndex" :page-size="pageSize"
+        :page-count="pageCount" @page-size-change="(value) => emits('page-size-change', value)"
+        @page-index-change="(value) => emits('page-index-change', value)" />
+    </div>
   </div>
 </template>
