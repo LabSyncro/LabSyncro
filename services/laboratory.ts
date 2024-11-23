@@ -2,7 +2,7 @@ import { sortBy } from 'lodash-es';
 
 export const laboratoryService = {
   async getAllLabsByFaculty (faculty: string): Promise<Record<string, unknown>[]> {
-    return sortBy((await $fetch('/api/laboratory', {
+    return sortBy((await $fetch('/api/laboratories', {
       query: { faculty },
       ttl: 3600,
     })).branches, ({ name }) => name);

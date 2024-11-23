@@ -121,3 +121,14 @@ export const LabResourceDto = Type.Object({
 });
 
 export type LabResourceDto = Static<typeof LabResourceDto>;
+
+export const UserResourceDto = Type.Object({
+  id: Type.String(),
+  avatar: Type.Union([Type.String(), Type.Null()]),
+  tel: Type.String(),
+  name: Type.String(),
+  email: Type.String(),
+  role: Type.Union([Type.Literal('student'), Type.Literal('teacher'), Type.Literal('sysadmin'), Type.Literal('lab_admin')]),
+});
+
+export type UserResourceDto = Static<typeof UserResourceDto>;
