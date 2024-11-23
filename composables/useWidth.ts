@@ -2,7 +2,8 @@ export function useWidth (elemRef: Ref<HTMLDivElement | null>): Ref<number | nul
   const width = ref<number | null>(null);
   function updateWidth () {
     if (!elemRef.value) {
-      elemRef.value = null;
+      width.value = null;
+      return;
     }
     width.value = elemRef.value!.offsetWidth;
   }
