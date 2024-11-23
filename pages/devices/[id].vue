@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sortBy } from 'lodash-es';
+import { debounce, sortBy } from 'lodash-es';
 import { deviceKindService, categoryService } from '~/services';
 import { createColumns } from '~/components/app/DeviceInventoryByLabTable/column';
 
@@ -10,6 +10,9 @@ const deviceKindMeta = await deviceKindService.getById(deviceKindId.value);
 const allCategories = await categoryService.getCategories();
 
 const searchText = ref('');
+const updateSearchText = debounce((value) => {
+  searchText.value = value;
+}, 300);
 
 const data = ref<{ borrowableQuantity: number; name: string }[]>([]);
 
@@ -115,8 +118,9 @@ watch(searchText, async () => {
               <h2 class="text-xl">Tồn kho thiết bị</h2> 
               <div class="relative items-center flex gap-4 mx-auto sm:mx-0">
                 <input
-                  v-model="searchText" type="search" placeholder="Nhập tên phòng thí nghiệm"
+                  :value="searchText" type="search" placeholder="Nhập tên phòng thí nghiệm"
                   class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
+                  @input="updateSearchText"
                 >
                 <Icon
                   aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"

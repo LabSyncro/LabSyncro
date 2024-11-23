@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { debounce } from 'lodash-es';
 import { categoryService } from '~/services';
 
 const route = useRoute();
@@ -12,6 +13,9 @@ const querySearchText = computed(() => {
   return q && typeof q === 'string' ? q : null;
 });
 const searchText = ref('');
+const updateSearchText = debounce((value) => {
+  searchText.value = value;
+}, 300);
 const categoryName = ref<string | null>(null);
 watch(categoryId, async () => {
   if (categoryId.value === null) {
@@ -73,8 +77,9 @@ const allCategories = await categoryService.getCategories();
             </h2>
             <div v-if="!querySearchText" class="relative items-center flex gap-4 mx-auto sm:mx-0">
               <input
-                v-model="searchText" type="search" placeholder="Nhập tên thiết bị"
+                :value="searchText" type="search" placeholder="Nhập tên thiết bị"
                 class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
+                @input="(e) => updateSearchText(e.target.value)"
               >
               <Icon
                 aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
