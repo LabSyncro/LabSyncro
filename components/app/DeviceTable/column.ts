@@ -26,6 +26,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
           ),
         ],
       ),
+    enableSorting: true,
   },
   {
     id: 'borrowableQuantity',
@@ -35,6 +36,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
       { class: 'text-slate-500 text-sm font-normal leading-tight text-right' },
       row.original.borrowableQuantity,
     ),
+    enableSorting: true,
   },
   {
     id: 'quantity',
@@ -46,5 +48,6 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
         row.original.quantity,
       );
     },
+    enableSorting: true,
   },
 ];
