@@ -18,6 +18,7 @@ export default NuxtAuthHandler({
         );
 
         const permissions = await getUserPermissions(user.id);
+        const roles = await getUserRoles(user.id);
 
         return {
           id: user.id,
@@ -25,6 +26,7 @@ export default NuxtAuthHandler({
           name: user.name,
           image: user.image,
           permissions,
+          roles,
         };
       },
     }),
@@ -48,6 +50,7 @@ export default NuxtAuthHandler({
         if (!isValid) return null;
 
         const permissions = await getUserPermissions(user.id);
+        const roles = await getUserRoles(user.id);
 
         return {
           id: user.id,
@@ -55,6 +58,7 @@ export default NuxtAuthHandler({
           name: user.name,
           image: user.image,
           permissions,
+          roles,
         };
       },
     }),
@@ -64,6 +68,7 @@ export default NuxtAuthHandler({
       if (user) {
         token.id = user.id;
         token.permissions = user.permissions;
+        token.roles = user.roles;
       }
       return token;
     },
@@ -71,6 +76,7 @@ export default NuxtAuthHandler({
       if (session.user) {
         session.user.id = token.id;
         session.user.permissions = token.permissions;
+        session.user.roles = token.roles;
       }
       return session;
     },
