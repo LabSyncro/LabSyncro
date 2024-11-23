@@ -91,6 +91,20 @@ export const ListOfDeviceKindResourceDto = Type.Object({
 
 export type ListOfDeviceKindResourceDto = Static<typeof ListOfDeviceKindResourceDto>;
 
+export const ListOfDeviceResourceDto = Type.Object({
+  devices: Type.Array(Type.Object({
+    id: Type.String(),
+    kind: Type.String(),
+    status: Type.String(),
+    room: Type.String(),
+    branch: Type.String(),
+  })),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type ListOfDeviceResourceDto = Static<typeof ListOfDeviceResourceDto>;
+
 export const LabResourceDto = Type.Object({
   branches: Type.Array(Type.Object({
     name: Type.String(),

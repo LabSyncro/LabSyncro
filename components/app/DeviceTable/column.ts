@@ -17,7 +17,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
           h(
             'p',
             { class: 'p-1 px-2 text-nowrap bg-gray-100 border border-gray-300 rounded-md text-normal font-normal leading-none' },
-            `${row.original.id.slice(0, 4)} ${row.original.id.slice(4)}`.toUpperCase(),
+            row.original.id.toUpperCase(),
           ),
           h(
             'p',
@@ -26,6 +26,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
           ),
         ],
       ),
+    enableSorting: true,
   },
   {
     id: 'borrowableQuantity',
@@ -35,6 +36,7 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
       { class: 'text-slate-500 text-sm font-normal leading-tight text-right' },
       row.original.borrowableQuantity,
     ),
+    enableSorting: true,
   },
   {
     id: 'quantity',
@@ -46,5 +48,6 @@ export const columns: AugmentedColumnDef<AdminDeviceList>[] = [
         row.original.quantity,
       );
     },
+    enableSorting: true,
   },
 ];

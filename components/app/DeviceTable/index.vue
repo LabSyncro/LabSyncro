@@ -8,7 +8,7 @@ async function deleteData (ids: string[]) {
 }
 
 async function fetchData (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }): Promise<{ data: unknown[], totalPages: number }> {
-  const res = await deviceKindService.getDeviceKinds(offset, length, { searchText: options.searchText, searchFields: options.searchFields as any[], sortField: options.sortField as any, desc: options.desc });
+  const res = await deviceKindService.getDeviceKinds(offset, length, { searchText: options.searchText, searchFields: ['device_name', 'device_id'], sortField: options.sortField as any, desc: options.desc });
   return {
     data: res.deviceKinds,
     totalPages: res.totalPages,
@@ -17,5 +17,5 @@ async function fetchData (offset: number, length: number, options: { desc?: bool
 </script>
 
 <template>
-  <DataTable :qrable="true" :add-trigger-fn="() => {}" :fetch-fn="fetchData" :delete-fn="deleteData" :columns="columns as AugmentedColumnDef<unknown>[]" />
+  <DataTable :selectable="true" :searchable="true" :qrable="true" :add-trigger-fn="() => {}" :fetch-fn="fetchData" :delete-fn="deleteData" :columns="columns as AugmentedColumnDef<unknown>[]" />
 </template>
