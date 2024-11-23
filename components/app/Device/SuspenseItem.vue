@@ -4,7 +4,7 @@ const props = defineProps<{
     thumbnailUrl: string;
     manufacturer: string | null;
     title: string;
-    quantity: number;
+    borrowableQuantity: number;
     unit: string;
     id: string;
   }>,
