@@ -62,7 +62,7 @@ function pageRight () {
     <NuxtLink class="block sm:hidden mb-5 pl-4 pr-4 text-sm text-slate-dark min-w-16" :href="`/devices?categoryId=${props.category.id}`">
       Xem thêm
     </NuxtLink>
-    <div ref="listRef" class="group flex justify-between px-5 items-center gap-5">
+    <div v-if="totalItems" ref="listRef" class="group flex justify-between px-5 items-center gap-5">
       <button
         class="opacity-0 group-hover:opacity-100 bg-secondary-dark flex items-center justify-center rounded-full w-8 h-8 text-tertiary-dark z-50"
         @click="pageLeft">
@@ -80,6 +80,9 @@ function pageRight () {
         @click="pageRight">
         <Icon aria-hidden name="i-heroicons-chevron-right" />
       </button>
+    </div>
+    <div v-else class="flex justify-center p-5 text-slate">
+      Không có kết quả
     </div>
   </div>
 </template>
