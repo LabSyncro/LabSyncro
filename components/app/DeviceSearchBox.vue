@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { debounce } from 'lodash-es';
 import { deviceKindService } from '~/services';
 
 const searchText = ref('');
+const updateSearchText = debounce((value: string) => searchText.value = value, 200);
 
 const isDropdownActive = ref(false);
 
@@ -59,11 +61,12 @@ function unfocusSearchItem () {
   <div class="relative">
     <div class="relative">
       <input
-v-model="searchText"
+        :value="searchText"
+        @input="(e) => updateSearchText(e.target.value)"
         class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 pr-3 rounded-md text-md placeholder:text-normal"
         type="search" placeholder="Tên loại thiết bị" @click="openDropdown" @blur="handleClickOutsideOfSearchBox" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="goToSearchItem" @keydown.esc="unfocusSearchItem">
       <Icon
-aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+        aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
         name="i-heroicons-magnifying-glass" />
     </div>
 
