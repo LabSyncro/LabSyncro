@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { deviceKindService, userService } from '~/services';
 
+$fetch('/api/receipts', {
+  method: 'post',
+  credentials: 'include',
+});
 const currentDeviceKindId = ref<string | null>(null);
 
 const devicesInCart = ref<{
