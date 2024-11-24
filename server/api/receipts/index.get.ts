@@ -27,6 +27,8 @@ const QueryDto = Type.Object({
       Type.Literal('quantity'),
       Type.Literal('borrowed_place'),
       Type.Literal('returned_place'),
+      Type.Literal('borrowed_at'),
+      Type.Literal('status'),
       Type.Literal('expected_returned_at'),
     ]),
   ),
@@ -65,7 +67,7 @@ export default defineEventHandler<
     });
   }
 
-  const { userId } = usePermission();
+  const userId = '2000001';
 
   const receipts = (
     await db.sql`
@@ -75,7 +77,7 @@ export default defineEventHandler<
         dk.${'name'} as device_kind_name,
         dk.${'image'}->'main_image' as main_image,
         dk.${'image'}->'sub_images' as sub_images,
-        COUNT(*) as ${'quantity'},
+        COUNT(*)::INT as ${'quantity'},
         CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'}) as borrowed_place,
         CONCAT(l_return.${'room'}, ', ', l_return.${'branch'}) as returned_place,
         a_borrow.${'created_at'} as borrowed_at,
@@ -118,15 +120,14 @@ export default defineEventHandler<
       expected_returned_at,
       status
     FROM borrowed_devices
-    WHERE
-      ${
-    searchText !== undefined
-      ? db.raw(`AND (
-        (${searchFields?.includes('device_kind_id') || false} AND device_kind_id ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('device_kind_name') || false} AND device_kind_name ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('borrowed_place') || false} AND borrowed_place ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('returned_place') || false} AND returned_place ILIKE '%${searchText}%')
-      )`)
+    ${
+    searchText !== undefined && searchFields?.length
+      ? db.raw(`WHERE (
+      (${searchFields.includes('device_kind_id')} AND device_kind_id ILIKE '%${searchText}%') OR
+      (${searchFields.includes('device_kind_name')} AND strip_vietnamese_accents(device_kind_name) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+      (${searchFields.includes('borrowed_place')} AND strip_vietnamese_accents(borrowed_place) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+      (${searchFields.includes('returned_place')} AND strip_vietnamese_accents(returned_place) ILIKE strip_vietnamese_accents('%${searchText}%'))
+    )`)
       : db.raw('')
     }
     ORDER BY 
@@ -153,8 +154,8 @@ export default defineEventHandler<
       expected_returned_at,
       status,
     }) => ({
-      deviceKindId: device_kind_id,
-      deviceKindName: device_kind_name,
+      id: device_kind_id,
+      name: device_kind_name,
       mainImage: main_image,
       subImages: sub_images,
       quantity,
@@ -165,7 +166,36 @@ export default defineEventHandler<
       status,
     }),
   );
-  const output = { receipts };
+
+  const [{ quantity: totalRecords }] = await db.sql`
+    SELECT COUNT(*) as total_records
+    FROM ${'receipts_devices'} rd
+    JOIN ${'receipts'} r ON rd.${'receipt_id'} = r.${'id'}
+    JOIN ${'devices'} d ON rd.${'device_id'} = d.${'id'}
+    JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
+    JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
+    JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
+    LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
+    LEFT JOIN ${'labs'} l_return ON r.${'returned_lab_id'} = l_return.${'id'}
+    WHERE 
+      r.${'borrower_id'} = ${db.param(userId)}
+      ${
+  searchText !== undefined
+    ? db.raw(`AND (
+        (${searchFields?.includes('device_kind_id') || false} AND dk.${'id'} ILIKE '%${searchText}%') OR
+        (${searchFields?.includes('device_kind_name') || false} AND strip_vietnamese_accents(dk.${'name'}) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('borrowed_place') || false} AND strip_vietnamese_accents(CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('returned_place') || false} AND strip_vietnamese_accents(CONCAT(l_return.${'room'}, ', ', l_return.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%'))
+      )`)
+    : db.raw('')
+}
+  `.run(dbPool);
+
+  const totalPages = Math.ceil(totalRecords / length);
+  const currentPage = Math.floor(offset / length);
+
+  const output = { receipts, totalPages, currentPage };
+  console.log(output);
 
   if (!Value.Check(ReceiptResourceDto, output)) {
     throw createError({

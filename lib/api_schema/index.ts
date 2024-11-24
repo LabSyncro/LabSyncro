@@ -30,15 +30,15 @@ export type FacultyResourceDto = Static<typeof FacultyResourceDto>;
 export const ReceiptResourceDto = Type.Object({
   receipts: Type.Array(
     Type.Object({
-      deviceKindId: Type.String(),
-      deviceKindName: Type.String(),
+      id: Type.String(),
+      name: Type.String(),
       mainImage: Type.String(),
       subImages: Type.Array(Type.String()),
       quantity: Type.Number(),
-      borrowed_place: Type.String(),
-      returned_place: Type.String(),
-      borrowed_at: Type.String(),
-      expected_returned_at: Type.String(),
+      borrowedPlace: Type.String(),
+      returnedPlace: Type.String(),
+      borrowedAt: Type.String({ format: 'date-time' }),
+      expectedReturnedAt: Type.String({ format: 'date-time' }),
       status: Type.String(),
     }),
   ),
