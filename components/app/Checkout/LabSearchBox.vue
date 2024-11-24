@@ -7,26 +7,13 @@ const emits = defineEmits<{
 
 const searchText = ref('');
 
+const { isActive: isDropdownActive, setInactive } = useClick(useTemplateRef('dropdown'));
+
 function setInput (index: number) {
   const lab = searchItems.value[index];
   searchText.value = `${lab.room}, ${lab.branch}`;
   emits('select', lab.id);
-  closeDropdown();
-}
-
-const isDropdownActive = ref(false);
-
-function openDropdown () {
-  isDropdownActive.value = true;
-}
-
-function closeDropdown () {
-  focusedSearchItemIndex.value = null;
-  isDropdownActive.value = false;
-}
-
-async function handleClickOutsideOfSearchBox () {
-  closeDropdown();
+  setInactive();
 }
 
 const focusedSearchItemIndex = ref<number | null>(null);
@@ -56,12 +43,12 @@ function unfocusSearchItem () {
 </script>
 
 <template>
-  <div class="relative">
+  <div ref="dropdown" class="relative">
     <div class="relative">
       <input
         v-model="searchText"
         class="bg-white border-2 w-[100%] p-1 px-2 rounded-md text-md"
-        type="search" @click="openDropdown" @blur="handleClickOutsideOfSearchBox" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && setInput(focusedSearchItemIndex)" @keydown.esc="unfocusSearchItem">
+        type="search" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && setInput(focusedSearchItemIndex)" @keydown.esc="unfocusSearchItem">
     </div>
 
     <div v-if="searchItems.length" :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[100%] z-50 shadow-[0_0px_16px_1px_rgba(0,0,0,0.3)]`">
