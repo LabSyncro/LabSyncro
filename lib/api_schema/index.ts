@@ -12,45 +12,51 @@ export const ListOfCategoryResourceDto = Type.Object({
   categories: Type.Any(CategoryResourceDto),
 });
 
-export type ListOfCategoryResourceDto = Static<typeof ListOfCategoryResourceDto>;
+export type ListOfCategoryResourceDto = Static<
+  typeof ListOfCategoryResourceDto
+>;
 
 export const FacultyResourceDto = Type.Object({
-  faculties: Type.Array(Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-  })),
+  faculties: Type.Array(
+    Type.Object({
+      id: Type.Number(),
+      name: Type.String(),
+    }),
+  ),
 });
 
 export type FacultyResourceDto = Static<typeof FacultyResourceDto>;
 
 export const ReceiptResourceDto = Type.Object({
-  branches: Type.Array(
+  receipts: Type.Array(
     Type.Object({
-      name: Type.String(),
-      labs: Type.Array(
-        Type.Object({
-          branch: Type.String(),
-          timetable: Type.Record(Type.String(), Type.Array(Type.String())),
-          adminId: Type.String(),
-          adminName: Type.String(),
-          adminTel: Type.String(),
-          name: Type.String(),
-          room: Type.String(),
-        }),
-      ),
+      deviceKindId: Type.String(),
+      deviceKindName: Type.String(),
+      mainImage: Type.String(),
+      subImages: Type.Array(Type.String()),
+      quantity: Type.Number(),
+      borrowed_place: Type.String(),
+      returned_place: Type.String(),
+      borrowed_at: Type.String(),
+      expected_returned_at: Type.String(),
+      status: Type.String(),
     }),
   ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
 });
 
 export type ReceiptResourceDto = Static<typeof ReceiptResourceDto>;
 
 export const DeviceQuantityByLabDto = Type.Object({
-  labs: Type.Array(Type.Object({
-    name: Type.String(),
-    branch: Type.String(),
-    room: Type.String(),
-    borrowableQuantity: Type.Number(),
-  })),
+  labs: Type.Array(
+    Type.Object({
+      name: Type.String(),
+      branch: Type.String(),
+      room: Type.String(),
+      borrowableQuantity: Type.Number(),
+    }),
+  ),
 });
 
 export type DeviceQuantityByLabDto = Static<typeof DeviceQuantityByLabDto>;
@@ -73,32 +79,38 @@ export const DeviceKindResourceDto = Type.Object({
 export type DeviceKindResourceDto = Static<typeof DeviceKindResourceDto>;
 
 export const ListOfDeviceKindResourceDto = Type.Object({
-  deviceKinds: Type.Array(Type.Object({
-    id: Type.String(),
-    name: Type.String(),
-    brand: Type.Union([Type.String(), Type.Null()]),
-    manufacturer: Type.Union([Type.String(), Type.Null()]),
-    mainImage: Type.String(),
-    subImages: Type.Array(Type.String()),
-    quantity: Type.Number(),
-    borrowableQuantity: Type.Number(),
-    category: Type.String(),
-    unit: Type.String(),
-  })),
+  deviceKinds: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      name: Type.String(),
+      brand: Type.Union([Type.String(), Type.Null()]),
+      manufacturer: Type.Union([Type.String(), Type.Null()]),
+      mainImage: Type.String(),
+      subImages: Type.Array(Type.String()),
+      quantity: Type.Number(),
+      borrowableQuantity: Type.Number(),
+      category: Type.String(),
+      unit: Type.String(),
+    }),
+  ),
   totalPages: Type.Number(),
   currentPage: Type.Number(),
 });
 
-export type ListOfDeviceKindResourceDto = Static<typeof ListOfDeviceKindResourceDto>;
+export type ListOfDeviceKindResourceDto = Static<
+  typeof ListOfDeviceKindResourceDto
+>;
 
 export const ListOfDeviceResourceDto = Type.Object({
-  devices: Type.Array(Type.Object({
-    id: Type.String(),
-    kind: Type.String(),
-    status: Type.String(),
-    room: Type.String(),
-    branch: Type.String(),
-  })),
+  devices: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      kind: Type.String(),
+      status: Type.String(),
+      room: Type.String(),
+      branch: Type.String(),
+    }),
+  ),
   totalPages: Type.Number(),
   currentPage: Type.Number(),
 });
@@ -106,18 +118,22 @@ export const ListOfDeviceResourceDto = Type.Object({
 export type ListOfDeviceResourceDto = Static<typeof ListOfDeviceResourceDto>;
 
 export const LabResourceDto = Type.Object({
-  branches: Type.Array(Type.Object({
-    name: Type.String(),
-    labs: Type.Array(Type.Object({
-      branch: Type.String(),
-      timetable: Type.Record(Type.String(), Type.Array(Type.String())),
-      adminId: Type.String(),
-      adminName: Type.String(),
-      adminTel: Type.String(),
+  branches: Type.Array(
+    Type.Object({
       name: Type.String(),
-      room: Type.String(),
-    })),
-  })),
+      labs: Type.Array(
+        Type.Object({
+          branch: Type.String(),
+          timetable: Type.Record(Type.String(), Type.Array(Type.String())),
+          adminId: Type.String(),
+          adminName: Type.String(),
+          adminTel: Type.String(),
+          name: Type.String(),
+          room: Type.String(),
+        }),
+      ),
+    }),
+  ),
 });
 
 export type LabResourceDto = Static<typeof LabResourceDto>;
