@@ -4,38 +4,20 @@ import { deviceKindService } from '~/services';
 
 const searchText = ref('');
 const updateSearchText = debounce((value: string) => searchText.value = value, 150);
-
-const isDropdownActive = ref(false);
-
-function openDropdown () {
-  isDropdownActive.value = true;
-}
-
-function closeDropdown () {
-  focusedSearchItemIndex.value = null;
-  isDropdownActive.value = false;
-}
-
-async function handleClickOutsideOfSearchBox () {
-  setTimeout(closeDropdown, 300);
-}
+const { isActive: isDropdownActive, setInactive } = useClick(useTemplateRef('dropdown'));
 
 const focusedSearchItemIndex = ref<number | null>(null);
-
 const numberOfSearchItemsShown = 4;
-
 const searchItems = ref<{ id: string; name: string; image: string }[]>([]);
 watch(searchText, async () => {
   focusedSearchItemIndex.value = null;
   const data = await deviceKindService.getDeviceKinds(0, numberOfSearchItemsShown, { searchText: searchText.value || undefined, searchFields: ['device_name'] });
   searchItems.value = data.deviceKinds.map(({ name, mainImage, id }) => ({ id, name, image: mainImage }));
 });
-
 function focusNextSearchItem () {
   if (focusedSearchItemIndex.value === null) focusedSearchItemIndex.value = -1;
   focusedSearchItemIndex.value = (focusedSearchItemIndex.value + 1) % numberOfSearchItemsShown;
 }
-
 function focusPrevSearchItem () {
   if (focusedSearchItemIndex.value === null) focusedSearchItemIndex.value = 0;
   focusedSearchItemIndex.value = (focusedSearchItemIndex.value - 1 + numberOfSearchItemsShown) % numberOfSearchItemsShown;
@@ -43,7 +25,7 @@ function focusPrevSearchItem () {
 
 function goToSearchItem () {
   const router = useRouter();
-  isDropdownActive.value = false;
+  setInactive();
   if (focusedSearchItemIndex.value === null) {
     router.push(`/devices?q=${searchText.value}`);
     return;
@@ -58,20 +40,20 @@ function unfocusSearchItem () {
 </script>
 
 <template>
-  <div class="relative">
+  <div ref="dropdown" class="relative">
     <div class="relative">
       <input
         :value="searchText"
-        @input="(e) => updateSearchText(e.target.value)"
         class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 pr-3 rounded-md text-md placeholder:text-normal"
-        type="search" placeholder="Tên loại thiết bị" @click="openDropdown" @blur="handleClickOutsideOfSearchBox" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="goToSearchItem" @keydown.esc="unfocusSearchItem">
+        type="search" placeholder="Tên loại thiết bị" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="goToSearchItem" @keydown.esc="unfocusSearchItem"
+        @input="(e) => updateSearchText((e.target as any).value)">
       <Icon
         aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
         name="i-heroicons-magnifying-glass" />
     </div>
 
     <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] md:w-[150%] z-50`">
-      <NuxtLink v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" :href="`/devices/${item.id}`">
+      <NuxtLink v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" :href="`/devices/${item.id}`" @click="setInactive">
         <img :src="item.image" class="h-6">
         <p class="bg-gray-100 border border-gray-200 px-1 rounded-sm">
           <HighlightText :text="item.id" :match-text="searchText" />
