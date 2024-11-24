@@ -1,11 +1,18 @@
 export function useClick (elementRef: Ref<Element | null>): { isActive: Ref<boolean>, setInactive: () => void } {
   const isActive = ref(false);
+
+  let overrideDefaultBehavior = false;
   let isInsideClicked = false;
   function clickOutsideHandler () {
+    if (overrideDefaultBehavior) {
+      overrideDefaultBehavior = false;
+      return;
+    }
     if (!isInsideClicked) isActive.value = false;
     isInsideClicked = false;
   };
   function clickInsideHandler () {
+    if (overrideDefaultBehavior) return;
     isActive.value = true;
     isInsideClicked = true;
   };
@@ -17,6 +24,7 @@ export function useClick (elementRef: Ref<Element | null>): { isActive: Ref<bool
 
   function setInactive () {
     isActive.value = false;
+    overrideDefaultBehavior = true;
   }
 
   return { isActive, setInactive };
