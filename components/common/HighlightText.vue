@@ -7,18 +7,18 @@ const props = defineProps<{
 function getRegexFromText (text: string): RegExp {
   const ignoreAccentText = text
     .replaceAll('(', '\\(')
-    .replaceAll('ă', '(?:[ăắằặẳ])')
-    .replaceAll('â', '(?:[âấầậẩẫ])')
-    .replaceAll('a', '(?:[aàáạảãăắằặẳâấầậẩẫ])')
-    .replaceAll('ơ', '(?:[ơớờởợỡ])')
-    .replaceAll('ô', '(?:[ôộồốổỗ])')
-    .replaceAll('o', '(?:[oòóọỏõơớờởợỡôộồốổỗ])')
-    .replaceAll('ê', '(?:[êếềệễể])')
-    .replaceAll('e', '(?:[eèéẻẽẹêếềệễể])')
-    .replaceAll('ư', '(?:[ưựữửừứ])')
-    .replaceAll('u', '(?:[uùúụũủưựữửừứ])')
-    .replaceAll('i', '(?:[iíìịỉĩ])')
-    .replaceAll('d', '(?:[dđ])');
+    .replaceAll(/[ăĂ]/g, '(?:[ăắằặẳĂẮẰẶẲ])')
+    .replaceAll(/[Ââ]/g, '(?:[âấầậẩẫÂẤẦẬẨẪ])')
+    .replaceAll(/[aA]/g, '(?:[aàáạảãăắằặẳâấầậẩẫAÀÁẠẢÃĂẮẰẶẲÂẤẦẬẨẪ])')
+    .replaceAll(/[Ơơ]/g, '(?:[ơớờởợỡƠỚỜỞỢỠ])')
+    .replaceAll(/[Ôô]/g, '(?:[ôộồốổỗÔỘỒỐỔỖ])')
+    .replaceAll(/[oO]/g, '(?:[oòóọỏõơớờởợỡôộồốổỗOÒÓỌỎÕƠỚỜỞỢỠÔỘỒỐỔỖ])')
+    .replaceAll(/[Êê]/g, '(?:[êếềệễểÊẾỀỆỄỂ])')
+    .replaceAll(/[eE]/g, '(?:[eèéẻẽẹêếềệễểEÈÉẺẼẸÊẾỀỆỄỂ])')
+    .replaceAll(/[Ưư]/g, '(?:[ưựữửừứƯỰỮỬỪỨ])')
+    .replaceAll(/[uU]/g, '(?:[uùúụũủưựữửừứUÙÚỤŨỦƯỰỮỬỪỨ])')
+    .replaceAll(/[iI]/g, '(?:[iíìịỉĩIÍÌỊỈĨ])')
+    .replaceAll(/[dD]/g, '(?:[dđDĐ])');
   return new RegExp(`(${ignoreAccentText})`, 'ig');
 }
 </script>
