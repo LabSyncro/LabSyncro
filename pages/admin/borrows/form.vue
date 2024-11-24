@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deviceKindService } from '~/services';
+import { deviceKindService, userService } from '~/services';
 
 const currentDeviceKindId = ref<string | null>(null);
 
@@ -52,6 +52,37 @@ function deleteDeviceKinds (kindIds: string[]) {
     devicesInCart.value.splice(index, 1);
   });
 }
+
+const userCodeInput = ref('');
+const fullName = ref<null | string>(null);
+const role = ref<null | string>(null);
+const translatedRole = ref('Vai trò không hợp lệ');
+watch(userCodeInput, async () => {
+  const userMeta = await userService.getUserById(userCodeInput.value);
+  fullName.value = userMeta?.name || null;
+  if (!(['student', 'teacher', 'lab_admin'] as (string | undefined)[]).includes(userMeta?.role)) {
+    role.value = null;
+    translatedRole.value = 'Vai trò không hợp lệ';
+  } else {
+    role.value = userMeta!.role;
+    translatedRole.value = userMeta!.role === 'student' ? 'Sinh viên' : 'Giảng viên';
+  }
+});
+
+const now = new Date(Date.now());
+const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth()}${now.getDay()}/${Date.now().toString().slice(10)}`);
+const borrowDateInput = ref(now.toISOString().substr(0, 10));
+const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
+const borrowLabId = ref<string | null>(null);
+function setBorrowLabId (id: string) {
+  borrowLabId.value = id;
+}
+const returnDateInput = ref('');
+const returnDate = computed(() => new Date(Date.parse(returnDateInput.value)));
+const returnLabId = ref<string | null>(null);
+function setReturnLabId (id: string) {
+  returnLabId.value = id;
+}
 </script>
 
 <template>
@@ -99,16 +130,16 @@ function deleteDeviceKinds (kindIds: string[]) {
             </div>
             <form>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Họ và tên *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <label class="text-normal text-slate-dark mb-2 block">Mã số *</label>
+                <input v-model="userCodeInput" type="text" required class="border-slate-300 rounded-md px-2 border w-[100%] p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Mã số sinh viên *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <label class="text-normal text-slate-dark mb-2 block">Họ và tên</label>
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disabled="true" :value="fullName ?? 'Không tìm thấy người dùng'">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Vai trò *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <label class="text-normal text-slate-dark mb-2 block">Vai trò</label>
+                <input :value="translatedRole" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disable="true">
               </div>
             </form>
           </div>
@@ -117,23 +148,23 @@ function deleteDeviceKinds (kindIds: string[]) {
             <form>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1" :value="receiptCodeInput">
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Ngày mượn *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <input v-model="borrowDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <CheckoutLabSearchBox @select="setBorrowLabId"/>
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Ngày hẹn trả *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <input v-model="returnDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả *</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1">
+                <CheckoutLabSearchBox @select="setReturnLabId" />
               </div>
             </form>
           </div>

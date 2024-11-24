@@ -105,19 +105,28 @@ export const ListOfDeviceResourceDto = Type.Object({
 
 export type ListOfDeviceResourceDto = Static<typeof ListOfDeviceResourceDto>;
 
-export const LabResourceDto = Type.Object({
-  branches: Type.Array(Type.Object({
+export const ListOfLabResourceDto = Type.Object({
+  labs: Type.Array(Type.Object({
+    id: Type.String(),
+    branch: Type.String(),
+    timetable: Type.Record(Type.String(), Type.Array(Type.String())),
+    adminId: Type.String(),
+    adminName: Type.String(),
+    adminTel: Type.String(),
     name: Type.String(),
-    labs: Type.Array(Type.Object({
-      branch: Type.String(),
-      timetable: Type.Record(Type.String(), Type.Array(Type.String())),
-      adminId: Type.String(),
-      adminName: Type.String(),
-      adminTel: Type.String(),
-      name: Type.String(),
-      room: Type.String(),
-    })),
+    room: Type.String(),
   })),
 });
 
-export type LabResourceDto = Static<typeof LabResourceDto>;
+export type ListOfLabResourceDto = Static<typeof ListOfLabResourceDto>;
+
+export const UserResourceDto = Type.Object({
+  id: Type.String(),
+  avatar: Type.Union([Type.String(), Type.Null()]),
+  tel: Type.String(),
+  name: Type.String(),
+  email: Type.String(),
+  role: Type.Union([Type.Literal('student'), Type.Literal('teacher'), Type.Literal('sysadmin'), Type.Literal('lab_admin')]),
+});
+
+export type UserResourceDto = Static<typeof UserResourceDto>;
