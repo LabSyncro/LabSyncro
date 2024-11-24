@@ -52,7 +52,7 @@ function unfocusSearchItem () {
         name="i-heroicons-magnifying-glass" />
     </div>
 
-    <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] md:w-[150%] z-50`">
+    <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] z-50`">
       <NuxtLink v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" :href="`/devices/${item.id}`" @click="setInactive">
         <img :src="item.image" class="h-6">
         <p class="bg-gray-100 border border-gray-200 px-1 rounded-sm">
