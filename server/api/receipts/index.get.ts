@@ -5,7 +5,7 @@ import { Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import type { Static } from '@sinclair/typebox';
 import { INTERNAL_SERVER_ERROR_CODE, BAD_REQUEST_CODE } from '~/constants';
-import { usePermission } from '~/composables/usePermission';
+import { getToken } from '#auth';
 
 const QueryDto = Type.Object({
   offset: Type.Number(),
@@ -41,6 +41,7 @@ export default defineEventHandler<
   { query: QueryDto },
   Promise<ReceiptResourceDto>
 >(async (event) => {
+  const token = await getToken({ event });
   const query = Value.Convert(QueryDto, getQuery(event));
   if (!Value.Check(QueryDto, query)) {
     throw createError({
@@ -67,7 +68,7 @@ export default defineEventHandler<
     });
   }
 
-  const userId = '2000001';
+  const userId = token?.id;
 
   const receipts = (
     await db.sql`

@@ -60,6 +60,7 @@ export async function createOrUpdateUser (
 
   const result = await db
     .insert('users', {
+      id: Math.floor(1000000 + Math.random() * 9000000).toString(),
       email,
       name,
       image,
