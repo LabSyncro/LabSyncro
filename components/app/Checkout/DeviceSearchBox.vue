@@ -6,26 +6,10 @@ const emits = defineEmits<{
 }>();
 
 const searchText = ref('');
-
-const isDropdownActive = ref(false);
-
-function openDropdown () {
-  isDropdownActive.value = true;
-}
-
-function closeDropdown () {
-  focusedSearchItemIndex.value = null;
-  isDropdownActive.value = false;
-}
-
-async function handleClickOutsideOfSearchBox () {
-  setTimeout(closeDropdown, 200);
-}
+const { isActive: isDropdownActive, setInactive } = useClick(useTemplateRef('dropdown'));
 
 const focusedSearchItemIndex = ref<number | null>(null);
-
 const numberOfSearchItemsShown = 6;
-
 const searchItems = ref<{ id: string; name: string; image: string }[]>([]);
 watch(searchText, async () => {
   focusedSearchItemIndex.value = null;
@@ -36,33 +20,30 @@ watch(searchText, async () => {
   const data = await deviceKindService.getDeviceKinds(0, numberOfSearchItemsShown, { searchText: searchText.value || undefined, searchFields: ['device_name', 'device_id'] });
   searchItems.value = data.deviceKinds.map(({ name, mainImage, id }) => ({ id, name, image: mainImage }));
 });
-
 function focusNextSearchItem () {
   if (focusedSearchItemIndex.value === null) focusedSearchItemIndex.value = -1;
   focusedSearchItemIndex.value = (focusedSearchItemIndex.value + 1) % numberOfSearchItemsShown;
 }
-
 function focusPrevSearchItem () {
   if (focusedSearchItemIndex.value === null) focusedSearchItemIndex.value = 0;
   focusedSearchItemIndex.value = (focusedSearchItemIndex.value - 1 + numberOfSearchItemsShown) % numberOfSearchItemsShown;
 }
-
 function goToSearchItem (id: string) {
+  setInactive();
   emits('device-select', id);
 }
-
 function unfocusSearchItem () {
   focusedSearchItemIndex.value = null;
 }
 </script>
 
 <template>
-  <div class="relative">
+  <div ref="dropdown" class="relative">
     <div class="relative">
       <input
         v-model="searchText"
         class="bg-white text-primary-light placeholder:text-primary-light border-2 h-11 w-[100%] pl-10 pr-3 rounded-md text-md placeholder:text-normal"
-        type="search" placeholder="Tên/Mã loại thiết bị" @click="openDropdown" @blur="handleClickOutsideOfSearchBox" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && goToSearchItem(searchItems[focusedSearchItemIndex!].id)" @keydown.esc="unfocusSearchItem">
+        type="search" placeholder="Tên/Mã loại thiết bị" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && goToSearchItem(searchItems[focusedSearchItemIndex!].id)" @keydown.esc="unfocusSearchItem">
       <Icon
         aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
         name="i-heroicons-magnifying-glass" />
