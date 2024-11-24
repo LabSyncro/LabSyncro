@@ -26,7 +26,7 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
           h(
             'span',
             { class: 'text-slate-500 text-xs font-normal leading-none' },
-            row.getValue('name'),
+            row.original.name,
           ),
         ],
       ),
@@ -39,7 +39,7 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
       h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('quantity'),
+        row.original.quantity,
       ),
     enableSorting: true,
   },
@@ -50,7 +50,7 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
       h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('borrowedPlace'),
+        row.original.borrowedPlace,
       ),
     enableSorting: true,
   },
@@ -61,7 +61,7 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
       h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('returnedPlace'),
+        row.original.returnedPlace,
       ),
     enableSorting: true,
   },
@@ -69,7 +69,7 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
     id: 'borrowedAt',
     title: 'Ngày mượn',
     cell: ({ row }) => {
-      const value = row.getValue('borrowedAt') as string;
+      const value = row.original.borrowedAt.toString();
       return h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
@@ -79,10 +79,10 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
     enableSorting: true,
   },
   {
-    id: 'returnedAt',
+    id: 'expectedReturnedAt',
     title: 'Ngày hẹn trả',
     cell: ({ row }) => {
-      const value = row.getValue('returnedAt') as string;
+      const value = row.original.expectedReturnedAt.toString();
       return h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },

@@ -79,7 +79,7 @@ export default defineEventHandler<
         dk.${'image'}->'sub_images' as sub_images,
         COUNT(*)::INT as ${'quantity'},
         CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'}) as borrowed_place,
-        CONCAT(l_return.${'room'}, ', ', l_return.${'branch'}) as returned_place,
+        CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'}) as returned_place,
         a_borrow.${'created_at'} as borrowed_at,
         rd.${'expected_returned_at'},
         CASE 
@@ -93,7 +93,7 @@ export default defineEventHandler<
       JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
       JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
       LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
-      LEFT JOIN ${'labs'} l_return ON r.${'returned_lab_id'} = l_return.${'id'}
+      LEFT JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
       WHERE
         r.${'borrower_id'} = ${db.param(userId)}
       GROUP BY 
@@ -103,8 +103,8 @@ export default defineEventHandler<
         dk.${'image'}->'sub_images',
         l_borrow.${'room'},
         l_borrow.${'branch'},
-        l_return.${'room'},
-        l_return.${'branch'},
+        l_expected.${'room'},
+        l_expected.${'branch'},
         a_borrow.${'created_at'},
         rd.${'expected_returned_at'}
     )
@@ -167,7 +167,7 @@ export default defineEventHandler<
     }),
   );
 
-  const [{ quantity: totalRecords }] = await db.sql`
+  const [{ total_records: totalRecords }] = await db.sql`
     SELECT COUNT(*) as total_records
     FROM ${'receipts_devices'} rd
     JOIN ${'receipts'} r ON rd.${'receipt_id'} = r.${'id'}
@@ -176,7 +176,7 @@ export default defineEventHandler<
     JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
     JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
     LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
-    LEFT JOIN ${'labs'} l_return ON r.${'returned_lab_id'} = l_return.${'id'}
+    LEFT JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
     WHERE 
       r.${'borrower_id'} = ${db.param(userId)}
       ${
@@ -195,7 +195,6 @@ export default defineEventHandler<
   const currentPage = Math.floor(offset / length);
 
   const output = { receipts, totalPages, currentPage };
-  console.log(output);
 
   if (!Value.Check(ReceiptResourceDto, output)) {
     throw createError({
