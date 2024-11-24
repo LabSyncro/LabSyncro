@@ -3,7 +3,7 @@ import { debounce } from 'lodash-es';
 import { deviceKindService } from '~/services';
 
 const searchText = ref('');
-const updateSearchText = debounce((value: string) => searchText.value = value, 200);
+const updateSearchText = debounce((value: string) => searchText.value = value, 150);
 
 const isDropdownActive = ref(false);
 
@@ -70,9 +70,12 @@ function unfocusSearchItem () {
         name="i-heroicons-magnifying-glass" />
     </div>
 
-    <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] z-50`">
+    <div :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[120%] md:w-[150%] z-50`">
       <NuxtLink v-for="(item, index) in searchItems" :key="item.id" :class="`px-2 text-normal p-1 flex gap-2 hover:bg-gray-100 ${focusedSearchItemIndex === index ? 'bg-secondary-light' : ''}`" :href="`/devices/${item.id}`">
         <img :src="item.image" class="h-6">
+        <p class="bg-gray-100 border border-gray-200 px-1 rounded-sm">
+          <HighlightText :text="item.id" :match-text="searchText" />
+        </p>
         <HighlightText class="line-clamp-1" :text="item.name" :match-text="searchText || undefined" />
       </NuxtLink>
       <NuxtLink
