@@ -20,7 +20,16 @@ export default defineEventHandler<
   { query: QueryDto },
   Promise<DeviceQuantityByLabDto>
 >(async (event) => {
-  const { kind_id: kindId, search_text: searchText, search_fields: searchFields } = getQuery(event);
+  const query = Value.Convert(QueryDto, getQuery(event));
+  if (!Value.Check(QueryDto, query)) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request: Invalid query',
+    });
+  }
+  const { kind_id: kindId, search_fields: searchFields } = query;
+  const searchText = query.search_text?.replaceAll('\'', '').replaceAll('%', '').replaceAll('?', '');
+
   if (searchText !== undefined && !searchFields) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,

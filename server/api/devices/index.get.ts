@@ -34,7 +34,14 @@ export default defineEventHandler<
     });
   }
 
-  const { device_kind_id: deviceKindId, offset, length, search_text: searchText, search_fields: searchFields, sort_field: sortField, desc } = query;
+  const { device_kind_id: deviceKindId, offset, length, search_fields: searchFields, sort_field: sortField, desc } = query;
+  const searchText = query.search_text?.replaceAll('\'', '').replaceAll('%', '').replaceAll('?', '');
+  if (searchText !== undefined && !searchFields) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request: Expect search_fields to be present when search_text is specified',
+    });
+  }
 
   const devices = await db.sql`
     SELECT ${'devices'}.id, status, kind, room, branch
