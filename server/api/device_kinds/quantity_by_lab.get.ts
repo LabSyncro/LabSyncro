@@ -43,9 +43,9 @@ export default defineEventHandler<
       JOIN devices ON labs.id = devices.lab_id
       JOIN device_kinds ON devices.kind = device_kinds.id AND device_kinds.id = ${db.param(kindId)} 
     WHERE TRUE ${searchText !== undefined ? db.raw(`AND (
-        (${searchFields?.includes('lab_name') || false} AND CAST(labs.name AS TEXT) ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('lab_name') || false} AND CAST(labs.branch AS TEXT) ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('lab_name') || false} AND CAST(labs.room AS TEXT) ILIKE '%${searchText}%')
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(CAST(labs.name AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(CAST(labs.branch AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(CAST(labs.room AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%'))
       )`) : db.raw('')}
     GROUP BY labs.id
   `.run(dbPool)).map(({ name, branch, room, borrowable_quantity }) => ({ name, branch, room, borrowableQuantity: borrowable_quantity }));
