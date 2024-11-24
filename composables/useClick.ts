@@ -1,4 +1,4 @@
-export function useClick (elementRef: Ref<Element>): { isActive: Ref<boolean> } {
+export function useClick (elementRef: Ref<Element>): { isActive: Ref<boolean>, setInactive: () => void } {
   const isActive = ref(false);
   let isInsideClicked = false;
   function clickOutsideHandler () {
@@ -14,5 +14,9 @@ export function useClick (elementRef: Ref<Element>): { isActive: Ref<boolean> } 
   onMounted(() => elementRef.value.addEventListener('click', clickInsideHandler));
   onBeforeUnmount(() => elementRef.value.removeEventListener('click', clickInsideHandler));
 
-  return { isActive };
+  function setInactive () {
+    isActive.value = false;
+  }
+
+  return { isActive, setInactive };
 }
