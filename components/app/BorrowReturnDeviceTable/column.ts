@@ -1,36 +1,16 @@
-import type { ColumnDef } from '@tanstack/vue-table';
-import { Checkbox } from '@/components/ui/checkbox';
-import ColumnHeader from './ColumnHeader.vue';
-import RowAction from './RowAction.vue';
-
 import type { BorrowReturnDevice } from './schema';
 import { formatDate } from '~/lib/utils';
+import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
-export const columns: ColumnDef<BorrowReturnDevice>[] = [
+const statusMap = {
+  late: 'Trễ hạn',
+  on_time: 'Đúng hạn',
+};
+
+export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
   {
-    id: 'select',
-    header: ({ table }) =>
-      h(Checkbox, {
-        checked:
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate'),
-        'onUpdate:checked': (value) => table.toggleAllPageRowsSelected(!!value),
-        ariaLabel: 'Select all',
-        class: 'translate-y-0.5',
-      }),
-    cell: ({ row }) =>
-      h(Checkbox, {
-        checked: row.getIsSelected(),
-        'onUpdate:checked': (value) => row.toggleSelected(!!value),
-        ariaLabel: 'Select row',
-        class: 'translate-y-0.5',
-      }),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Tên thiết bị' }),
+    id: 'name',
+    title: 'Tên thiết bị',
     cell: ({ row }) =>
       h(
         'div',
@@ -46,87 +26,86 @@ export const columns: ColumnDef<BorrowReturnDevice>[] = [
           h(
             'span',
             { class: 'text-slate-500 text-xs font-normal leading-none' },
-            row.getValue('name'),
+            row.original.name,
           ),
         ],
       ),
+    enableSorting: true,
   },
   {
-    accessorKey: 'quantity',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Số lượng' }),
+    id: 'quantity',
+    title: 'Số lượng',
     cell: ({ row }) =>
       h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('quantity'),
+        row.original.quantity,
       ),
+    enableSorting: true,
   },
   {
-    accessorKey: 'lab',
-    header: ({ column }) =>
-      h(ColumnHeader, {
-        column,
-        title: 'Nơi mượn',
-      }),
+    id: 'borrowedPlace',
+    title: 'Nơi mượn',
     cell: ({ row }) =>
       h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('lab'),
+        row.original.borrowedPlace,
       ),
+    enableSorting: true,
   },
   {
-    accessorKey: 'facility',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Nơi trả' }),
+    id: 'returnedPlace',
+    title: 'Nơi trả',
     cell: ({ row }) =>
       h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.getValue('facility'),
+        row.original.returnedPlace,
       ),
+    enableSorting: true,
   },
   {
-    accessorKey: 'borrowDate',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Ngày mượn' }),
+    id: 'borrowedAt',
+    title: 'Ngày mượn',
     cell: ({ row }) => {
-      const value = row.getValue('borrowDate') as string;
+      const value = row.original.borrowedAt.toString();
       return h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
         formatDate(value),
       );
     },
+    enableSorting: true,
   },
   {
-    accessorKey: 'returnDate',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Ngày hẹn trả' }),
+    id: 'expectedReturnedAt',
+    title: 'Ngày hẹn trả',
     cell: ({ row }) => {
-      const value = row.getValue('returnDate') as string;
+      const value = row.original.expectedReturnedAt.toString();
       return h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },
         formatDate(value),
       );
     },
+    enableSorting: true,
   },
   {
-    accessorKey: 'status',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Tiến độ' }),
+    id: 'status',
+    title: 'Tiến độ',
     cell: ({ row }) =>
       h(
         'span',
         {
           class: `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.getValue('status') === 'Đúng hẹn'
+            statusMap[row.original.status] === 'Đúng hạn'
               ? 'bg-green-100 text-green-800'
               : 'bg-red-100 text-red-800'
           }`,
         },
-        row.getValue('status'),
+        statusMap[row.original.status],
       ),
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => h(RowAction, { row }),
+    enableSorting: true,
   },
 ];

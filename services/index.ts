@@ -4,3 +4,4 @@ export * from './category';
 export * from './laboratory';
 export * from './user';
 export * from './devices';
+export * from './receipts';

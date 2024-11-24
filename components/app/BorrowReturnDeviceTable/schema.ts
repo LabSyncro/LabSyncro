@@ -3,15 +3,14 @@ import type { Static } from '@sinclair/typebox';
 
 export const BorrowReturnDeviceSchema = Type.Object({
   id: Type.Number(),
-  image: Type.String(),
   name: Type.String(),
+  image: Type.String(),
   quantity: Type.Number(),
-  lab: Type.String(),
-  facility: Type.String(),
-  borrowDate: Type.String({ format: 'date-time' }),
-  returnDate: Type.String({ format: 'date-time' }),
-  status: Type.Union([Type.Literal('On Time'), Type.Literal('Late')]),
+  borrowedPlace: Type.String(),
+  returnedPlace: Type.String(),
+  borrowedAt: Type.Date(),
+  expectedReturnedAt: Type.Date(),
+  status: Type.Union([Type.Literal('on_time'), Type.Literal('late')]),
 });
 
-// Define the TypeScript type
 export type BorrowReturnDevice = Static<typeof BorrowReturnDeviceSchema>;
