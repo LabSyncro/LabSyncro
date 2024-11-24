@@ -186,7 +186,7 @@ export default defineEventHandler<
         (${searchFields?.includes('device_kind_id') || false} AND dk.${'id'} ILIKE '%${searchText}%') OR
         (${searchFields?.includes('device_kind_name') || false} AND strip_vietnamese_accents(dk.${'name'}) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
         (${searchFields?.includes('borrowed_place') || false} AND strip_vietnamese_accents(CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
-        (${searchFields?.includes('returned_place') || false} AND strip_vietnamese_accents(CONCAT(l_return.${'room'}, ', ', l_return.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%'))
+        (${searchFields?.includes('returned_place') || false} AND strip_vietnamese_accents(CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%'))
       )`)
     : db.raw('')
 }
