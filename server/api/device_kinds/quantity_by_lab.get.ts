@@ -20,7 +20,16 @@ export default defineEventHandler<
   { query: QueryDto },
   Promise<DeviceQuantityByLabDto>
 >(async (event) => {
-  const { kind_id: kindId, search_text: searchText, search_fields: searchFields } = getQuery(event);
+  const query = Value.Convert(QueryDto, getQuery(event));
+  if (!Value.Check(QueryDto, query)) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request: Invalid query',
+    });
+  }
+  const { kind_id: kindId, search_fields: searchFields } = query;
+  const searchText = query.search_text?.replaceAll('\'', '').replaceAll('%', '').replaceAll('?', '');
+
   if (searchText !== undefined && !searchFields) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
@@ -34,9 +43,9 @@ export default defineEventHandler<
       JOIN devices ON labs.id = devices.lab_id
       JOIN device_kinds ON devices.kind = device_kinds.id AND device_kinds.id = ${db.param(kindId)} 
     WHERE TRUE ${searchText !== undefined ? db.raw(`AND (
-        (${searchFields?.includes('lab_name') || false} AND CAST(labs.name AS TEXT) ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('lab_name') || false} AND CAST(labs.branch AS TEXT) ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('lab_name') || false} AND CAST(labs.room AS TEXT) ILIKE '%${searchText}%')
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(CAST(labs.name AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(CAST(labs.branch AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(CAST(labs.room AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%'))
       )`) : db.raw('')}
     GROUP BY labs.id
   `.run(dbPool)).map(({ name, branch, room, borrowable_quantity }) => ({ name, branch, room, borrowableQuantity: borrowable_quantity }));

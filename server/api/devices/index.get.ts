@@ -34,7 +34,14 @@ export default defineEventHandler<
     });
   }
 
-  const { device_kind_id: deviceKindId, offset, length, search_text: searchText, search_fields: searchFields, sort_field: sortField, desc } = query;
+  const { device_kind_id: deviceKindId, offset, length, search_fields: searchFields, sort_field: sortField, desc } = query;
+  const searchText = query.search_text?.replaceAll('\'', '').replaceAll('%', '').replaceAll('?', '');
+  if (searchText !== undefined && !searchFields) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request: Expect search_fields to be present when search_text is specified',
+    });
+  }
 
   const devices = await db.sql`
     SELECT ${'devices'}.id, status, kind, room, branch
@@ -45,7 +52,7 @@ export default defineEventHandler<
       (${deviceKindId !== undefined ? db.param(false) : db.param(true)} OR ${'devices'}.${'kind'} = ${db.param(deviceKindId)}) AND
       ${'devices'}.${'deleted_at'} IS NULL
       ${searchText !== undefined ? db.raw(`AND (
-          (${searchFields?.includes('device_id') || false} AND devices.kind || '/' || devices.id ILIKE '%${searchText}%')
+          (${searchFields?.includes('device_id') || false} AND strip_vietnamese_accents(devices.kind || '/' || devices.id) ILIKE strip_vietnamese_accents('%${searchText}%'))
         )`) : db.raw('')}
     ORDER BY ${sortField ? db.raw(`${sortField} ${desc ? 'DESC' : 'ASC'}, `) : db.raw('')} ${'devices'}.${'status'} ASC
     LIMIT ${db.param(length)}
@@ -59,7 +66,7 @@ export default defineEventHandler<
       (${deviceKindId !== undefined ? db.param(false) : db.param(true)} OR ${'devices'}.${'kind'} = ${db.param(deviceKindId)}) AND
       ${'devices'}.${'deleted_at'} IS NULL
       ${searchText !== undefined ? db.raw(`AND (
-          (${searchFields?.includes('device_id') || false} AND CAST(devices.id AS TEXT) ILIKE '%${searchText}%')
+          (${searchFields?.includes('device_id') || false} AND strip_vietnamese_accents(devices.id) ILIKE strip_vietnamese_accents('%${searchText}%'))
         )`) : db.raw('')}
   `).run(dbPool);
 
