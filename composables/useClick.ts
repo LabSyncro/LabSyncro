@@ -6,6 +6,7 @@ export function useClick (elementRef: Ref<Element>): { isActive: Ref<boolean>, s
     isInsideClicked = false;
   };
   function clickInsideHandler () {
+    isActive.value = true;
     isInsideClicked = true;
   };
 
