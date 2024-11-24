@@ -27,7 +27,9 @@ export default defineEventHandler<
     });
   }
 
-  const { search_text: searchText, search_fields: searchFields } = query;
+  const { search_fields: searchFields } = query;
+  const searchText = query.search_text?.replaceAll('\'', '').replaceAll('%', '').replaceAll('?', '');
+
   if (searchText !== undefined && !searchFields) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
@@ -42,8 +44,8 @@ export default defineEventHandler<
       ON ${'labs'}.${'admin_id'} = ${'users'}.${'id'} AND ${'users'}.${'deleted_at'} IS NULL
     WHERE ${'labs'}.${'deleted_at'} IS NULL
       ${searchText !== undefined ? db.raw(`AND (
-        (${searchFields?.includes('location') || false} AND labs.room || ', ' || labs.branch ILIKE '%${searchText}%') OR
-        (${searchFields?.includes('lab_name') || false} AND labs.name ILIKE '%${searchText}%')
+        (${searchFields?.includes('location') || false} AND strip_vietnamese_accents(labs.room || ', ' || labs.branch) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
+        (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(labs.name) ILIKE strip_vietnamese_accents('%${searchText}%'))
       )`) : db.raw('')}
 
   `.run(dbPool)).map(({ id, branch, room, timetable, admin_id, name, admin_name, admin_email, admin_tel }) => ({ id, branch, room, timetable, adminId: admin_id, name, adminName: admin_name, adminEmail: admin_email, adminTel: admin_tel }));
