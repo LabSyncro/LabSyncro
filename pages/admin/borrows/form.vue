@@ -44,6 +44,10 @@ function deleteDevice ({ kind, id }: { kind: string, id: string }) {
     return;
   }
   deviceKind.deviceIds.splice(index, 1);
+  if (deviceKind.deviceIds.length === 0) {
+    const index = devicesInCart.value.findIndex(({ id }) => id === kind);
+    devicesInCart.value.splice(index, 1);
+  }
 }
 
 function deleteDeviceKinds (kindIds: string[]) {
