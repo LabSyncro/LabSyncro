@@ -30,6 +30,7 @@
     "radix-vue": "^1.9.6",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "uuid4": "^2.0.3",
     "vue": "latest",
     "zapatos": "^6.4.2"
   },

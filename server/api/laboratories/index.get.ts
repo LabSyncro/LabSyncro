@@ -47,7 +47,6 @@ export default defineEventHandler<
         (${searchFields?.includes('location') || false} AND strip_vietnamese_accents(labs.room || ', ' || labs.branch) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
         (${searchFields?.includes('lab_name') || false} AND strip_vietnamese_accents(labs.name) ILIKE strip_vietnamese_accents('%${searchText}%'))
       )`) : db.raw('')}
-
   `.run(dbPool)).map(({ id, branch, room, timetable, admin_id, name, admin_name, admin_email, admin_tel }) => ({ id, branch, room, timetable, adminId: admin_id, name, adminName: admin_name, adminEmail: admin_email, adminTel: admin_tel }));
 
   const output = { labs };

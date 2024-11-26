@@ -85,7 +85,7 @@ export const receiptService = {
   }) {
     return (await $fetch('/api/receipts', {
       method: 'POST',
-      query: { 
+      body: { 
         receipt_id: receiptId || undefined,
         device_ids: deviceIds,
         borrower_id: borrowerId,

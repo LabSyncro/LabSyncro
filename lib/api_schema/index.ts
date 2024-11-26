@@ -125,7 +125,7 @@ export const ListOfLabResourceDto = Type.Object({
       timetable: Type.Record(Type.String(), Type.Array(Type.String())),
       adminId: Type.String(),
       adminName: Type.String(),
-      adminTel: Type.String(),
+      adminTel: Type.Union([Type.Null(), Type.String()]),
       name: Type.String(),
       room: Type.String(),
     }),

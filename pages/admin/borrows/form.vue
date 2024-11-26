@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import uuid4 from 'uuid4'
 import { deviceKindService, receiptService, userService } from '~/services';
 
 const currentDeviceKindId = ref<string | null>(null);
@@ -69,8 +70,8 @@ watch(userCodeInput, async () => {
   }
 });
 
+const receiptCodeInput = ref(uuid4());
 const now = new Date(Date.now());
-const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth() + 1}${now.getDay() + 1}/${Date.now().toString().slice(7)}`);
 const borrowDateInput = ref(now.toISOString().substr(0, 10));
 const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
 const borrowLabId = ref<string | null>(null);
@@ -143,7 +144,7 @@ async function submitReceipt () {
                 <p class="hidden 2xl:block">Quét mã người mượn</p>
               </button>
             </div>
-            <form>
+            <div role="form">
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã số *</label>
                 <input v-model="userCodeInput" type="text" required class="border-slate-300 rounded-md px-2 border w-[100%] p-1">
@@ -156,11 +157,11 @@ async function submitReceipt () {
                 <label class="text-normal text-slate-dark mb-2 block">Vai trò</label>
                 <input :value="translatedRole" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disable="true">
               </div>
-            </form>
+            </div>
           </div>
           <div class="bg-white p-4">
             <h2 class="text-lg mb-6">Thông tin mượn</h2>
-            <form>
+            <div role="form">
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label>
                 <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1" :value="receiptCodeInput">
@@ -181,7 +182,7 @@ async function submitReceipt () {
                 <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả *</label>
                 <CheckoutLabSearchBox @select="setReturnLabId" />
               </div>
-            </form>
+            </div>
           </div>
           <div class="flex justify-end">
             <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4" @click="submitReceipt">

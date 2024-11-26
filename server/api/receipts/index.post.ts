@@ -38,30 +38,40 @@ export default defineEventHandler<
       message: 'Bad request: No JWT found',
     });
   }
-  const { id: checkerId } = token;
+  const { email: checkerEmail } = token;
 
-  const [{ is_admin: isAdmin }] = await db.sql`
-    SELECT TRUE as is_admin
+  if (!deviceIds.length) {
+    throw createError({
+      statusCode: BAD_REQUEST_CODE,
+      message: 'Bad request: Device ids length must > 0',
+    });
+  }
+
+  const [maybeCheckerId] = await db.sql`
+    SELECT ${'users'}.${'id'}
     FROM ${'labs'}
-    WHERE ${'labs'}.${'admin_id'} = ${db.param(checkerId)} AND
+      JOIN ${'users'} ON ${'users'}.${'id'} = ${'labs'}.${'admin_id'}
+    WHERE ${'users'}.${'email'} = ${db.param(checkerEmail)} AND
       ${'labs'}.${'id'} = ${db.param(borrowLabId)}
   `.run(dbPool);
 
-  if (!isAdmin) {
+  if (!maybeCheckerId) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
       message: 'Bad request: Only lab admin can submit a borrow receipt for his lab',
     });
   }
 
+  const checkerId = maybeCheckerId.id;
+
   // FIXME: Need to investigate the driver to see if we should retry on serialization error
   await db.serializable(dbPool, async (dbClient) => {
-    const [{ all_healthy: allHealthy }] = await db.sql`
-      SELECT bool_and(${'status'} = ${db.param('healthy')}) AS all_healthy
+    const [allHealthy] = await db.sql`
+      SELECT bool_and(${'status'} = ${db.param('healthy')}) AS val
       FROM ${'devices'}
       WHERE ${'devices'}.${'id'} = ANY(${db.param(deviceIds)})
     `.run(dbClient);
-    if (!allHealthy) {
+    if (!allHealthy?.val) {
       throw createError({
         statusCode: BAD_REQUEST_CODE,
         message: 'Bad request: Only healthy devices can be borrowed',
@@ -76,8 +86,8 @@ export default defineEventHandler<
     }
 
     if (_receiptId) {
-      const [{ is_receipt_id_present: isReceiptIdPresent }] = await db.sql`
-        SELECT TRUE AS is_receipt_id_present
+      const [isReceiptIdPresent] = await db.sql`
+        SELECT TRUE
         FROM ${'receipts'}
         WHERE ${'receipts'}.${'id'} = ${db.param(_receiptId)}
       `.run(dbClient);
@@ -90,20 +100,20 @@ export default defineEventHandler<
     }
 
     const [{ id: activityId }] = await db.sql`
-      INSERT INTO ${'activities'} (type)
-      VALUES ('borrow') RETURNING id;
+      INSERT INTO ${'activities'} (type, created_at)
+      VALUES ('borrow', ${db.param(borrowDate)}) RETURNING id;
     `.run(dbClient);
 
     const [{ receipt_id: receiptId }] = await db.sql`
-      INSERT INTO ${'receipts'} (id, borrower_id, borrowed_lab_id)
-      VALUES (${_receiptId ? db.param(_receiptId) : db.Default}, ${db.param(borrowerId)}, ${db.param(borrowLabId)})
-      RETURNING receipt_id;
+      INSERT INTO ${'receipts'} (id, borrower_id, borrowed_lab_id, borrow_checker_id)
+      VALUES (${_receiptId ? db.param(_receiptId) : db.Default}, ${db.param(borrowerId)}, ${db.param(borrowLabId)}, ${db.param(checkerId)})
+      RETURNING id;
     `.run(dbClient);
 
     await db.sql`
       INSERT INTO ${'receipts_devices'} (receipt_id, device_id, borrow_id, expected_returned_at, expected_returned_lab_id)
       SELECT ${db.param(receiptId)}, id, ${db.param(activityId)}, ${db.param(expectedReturnDate)}, ${db.param(expectedReturnLabId)}
-      FROM generate_series(unnest(${db.param(deviceIds)})) as devices(id);
+      FROM unnest(${db.param(deviceIds)}::TEXT[]) as devices(id);
     `.run(dbClient);
 
     await db.sql`
