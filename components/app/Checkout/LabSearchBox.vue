@@ -48,7 +48,7 @@ function unfocusSearchItem () {
       <input
         v-model="searchText"
         class="bg-white border-2 w-[100%] p-1 px-2 rounded-md text-md"
-        type="search" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && setInput(focusedSearchItemIndex)" @keydown.esc="unfocusSearchItem">
+        type="search" @keydown.down="focusNextSearchItem" @keydown.up="focusPrevSearchItem" @keydown.enter="focusedSearchItemIndex !== null && setInput(focusedSearchItemIndex)" @keydown.esc="unfocusSearchItem" @input="emits('select', null)">
     </div>
 
     <div v-if="searchItems.length" :class="`${isDropdownActive ? 'flex' : 'hidden'} flex-col gap-1 absolute bg-white p-1 mt-1 w-[100%] z-50 shadow-[0_0px_16px_1px_rgba(0,0,0,0.3)]`">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { deviceKindService, userService } from '~/services';
+import uuid4 from 'uuid4';
+import { deviceKindService, receiptService, userService } from '~/services';
 
 const currentDeviceKindId = ref<string | null>(null);
 
@@ -43,6 +44,10 @@ function deleteDevice ({ kind, id }: { kind: string, id: string }) {
     return;
   }
   deviceKind.deviceIds.splice(index, 1);
+  if (deviceKind.deviceIds.length === 0) {
+    const index = devicesInCart.value.findIndex(({ id }) => id === kind);
+    devicesInCart.value.splice(index, 1);
+  }
 }
 
 function deleteDeviceKinds (kindIds: string[]) {
@@ -69,8 +74,8 @@ watch(userCodeInput, async () => {
   }
 });
 
+const receiptCodeInput = ref(uuid4());
 const now = new Date(Date.now());
-const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth()}${now.getDay()}/${Date.now().toString().slice(10)}`);
 const borrowDateInput = ref(now.toISOString().substr(0, 10));
 const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
 const borrowLabId = ref<string | null>(null);
@@ -82,6 +87,22 @@ const returnDate = computed(() => new Date(Date.parse(returnDateInput.value)));
 const returnLabId = ref<string | null>(null);
 function setReturnLabId (id: string) {
   returnLabId.value = id;
+}
+
+async function submitReceipt () {
+  if (!receiptCodeInput.value || !borrowDate.value || !borrowLabId.value || !returnDate.value || !returnLabId.value || !userCodeInput.value || !devicesInCart.value.length) {
+    return;
+  }
+  await receiptService.submitBorrowRequest({
+    receiptId: receiptCodeInput.value,
+    borrowDate: borrowDate.value,
+    borrowLabId: borrowLabId.value,
+    expectedReturnLabId: returnLabId.value,
+    expectedReturnDate: returnDate.value,
+    borrowerId: userCodeInput.value,
+    deviceIds: devicesInCart.value.flatMap(({ deviceIds }) => deviceIds),
+  });
+  reloadNuxtApp();
 }
 </script>
 
@@ -128,7 +149,7 @@ function setReturnLabId (id: string) {
                 <p class="hidden 2xl:block">Quét mã người mượn</p>
               </button>
             </div>
-            <form>
+            <div role="form">
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã số *</label>
                 <input v-model="userCodeInput" type="text" required class="border-slate-300 rounded-md px-2 border w-[100%] p-1">
@@ -141,11 +162,11 @@ function setReturnLabId (id: string) {
                 <label class="text-normal text-slate-dark mb-2 block">Vai trò</label>
                 <input :value="translatedRole" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disable="true">
               </div>
-            </form>
+            </div>
           </div>
           <div class="bg-white p-4">
             <h2 class="text-lg mb-6">Thông tin mượn</h2>
-            <form>
+            <div role="form">
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label>
                 <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1" :value="receiptCodeInput">
@@ -155,7 +176,7 @@ function setReturnLabId (id: string) {
                 <input v-model="borrowDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn *</label>
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn * <span v-if="!borrowLabId" class="text-red-500">(Không hợp lệ)</span></label>
                 <CheckoutLabSearchBox @select="setBorrowLabId"/>
               </div>
               <div class="mb-4">
@@ -163,13 +184,13 @@ function setReturnLabId (id: string) {
                 <input v-model="returnDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả *</label>
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả * <span v-if="!returnLabId"  class="text-red-500">(Không hợp lệ)</span></label>
                 <CheckoutLabSearchBox @select="setReturnLabId" />
               </div>
-            </form>
+            </div>
           </div>
           <div class="flex justify-end">
-            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4">
+            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4" @click="submitReceipt">
               Xác nhận mượn
             </button>
           </div>
