@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { deviceKindService, userService } from '~/services';
+import { deviceKindService, receiptService, userService } from '~/services';
 
-$fetch('/api/receipts', {
-  method: 'post',
-  credentials: 'include',
-});
 const currentDeviceKindId = ref<string | null>(null);
 
 const devicesInCart = ref<{
@@ -88,8 +84,19 @@ function setReturnLabId (id: string) {
   returnLabId.value = id;
 }
 
-function submitReceipt () {
-  if (receiptCodeInput
+async function submitReceipt () {
+  if (!receiptCodeInput.value || !borrowDate.value || !borrowLabId.value || !returnDate.value || !returnLabId.value || !userCodeInput.value) {
+    return;
+  }
+  await receiptService.submitBorrowRequest({
+    receiptId: receiptCodeInput.value,
+    borrowDate: borrowDate.value,
+    borrowLabId: borrowLabId.value,
+    expectedReturnLabId: returnLabId.value,
+    expectedReturnDate: returnDate.value,
+    borrowerId: userCodeInput.value,
+    deviceIds: devicesInCart.value.flatMap(({ deviceIds }) => deviceIds),
+  });
 }
 </script>
 
@@ -177,7 +184,7 @@ function submitReceipt () {
             </form>
           </div>
           <div class="flex justify-end">
-            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4" @click="submitRequest">
+            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4" @click="submitReceipt">
               Xác nhận mượn
             </button>
           </div>

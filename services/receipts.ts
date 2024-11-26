@@ -81,7 +81,7 @@ export const receiptService = {
     borrowDate: Date,
     borrowLabId: string,
     expectedReturnDate: Date,
-    expectedReturnLabId: Date,
+    expectedReturnLabId: string,
   }) {
     return (await $fetch('/api/receipts', {
       method: 'POST',
