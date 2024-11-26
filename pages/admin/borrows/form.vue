@@ -70,7 +70,7 @@ watch(userCodeInput, async () => {
 });
 
 const now = new Date(Date.now());
-const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth()}${now.getDay()}/${Date.now().toString().slice(10)}`);
+const receiptCodeInput = ref(`${now.getFullYear()}${now.getMonth() + 1}${now.getDay() + 1}/${Date.now().toString().slice(7)}`);
 const borrowDateInput = ref(now.toISOString().substr(0, 10));
 const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
 const borrowLabId = ref<string | null>(null);
