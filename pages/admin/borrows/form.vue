@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import uuid4 from 'uuid4'
+import uuid4 from 'uuid4';
 import { deviceKindService, receiptService, userService } from '~/services';
 
 const currentDeviceKindId = ref<string | null>(null);
@@ -90,7 +90,7 @@ function setReturnLabId (id: string) {
 }
 
 async function submitReceipt () {
-  if (!receiptCodeInput.value || !borrowDate.value || !borrowLabId.value || !returnDate.value || !returnLabId.value || !userCodeInput.value) {
+  if (!receiptCodeInput.value || !borrowDate.value || !borrowLabId.value || !returnDate.value || !returnLabId.value || !userCodeInput.value || !devicesInCart.value.length) {
     return;
   }
   await receiptService.submitBorrowRequest({
@@ -102,6 +102,7 @@ async function submitReceipt () {
     borrowerId: userCodeInput.value,
     deviceIds: devicesInCart.value.flatMap(({ deviceIds }) => deviceIds),
   });
+  reloadNuxtApp();
 }
 </script>
 
@@ -175,7 +176,7 @@ async function submitReceipt () {
                 <input v-model="borrowDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn *</label>
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn * <span v-if="!borrowLabId" class="text-red-500">(Không hợp lệ)</span></label>
                 <CheckoutLabSearchBox @select="setBorrowLabId"/>
               </div>
               <div class="mb-4">
@@ -183,7 +184,7 @@ async function submitReceipt () {
                 <input v-model="returnDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả *</label>
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả * <span v-if="!returnLabId"  class="text-red-500">(Không hợp lệ)</span></label>
                 <CheckoutLabSearchBox @select="setReturnLabId" />
               </div>
             </div>
