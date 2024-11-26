@@ -87,6 +87,10 @@ const returnLabId = ref<string | null>(null);
 function setReturnLabId (id: string) {
   returnLabId.value = id;
 }
+
+function submitReceipt () {
+  if (receiptCodeInput
+}
 </script>
 
 <template>
@@ -173,7 +177,7 @@ function setReturnLabId (id: string) {
             </form>
           </div>
           <div class="flex justify-end">
-            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4">
+            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4" @click="submitRequest">
               Xác nhận mượn
             </button>
           </div>

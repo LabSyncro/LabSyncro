@@ -66,4 +66,34 @@ export const receiptService = {
       })
     ).totalPages;
   },
+  async submitBorrowRequest ({
+    receiptId,
+    deviceIds,
+    borrowerId,
+    borrowDate,
+    borrowLabId,
+    expectedReturnDate,
+    expectedReturnLabId,
+  }: {
+    receiptId: string | null,
+    deviceIds: string[],
+    borrowerId: string,
+    borrowDate: Date,
+    borrowLabId: string,
+    expectedReturnDate: Date,
+    expectedReturnLabId: Date,
+  }) {
+    return (await $fetch('/api/receipts', {
+      method: 'POST',
+      query: { 
+        receipt_id: receiptId || undefined,
+        device_ids: deviceIds,
+        borrower_id: borrowerId,
+        borrow_date: borrowDate,
+        borrow_lab_id: borrowLabId,
+        expected_return_lab_id: expectedReturnLabId,
+        expected_return_date: expectedReturnDate,
+      },
+    }));
+  }
 };
