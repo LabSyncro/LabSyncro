@@ -91,6 +91,7 @@ export const ListOfDeviceKindResourceDto = Type.Object({
       borrowableQuantity: Type.Number(),
       category: Type.String(),
       unit: Type.String(),
+      description: Type.String(),
     }),
   ),
   totalPages: Type.Number(),

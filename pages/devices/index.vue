@@ -22,7 +22,7 @@ watch(categoryId, async () => {
     categoryName.value = 'Thiết bị';
     return;
   }
-  categoryName.value = (await categoryService.getCategory(categoryId.value)).name;
+  categoryName.value = (await categoryService.getCategoryById(categoryId.value)).name;
 }, { immediate: true });
 
 const allCategories = await categoryService.getCategories();
@@ -42,7 +42,8 @@ const allCategories = await categoryService.getCategories();
           <p class="font-semibold">/</p>
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-        <NuxtLink class="text-normal font-bold underline text-black" :href="`/devices?categoryId=${categoryId}`">{{ categoryName }}</NuxtLink>
+          <NuxtLink class="text-normal font-bold underline text-black" :href="`/devices?categoryId=${categoryId}`">{{
+            categoryName }}</NuxtLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -55,17 +56,15 @@ const allCategories = await categoryService.getCategories();
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === null ? 'bg-slate-light' : 'bg-white'}`"
               href="/devices">
               Tất cả
-              <Icon
-                v-if="categoryId === null" aria-hidden name="i-heroicons-check"
-                class="absolute top-1.5 right-2" />
-            </NuxtLink> 
+              <Icon v-if="categoryId === null" aria-hidden name="i-heroicons-check" class="absolute top-1.5 right-2" />
+            </NuxtLink>
             <NuxtLink
-              v-for="category in allCategories" :key="category.id"
+v-for="category in allCategories" :key="category.id"
               :class="`relative text-left text-black min-w-[190px] px-5 py-1 pr-10 line-clamp-1 border-b-[1px] border-b-slate-light ${categoryId === category.id ? 'bg-slate-light' : 'bg-white'}`"
               :href="categoryId === category.id ? '/devices' : `/devices?categoryId=${category.id}`">
               {{ category.name }}
               <Icon
-                v-if="categoryId === category.id" aria-hidden name="i-heroicons-check"
+v-if="categoryId === category.id" aria-hidden name="i-heroicons-check"
                 class="absolute top-1.5 right-2" />
             </NuxtLink>
           </div>
@@ -77,12 +76,11 @@ const allCategories = await categoryService.getCategories();
             </h2>
             <div v-if="!querySearchText" class="relative items-center flex gap-4 mx-auto sm:mx-0">
               <input
-                :value="searchText" type="search" placeholder="Nhập tên thiết bị"
+:value="searchText" type="search" placeholder="Nhập tên thiết bị"
                 class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
-                @input="(e) => updateSearchText(e.target.value)"
-              >
+                @input="(e) => updateSearchText(e.target.value)">
               <Icon
-                aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
+aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
                 name="i-heroicons-magnifying-glass" />
             </div>
           </div>
