@@ -2,6 +2,8 @@
 import uuid4 from 'uuid4';
 import { deviceKindService, receiptService, userService } from '~/services';
 
+const route = useRoute();
+
 const currentDeviceKindId = ref<string | null>(null);
 
 const devicesInCart = ref<{
@@ -104,6 +106,13 @@ async function submitReceipt () {
   });
   reloadNuxtApp();
 }
+
+onMounted(() => {
+  const userId = route.query.userId;
+  if (userId && typeof userId === 'string') {
+    userCodeInput.value = userId;
+  }
+});
 </script>
 
 <template>
@@ -134,9 +143,13 @@ async function submitReceipt () {
             <div class="flex gap-4 mb-6">
               <CheckoutDeviceSearchBox @device-select="openModalForDeviceId" />
               <CheckoutQrButton />
-              <CheckoutDeviceSelectModal :kind-id="currentDeviceKindId" :selected-devices="selectedDevices" @close-modal="closeModal" @device-add="addDevice" @device-delete="deleteDevice" />
+              <CheckoutDeviceSelectModal
+:kind-id="currentDeviceKindId" :selected-devices="selectedDevices"
+                @close-modal="closeModal" @device-add="addDevice" @device-delete="deleteDevice" />
             </div>
-            <CheckoutDeviceKindTable :cart="devicesInCart" @device-kinds-delete="deleteDeviceKinds" @device-kind-link-click="openModalForDeviceId" />
+            <CheckoutDeviceKindTable
+:cart="devicesInCart" @device-kinds-delete="deleteDeviceKinds"
+              @device-kind-link-click="openModalForDeviceId" />
           </div>
         </div>
         <div class="flex flex-col gap-8 min-w-[350px]">
@@ -152,15 +165,21 @@ async function submitReceipt () {
             <div role="form">
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã số *</label>
-                <input v-model="userCodeInput" type="text" required class="border-slate-300 rounded-md px-2 border w-[100%] p-1">
+                <input
+v-model="userCodeInput" type="text" required
+                  class="border-slate-300 rounded-md px-2 border w-[100%] p-1">
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Họ và tên</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disabled="true" :value="fullName ?? 'Không tìm thấy người dùng'">
+                <input
+type="text" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100"
+                  :disabled="true" :value="fullName ?? 'Không tìm thấy người dùng'">
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Vai trò</label>
-                <input :value="translatedRole" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disable="true">
+                <input
+:value="translatedRole" required
+                  class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disable="true">
               </div>
             </div>
           </div>
@@ -169,22 +188,32 @@ async function submitReceipt () {
             <div role="form">
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label>
-                <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1" :value="receiptCodeInput">
+                <input
+type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1"
+                  :value="receiptCodeInput">
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Ngày mượn *</label>
-                <input v-model="borrowDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
+                <input
+v-model="borrowDateInput" type="date" required
+                  class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn * <span v-if="!borrowLabId" class="text-red-500">(Không hợp lệ)</span></label>
-                <CheckoutLabSearchBox @select="setBorrowLabId"/>
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm mượn * <span
+v-if="!borrowLabId"
+                    class="text-red-500">(Không hợp lệ)</span></label>
+                <CheckoutLabSearchBox @select="setBorrowLabId" />
               </div>
               <div class="mb-4">
                 <label class="text-normal text-slate-dark mb-2 block">Ngày hẹn trả *</label>
-                <input v-model="returnDateInput" type="date" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
+                <input
+v-model="returnDateInput" type="date" required
+                  class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
               </div>
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả * <span v-if="!returnLabId"  class="text-red-500">(Không hợp lệ)</span></label>
+                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả * <span
+v-if="!returnLabId"
+                    class="text-red-500">(Không hợp lệ)</span></label>
                 <CheckoutLabSearchBox @select="setReturnLabId" />
               </div>
             </div>
