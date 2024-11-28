@@ -147,7 +147,8 @@ onMounted(async () => {
 
       <section class="bg-white mt-8 p-4 py-8 pb-8">
         <h1 class="font-bold text-xl mb-8"> Tồn kho thiết bị </h1>
-        <DeviceNewInventoryTable :kind-id="deviceKindId" @device-kind-link-click="handleDeviceKindLinkClick" />
+        <DeviceNewInventoryTable :key="deviceKindId" :kind-id="deviceKindId"
+          @device-kind-link-click="handleDeviceKindLinkClick" />
       </section>
 
     </main>

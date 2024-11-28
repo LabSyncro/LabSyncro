@@ -11,6 +11,8 @@ const emits = defineEmits<{
   'device-kind-link-click': [];
 }>();
 
+const showAddModal = ref(false);
+
 async function fetchData(offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }): Promise<{ data: unknown[], totalPages: number }> {
   const res = await deviceService.getByKind(props.kindId, offset, length, { searchText: options.searchText, searchFields: ['device_id'], sortField: options.sortField as any, desc: options.desc });
   return {
@@ -25,6 +27,8 @@ async function onDeviceKindLinkClick() {
 </script>
 
 <template>
-  <DataTable :selectable="false" :searchable="true" :qrable="true" :fetch-fn="fetchData" :add-trigger-fn="() => { }"
+  <DataTable :selectable="false" :searchable="true" :qrable="true" :fetch-fn="fetchData"
+    :add-trigger-fn="() => { showAddModal = true; }"
     :columns="createColumns({ onDeviceKindLinkClick }) as AugmentedColumnDef<unknown>[]" />
+  <DeviceNewModal v-model:is-open="showAddModal" @submit="handleAddDevice" />
 </template>
