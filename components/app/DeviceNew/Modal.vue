@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { laboratoryService } from '~/services';
+
 interface AddDeviceForm {
   quantity: string
   location: string
@@ -6,7 +8,9 @@ interface AddDeviceForm {
 }
 
 const props = defineProps<{
-  isOpen: boolean
+  isOpen: boolean,
+  deviceKindId: string,
+  deviceKindName: string
 }>();
 
 const emit = defineEmits<{
@@ -14,7 +18,7 @@ const emit = defineEmits<{
   'submit': [form: AddDeviceForm]
 }>();
 
-const showPrintModal = ref(false)
+const showPrintModal = ref(false);
 
 const form = reactive<AddDeviceForm>({
   quantity: '',
@@ -23,27 +27,33 @@ const form = reactive<AddDeviceForm>({
 });
 
 const resetForm = () => {
-  form.quantity = ''
-  form.location = ''
-  form.price = ''
-}
+  form.quantity = '';
+  form.location = '';
+  form.price = '';
+};
 
 const handleSubmit = () => {
   //emit('submit', { ...form });
   //emit('update:isOpen', false);
 
-  showPrintModal.value = true
+  showPrintModal.value = true;
 };
 
 const handlePrint = () => {
-  console.log('Printing labels...')
-  resetForm()
-}
+  resetForm();
+};
 
 const handleSkip = () => {
-  console.log('Skipping print...')
-  resetForm()
-}
+  resetForm();
+};
+
+const labs = ref<{ id: string, name: string; room: string; branch: string }[]>([]);
+
+onMounted(async () => {
+  const data = (await laboratoryService.getAllLabs({})).labs;
+  labs.value = data;
+});
+
 </script>
 
 <template>
@@ -68,12 +78,15 @@ const handleSkip = () => {
           </label>
           <Select v-model="form.location">
             <SelectTrigger>
-              <UiSelectValue placeholder="Chọn phòng thí nghiệm" />
+              <SelectValue placeholder="Chọn phòng thí nghiệm" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="lab1">Phòng thí nghiệm 1</SelectItem>
-              <SelectItem value="lab2">Phòng thí nghiệm 2</SelectItem>
-              <SelectItem value="lab3">Phòng thí nghiệm 3</SelectItem>
+              <SelectItem v-for="lab in labs" :key="lab.id" :value="`${lab.room}, ${lab.branch}`">
+                <div class="flex flex-col items-start">
+                  <span>{{ lab.name }}</span>
+                  <span class="text-sm text-gray-500">{{ lab.room }}, {{ lab.branch }}</span>
+                </div>
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -88,15 +101,19 @@ const handleSkip = () => {
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:isOpen', false)">
-          Hủy
-        </Button>
-        <Button type="submit" @click="handleSubmit">
-          Xác nhận
-        </Button>
+        <div class="flex items-center justify-between w-full">
+          <Button variant="outline" @click="$emit('update:isOpen', false)">
+            Hủy
+          </Button>
+          <Button type="submit" class="bg-tertiary-dark hover:bg-tertiary-darker" @click="handleSubmit">
+            Xác nhận
+          </Button>
+        </div>
       </DialogFooter>
     </DialogContent>
   </Dialog>
 
-  <DeviceNewPrintQRCode v-model:isOpen="showPrintModal" :device-data="form" @print="handlePrint" @skip="handleSkip" />
+  <DeviceNewPrintQRCode
+v-model:is-open="showPrintModal" :device-data="{ ...form, deviceKindId, deviceKindName }"
+    @print="handlePrint" @skip="handleSkip" />
 </template>

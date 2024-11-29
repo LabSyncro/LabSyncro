@@ -2,17 +2,6 @@ import { Icon } from '#components';
 import type { DeviceSchema } from './schema';
 import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
-const statusMap = {
-  healthy: 'Tốt',
-  broken: 'Hư',
-  discarded: 'Đã thanh lý',
-  assessing: 'Đang kiểm kê',
-  shipping: 'Đang vận chuyển',
-  maintaining: 'Bảo trì',
-  borrowing: 'Đang mượn',
-  lost: 'Mất',
-};
-
 export function createColumns ({
   onDeviceKindLinkClick,
 }: {

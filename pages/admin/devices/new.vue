@@ -146,11 +146,31 @@ onMounted(async () => {
       </section>
 
       <section class="bg-white mt-8 p-4 py-8 pb-8">
-        <h1 class="font-bold text-xl mb-8"> Tồn kho thiết bị </h1>
-        <DeviceNewInventoryTable :key="deviceKindId" :kind-id="deviceKindId"
+        <h1 class="font-bold text-2xl mb-8"> Tồn kho thiết bị </h1>
+        <DeviceNewInventoryTable
+:key="deviceKindId" :kind-id="deviceKindId" :kind-name="deviceName"
           @device-kind-link-click="handleDeviceKindLinkClick" />
       </section>
 
+      <section class="bg-white mt-8 p-4 py-8 pb-8">
+        <h1 class="font-bold text-2xl mb-8"> Quyền hạn </h1>
+        <DeviceNewPermission />
+      </section>
+
+      <section class="bg-white mt-8 p-4 py-8 pb-8">
+        <h1 class="font-bold text-2xl mb-8"> Chi tiết kỹ thuật </h1>
+        <Tabs default-value="borrow">
+          <TabsList class="flex items-start justify-start gap-4 bg-white mb-8">
+            <TabsTrigger value="borrow">
+              Thông số
+            </TabsTrigger>
+            <TabsTrigger value="return">
+              Tài liệu kỹ thuật
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="borrow" />
+        </Tabs>
+      </section>
     </main>
   </div>
 </template>

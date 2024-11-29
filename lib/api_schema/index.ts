@@ -91,7 +91,15 @@ export const ListOfDeviceKindResourceDto = Type.Object({
       borrowableQuantity: Type.Number(),
       category: Type.String(),
       unit: Type.String(),
-      description: Type.String(),
+      description: Type.Union([Type.String(), Type.Null()]),
+      meta: Type.Union([
+        Type.Record(
+          Type.String(),
+          Type.Union([Type.String(), Type.Number(), Type.Null()]),
+        ),
+        Type.Null(),
+      ]),
+      dataSheet: Type.Union([Type.String(), Type.Null()]),
     }),
   ),
   totalPages: Type.Number(),
@@ -150,3 +158,11 @@ export const UserResourceDto = Type.Object({
 });
 
 export type UserResourceDto = Static<typeof UserResourceDto>;
+
+export const PrintQRCodeDto = Type.Object({
+  id: Type.String(),
+  name: Type.String(),
+  url: Type.String(),
+});
+
+export type PrintQRCodeDto = Static<typeof PrintQRCodeDto>;

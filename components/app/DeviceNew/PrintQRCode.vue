@@ -1,39 +1,56 @@
 <script setup lang="ts">
+import { deviceService } from '~/services';
+
 interface DeviceData {
   quantity: string
   location: string
-  price: string
+  deviceKindId: string,
+  deviceKindName: string
 }
 
 const props = defineProps<{
   isOpen: boolean
   deviceData: DeviceData
-}>()
+}>();
 
 const emit = defineEmits<{
   'update:isOpen': [value: boolean]
   'print': []
   'skip': []
-}>()
+}>();
 
-const formatLocation = (location: string) => {
-  const locations: Record<string, string> = {
-    'lab1': 'Phòng thí nghiệm 1',
-    'lab2': 'Phòng thí nghiệm 2',
-    'lab3': 'Phòng thí nghiệm 3'
-  }
-  return locations[location] || location
-}
+const generateDevices = async (): Promise<{ id: string; url: string; name: string }[]> => {
+  const quantity = parseInt(props.deviceData.quantity, 10);
+  const { deviceKindId, deviceKindName } = props.deviceData;
 
-const handlePrint = () => {
-  emit('print')
-  emit('update:isOpen', false)
-}
+  const lastHexId = await deviceService.getLastDeviceId();
+  const lastSequenceNumber = parseInt(lastHexId, 16);
+
+  return Array.from({ length: quantity }, (_, index) => {
+    const sequenceId = lastSequenceNumber + index + 1;
+    const hexId = sequenceId.toString(16).padStart(8, '0');
+
+    return {
+      id: `${deviceKindId.toLowerCase()}/${hexId}`,
+      url: `http://localhost:3000/devices/${deviceKindId.toLowerCase()}`,
+      name: deviceKindName,
+    };
+  });
+};
+const handlePrint = async () => {
+  const devices = await generateDevices();
+  console.log(devices);
+
+  //await deviceService.printQRCode({ devices });
+  emit('print');
+  emit('update:isOpen', false);
+};
 
 const handleSkip = () => {
-  emit('skip')
-  emit('update:isOpen', false)
-}
+  emit('skip');
+  emit('update:isOpen', false);
+};
+
 </script>
 
 <template>
@@ -59,7 +76,7 @@ const handleSkip = () => {
           </div>
           <div class="flex items-center gap-2">
             <span class="font-medium">Địa điểm chứa:</span>
-            <span>{{ formatLocation(deviceData.location) }}</span>
+            <span>{{ deviceData.location }}</span>
           </div>
         </div>
 
