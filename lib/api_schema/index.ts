@@ -149,7 +149,7 @@ export type ListOfLabResourceDto = Static<typeof ListOfLabResourceDto>;
 export const UserResourceDto = Type.Object({
   id: Type.String(),
   avatar: Type.Union([Type.String(), Type.Null()]),
-  tel: Type.String(),
+  tel: Type.Union([Type.String(), Type.Null()]),
   name: Type.String(),
   email: Type.String(),
   role: Type.Union([
