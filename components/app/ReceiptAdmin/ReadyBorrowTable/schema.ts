@@ -9,6 +9,4 @@ export const ReadyBorrowedDeviceSchema = Type.Object({
   place: Type.String(),
 });
 
-export type ReadyBorrowedDeviceSchema = Static<
-  typeof ReadyBorrowedDeviceSchema
->;
+export type ReadyBorrowedDevice = Static<typeof ReadyBorrowedDeviceSchema>;

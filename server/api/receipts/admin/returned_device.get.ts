@@ -1,6 +1,6 @@
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
-import { ReceiptResourceDto } from '~/lib/api_schema';
+import { ReturnedReceiptResourceDto } from '~/lib/api_schema';
 import { Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import type { Static } from '@sinclair/typebox';
@@ -30,6 +30,7 @@ const QueryDto = Type.Object({
       Type.Literal('borrowed_at'),
       Type.Literal('status'),
       Type.Literal('expected_returned_at'),
+      Type.Literal('returned_at'),
     ]),
   ),
   desc: Type.Optional(Type.Boolean()),
@@ -39,7 +40,7 @@ type QueryDto = Static<typeof QueryDto>;
 
 export default defineEventHandler<
   { query: QueryDto },
-  Promise<ReceiptResourceDto>
+  Promise<ReturnedReceiptResourceDto>
 >(async (event) => {
   const token = await getToken({ event });
   const query = Value.Convert(QueryDto, getQuery(event));
@@ -82,9 +83,10 @@ export default defineEventHandler<
         CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'}) as borrowed_place,
         CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'}) as returned_place,
         a_borrow.${'created_at'} as borrowed_at,
+        a_return.${'created_at'} as returned_at,
         rd.${'expected_returned_at'},
         CASE 
-            WHEN CURRENT_TIMESTAMP <= rd.${'expected_returned_at'} THEN 'on_time'
+            WHEN a_return.${'created_at'} <= rd.${'expected_returned_at'} THEN 'on_time'
             ELSE 'late'
         END as status
       FROM ${'receipts_devices'} rd
@@ -93,10 +95,11 @@ export default defineEventHandler<
       JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
       JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
       JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
+      JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
       LEFT JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
       WHERE
         l_borrow.${'admin_id'} = ${db.param(userId)}
-        AND rd.${'return_id'} IS NULL
+        AND rd.${'return_id'} IS NOT NULL
       GROUP BY 
         dk.${'id'},
         dk.${'name'},
@@ -107,6 +110,7 @@ export default defineEventHandler<
         l_expected.${'room'},
         l_expected.${'branch'},
         a_borrow.${'created_at'},
+        a_return.${'created_at'},
         rd.${'expected_returned_at'}
     )
     SELECT 
@@ -119,6 +123,7 @@ export default defineEventHandler<
       returned_place,
       borrowed_at,
       expected_returned_at,
+      returned_at,
       status
     FROM borrowed_devices
     ${
@@ -135,9 +140,9 @@ export default defineEventHandler<
       ${
     sortField
       ? db.raw(
-        `${sortField} ${desc ? 'DESC' : 'ASC'}, expected_returned_at ASC, borrowed_at DESC`,
+        `${sortField} ${desc ? 'DESC' : 'ASC'}, returned_at ASC, borrowed_at DESC`,
       )
-      : db.raw('expected_returned_at ASC, borrowed_at DESC')
+      : db.raw('returned_at ASC, borrowed_at DESC')
     }    
     LIMIT ${db.param(length)}
     OFFSET ${db.param(offset)}
@@ -153,6 +158,7 @@ export default defineEventHandler<
       returned_place,
       borrowed_at,
       expected_returned_at,
+      returned_at,
       status,
     }) => ({
       id: device_kind_id,
@@ -164,6 +170,7 @@ export default defineEventHandler<
       returnedPlace: returned_place,
       borrowedAt: borrowed_at,
       expectedReturnedAt: expected_returned_at,
+      returnedAt: returned_at,
       status,
     }),
   );
@@ -176,10 +183,11 @@ export default defineEventHandler<
     JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
     JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
     JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
-    LEFT JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
-    WHERE 
+    LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
+    JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
+    WHERE
       l_borrow.${'admin_id'} = ${db.param(userId)}
-      AND rd.${'return_id'} IS NULL
+      AND rd.${'return_id'} IS NOT NULL
       ${
   searchText !== undefined
     ? db.raw(`AND (
@@ -197,7 +205,7 @@ export default defineEventHandler<
 
   const output = { receipts, totalPages, currentPage };
 
-  if (!Value.Check(ReceiptResourceDto, output)) {
+  if (!Value.Check(ReturnedReceiptResourceDto, output)) {
     throw createError({
       statusCode: INTERNAL_SERVER_ERROR_CODE,
       message:

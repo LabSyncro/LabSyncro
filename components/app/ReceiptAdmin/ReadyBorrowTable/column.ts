@@ -1,7 +1,7 @@
-import type { ReadyBorrowedDeviceSchema } from './schema';
+import type { ReadyBorrowedDevice } from './schema';
 import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
-export const columns: AugmentedColumnDef<ReadyBorrowedDeviceSchema>[] = [
+export const columns: AugmentedColumnDef<ReadyBorrowedDevice>[] = [
   {
     id: 'name',
     title: 'Tên thiết bị',

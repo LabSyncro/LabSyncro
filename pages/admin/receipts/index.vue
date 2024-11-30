@@ -8,6 +8,7 @@ const totalReadyBorrowDevices = ref(0);
 onMounted(async () => {
   totalBorrowedDevices.value = await receiptService.getTotalBorrowedItemsByAdmin({});
   totalReadyBorrowDevices.value = await receiptService.getTotalReadyBorrowedItemsByAdmin({});
+  totalReturnedDevices.value = await receiptService.getTotalReturnedItemsByAdmin({});
 });
 </script>
 
@@ -38,7 +39,7 @@ onMounted(async () => {
             Đang mượn ({{ totalBorrowedDevices }})
           </TabsTrigger>
           <TabsTrigger value="return">
-            Đã trả
+            Đã trả ({{ totalReturnedDevices }})
           </TabsTrigger>
         </TabsList>
         <TabsContent value="ready-borrow">
@@ -46,6 +47,9 @@ onMounted(async () => {
         </TabsContent>
         <TabsContent value="borrow">
           <ReceiptAdminBorrowTable />
+        </TabsContent>
+        <TabsContent value="return">
+          <ReceiptAdminReturnTable />
         </TabsContent>
       </Tabs>
     </main>
