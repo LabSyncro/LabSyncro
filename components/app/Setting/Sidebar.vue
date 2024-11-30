@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChevronLeft, Lock } from 'lucide-vue-next';
 
-const { activeSidebar, activeSection } = useSidebar();
+const { activeSidebar, activeSection } = useSidebarSettings();
 
 const sections = [{ name: 'Tất cả người dùng', key: 'all-users' }, { name: 'Quản trị viên', key: 'admin' }];
 const router = useRouter();
@@ -62,7 +62,9 @@ const handleBackToSimpleSidebar = (openNewTab: boolean) => {
 
     <div v-else class="w-64 border-r bg-background p-4 space-y-4 min-h-screen">
       <div class="flex items-center space-x-2 mb-6">
-        <Button variant="ghost" class="w-full justify-start" @click="(event) => handleBackToSimpleSidebar(!!event.ctrlKey)">
+        <Button
+variant="ghost" class="w-full justify-start"
+          @click="(event) => handleBackToSimpleSidebar(!!event.ctrlKey)">
           <ChevronLeft class="mr-2 h-4 w-4" />
           <span class="text-md">Back</span>
         </Button>

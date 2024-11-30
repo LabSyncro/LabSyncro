@@ -91,7 +91,15 @@ export const ListOfDeviceKindResourceDto = Type.Object({
       borrowableQuantity: Type.Number(),
       category: Type.String(),
       unit: Type.String(),
-      description: Type.String(),
+      description: Type.Union([Type.String(), Type.Null()]),
+      meta: Type.Union([
+        Type.Record(
+          Type.String(),
+          Type.Union([Type.String(), Type.Number(), Type.Null()]),
+        ),
+        Type.Null(),
+      ]),
+      dataSheet: Type.Union([Type.String(), Type.Null()]),
     }),
   ),
   totalPages: Type.Number(),
@@ -110,6 +118,9 @@ export const ListOfDeviceResourceDto = Type.Object({
       status: Type.String(),
       room: Type.String(),
       branch: Type.String(),
+      price: Type.String(),
+      createdAt: Type.Date(),
+      printedAt: Type.Union([Type.Date(), Type.Null()]),
     }),
   ),
   totalPages: Type.Number(),
@@ -138,7 +149,7 @@ export type ListOfLabResourceDto = Static<typeof ListOfLabResourceDto>;
 export const UserResourceDto = Type.Object({
   id: Type.String(),
   avatar: Type.Union([Type.String(), Type.Null()]),
-  tel: Type.String(),
+  tel: Type.Union([Type.String(), Type.Null()]),
   name: Type.String(),
   email: Type.String(),
   role: Type.Union([
@@ -150,3 +161,11 @@ export const UserResourceDto = Type.Object({
 });
 
 export type UserResourceDto = Static<typeof UserResourceDto>;
+
+export const PrintQRCodeDto = Type.Object({
+  id: Type.String(),
+  name: Type.String(),
+  url: Type.String(),
+});
+
+export type PrintQRCodeDto = Static<typeof PrintQRCodeDto>;

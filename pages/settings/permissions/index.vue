@@ -23,7 +23,7 @@ const permissions = ref([
   }
 ]);
 
-const { activeSection, activeSidebar } = useSidebar();
+const { activeSection, activeSidebar } = useSidebarSettings();
 const router = useRouter();
 
 const handleRowClick = (rowKey: string, openNewTab: boolean) => {

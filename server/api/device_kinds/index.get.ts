@@ -62,7 +62,7 @@ export default defineEventHandler<
   }
 
   const deviceKinds = await db.sql`
-      SELECT ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
+      SELECT ${'device_kinds'}.${'meta'}, ${'device_kinds'}.${'datasheet'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL
@@ -120,6 +120,8 @@ export default defineEventHandler<
         borrowable_quantity,
         category,
         description,
+        meta,
+        datasheet,
       }) => ({
         id,
         name,
@@ -132,6 +134,8 @@ export default defineEventHandler<
         borrowableQuantity: borrowable_quantity,
         category,
         description,
+        meta,
+        dataSheet: datasheet,
       }),
     ),
     totalPages,
