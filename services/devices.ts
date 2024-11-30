@@ -30,36 +30,37 @@ export const deviceService = {
     });
   },
 
-  async getLastDeviceId (): Promise<string> {
-    return await $fetch('/api/devices', {
-      query: {
-        sort_field: 'id',
-        desc: true,
-        length: 1,
-        offset: 0,
-      },
-    }).then((res) => res.devices[0].id);
-  },
-
   async createDevices (
-    devices: { kind: string; lab_id: string }[],
+    devices: { deviceKindId: string; labId: string }[],
   ): Promise<{ id: string }[]> {
     return await $fetch('/api/devices', {
       method: 'POST',
       body: devices.map((device) => ({
-        kind: device.kind,
-        labId: device.lab_id,
+        kind: device.deviceKindId,
+        lab_id: device.labId,
       })),
     });
   },
 
   async printQRCode ({ devices }: { devices: PrintQRCodeDto[] }): Promise<void> {
     return await $fetch(
-      'https://b96d-171-252-153-91.ngrok-free.app/print_labels',
+      'https://531f-171-252-153-91.ngrok-free.app/print_labels',
       {
         method: 'POST',
         body: { devices },
       },
     );
+  },
+
+  async updatePrintedAt (
+    devices: { id: string; printedAt: Date }[],
+  ): Promise<void> {
+    return await $fetch('/api/devices/printed', {
+      method: 'PATCH',
+      body: devices.map((device) => ({
+        id: device.id,
+        printed_at: device.printedAt,
+      })),
+    });
   },
 };

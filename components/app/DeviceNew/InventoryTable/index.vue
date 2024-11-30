@@ -33,5 +33,5 @@ async function onDeviceKindLinkClick () {
 :selectable="false" :searchable="true" :qrable="true" :fetch-fn="fetchData"
     :add-trigger-fn="() => { showAddModal = true }"
     :columns="createColumns({ onDeviceKindLinkClick }) as AugmentedColumnDef<unknown>[]" />
-  <DeviceNewModal v-model:is-open="showAddModal" :device-kind-id="kindId" :device-kind-name="kindName" @submit="" />
+  <DeviceNewModal v-model:is-open="showAddModal" :device-kind-id="kindId" :device-kind-name="kindName" />
 </template>

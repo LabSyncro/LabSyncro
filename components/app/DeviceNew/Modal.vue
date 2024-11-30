@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { laboratoryService } from '~/services';
+import { laboratoryService, deviceService } from '~/services';
 
 interface AddDeviceForm {
   quantity: string
@@ -15,7 +15,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:isOpen': [value: boolean]
-  'submit': [form: AddDeviceForm]
 }>();
 
 const showPrintModal = ref(false);
@@ -26,16 +25,31 @@ const form = reactive<AddDeviceForm>({
   price: ''
 });
 
+const createdDeviceIds = ref<string[]>([]);
+
 const resetForm = () => {
   form.quantity = '';
   form.location = '';
   form.price = '';
 };
 
-const handleSubmit = () => {
-  //emit('submit', { ...form });
-  //emit('update:isOpen', false);
+const handleSubmit = async () => {
+  const selectedLab = labs.value.find(
+    (lab) => `${lab.room}, ${lab.branch}` === form.location
+  );
 
+  if (!selectedLab) {
+    return;
+  }
+
+  const deviceData = Array.from({ length: Number(form.quantity) }, () => ({
+    deviceKindId: props.deviceKindId.toLowerCase(),
+    labId: selectedLab.id
+  }));
+
+  const response = await deviceService.createDevices(deviceData);
+  createdDeviceIds.value = response.map((device) => device.id);
+  emit('update:isOpen', false);
   showPrintModal.value = true;
 };
 
@@ -91,7 +105,6 @@ onMounted(async () => {
           </Select>
         </div>
 
-        <!-- Đơn giá nhập -->
         <div class="space-y-2">
           <label class="text-sm text-gray-600">
             Đơn giá nhập (VND / cái)
@@ -114,6 +127,7 @@ onMounted(async () => {
   </Dialog>
 
   <DeviceNewPrintQRCode
-v-model:is-open="showPrintModal" :device-data="{ ...form, deviceKindId, deviceKindName }"
-    @print="handlePrint" @skip="handleSkip" />
+v-model:is-open="showPrintModal"
+    :device-data="{ ...form, deviceKindId: props.deviceKindId, deviceKindName: props.deviceKindName }"
+    :list-device-ids="createdDeviceIds" @print="handlePrint" @skip="handleSkip" />
 </template>

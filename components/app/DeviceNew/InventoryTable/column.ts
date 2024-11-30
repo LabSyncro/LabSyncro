@@ -1,6 +1,7 @@
 import { Icon } from '#components';
 import type { DeviceSchema } from './schema';
 import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
+import moment from 'moment';
 
 const statusMap = {
   healthy: 'Tốt',
@@ -63,7 +64,7 @@ export function createColumns ({
           'p',
           {
             class:
-              'text-slate-500 text-right text-normal leading-6 font-normal',
+              'text-slate-500 text-center text-normal leading-6 font-normal',
           },
           row.original.price,
         ),
@@ -76,9 +77,24 @@ export function createColumns ({
         return h(
           'span',
           {
+            class:
+              'text-slate-500 text-center text-sm font-normal leading-tight',
+          },
+          moment(row.original.createdAt).format('DD/MM/YYYY'),
+        );
+      },
+      enableSorting: true,
+    },
+    {
+      id: 'printedAt',
+      title: 'Ngày in',
+      cell: ({ row }) => {
+        return h(
+          'span',
+          {
             class: 'text-slate-500 text-sm font-normal leading-tight',
           },
-          row.original.createdAt,
+          row.original.printedAt,
         );
       },
       enableSorting: true,

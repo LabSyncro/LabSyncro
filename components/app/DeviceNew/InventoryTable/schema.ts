@@ -10,6 +10,7 @@ export const DeviceSchema = Type.Object({
   branch: Type.String(),
   price: Type.Number(),
   createdAt: Type.String(),
+  printedAt: Type.String(),
 });
 
 export type DeviceSchema = Static<typeof DeviceSchema>;

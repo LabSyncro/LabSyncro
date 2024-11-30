@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deviceService } from '~/services';
+import { deviceService } from '@/services';
 
 interface DeviceData {
   quantity: string
@@ -11,6 +11,7 @@ interface DeviceData {
 const props = defineProps<{
   isOpen: boolean
   deviceData: DeviceData
+  listDeviceIds: string[]
 }>();
 
 const emit = defineEmits<{
@@ -20,18 +21,11 @@ const emit = defineEmits<{
 }>();
 
 const generateDevices = async (): Promise<{ id: string; url: string; name: string }[]> => {
-  const quantity = parseInt(props.deviceData.quantity, 10);
   const { deviceKindId, deviceKindName } = props.deviceData;
 
-  const lastHexId = await deviceService.getLastDeviceId();
-  const lastSequenceNumber = parseInt(lastHexId, 16);
-
-  return Array.from({ length: quantity }, (_, index) => {
-    const sequenceId = lastSequenceNumber + index + 1;
-    const hexId = sequenceId.toString(16).padStart(8, '0');
-
+  return props.listDeviceIds.map(deviceId => {
     return {
-      id: `${deviceKindId.toLowerCase()}/${hexId}`,
+      id: `${deviceKindId.toLowerCase()}/${deviceId}`,
       url: `http://localhost:3000/devices/${deviceKindId.toLowerCase()}`,
       name: deviceKindName,
     };
@@ -40,8 +34,8 @@ const generateDevices = async (): Promise<{ id: string; url: string; name: strin
 const handlePrint = async () => {
   const devices = await generateDevices();
   console.log(devices);
-
-  //await deviceService.printQRCode({ devices });
+  await deviceService.printQRCode({ devices });
+  await deviceService.updatePrintedAt(props.listDeviceIds.map(id => ({ id, printedAt: new Date() })));
   emit('print');
   emit('update:isOpen', false);
 };
