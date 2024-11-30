@@ -1,4 +1,8 @@
-import type { ReceiptResourceDto } from '~/lib/api_schema';
+import type {
+  ReadyBorrowedDevicesResourceDto,
+  ReceiptResourceDto,
+  ReturnedReceiptResourceDto,
+} from '~/lib/api_schema';
 
 export const receiptService = {
   async getReceipts (
@@ -66,6 +70,192 @@ export const receiptService = {
       })
     ).totalPages;
   },
+
+  async getBorrowReceiptsByAdmin (
+    offset: number,
+    length: number,
+    {
+      searchText = undefined,
+      searchFields = [],
+      sortField = undefined,
+      desc = false,
+    }: {
+      searchText?: string;
+      searchFields?: (
+        | 'device_kind_id'
+        | 'device_kind_name'
+        | 'borrowed_place'
+        | 'returned_place'
+      )[];
+      sortField?:
+        | 'device_kind_name'
+        | 'quantity'
+        | 'borrowed_place'
+        | 'returned_place'
+        | 'borrowed_at'
+        | 'expected_returned_at'
+        | 'status';
+      desc?: boolean;
+    },
+  ): Promise<ReceiptResourceDto> {
+    const { $cachedFetch } = useNuxtApp();
+    return await $cachedFetch('/api/receipts/admin/borrowed_device', {
+      query: {
+        offset,
+        length,
+        search_text: searchText,
+        search_fields: searchFields,
+        sort_field: sortField,
+        desc,
+      },
+      ttl: 60,
+    });
+  },
+
+  async getTotalBorrowedItemsByAdmin ({
+    searchText = undefined,
+    searchFields = [],
+  }: {
+    searchText?: string;
+    searchFields?: (
+      | 'device_kind_id'
+      | 'device_kind_name'
+      | 'borrowed_place'
+      | 'returned_place'
+    )[];
+  }): Promise<number> {
+    const { $cachedFetch } = useNuxtApp();
+    return (
+      await $cachedFetch('/api/receipts/admin/borrowed_device', {
+        query: {
+          offset: 0,
+          length: 1,
+          search_text: searchText,
+          search_fields: searchFields,
+        },
+        ttl: 60,
+      })
+    ).totalPages;
+  },
+
+  async getReadyBorrowedDevicesByAdmin (
+    offset: number,
+    length: number,
+    {
+      searchText = undefined,
+      searchFields = [],
+      sortField = undefined,
+      desc = false,
+    }: {
+      searchText?: string;
+      searchFields?: ('device_kind_id' | 'device_kind_name' | 'place')[];
+      sortField?: 'device_kind_name' | 'quantity' | 'place';
+      desc?: boolean;
+    },
+  ): Promise<ReadyBorrowedDevicesResourceDto> {
+    const { $cachedFetch } = useNuxtApp();
+    return await $cachedFetch('/api/receipts/admin/ready_borrowed_device', {
+      query: {
+        offset,
+        length,
+        search_text: searchText,
+        search_fields: searchFields,
+        sort_field: sortField,
+        desc,
+      },
+      ttl: 60,
+    });
+  },
+
+  async getTotalReadyBorrowedItemsByAdmin ({
+    searchText = undefined,
+    searchFields = [],
+  }: {
+    searchText?: string;
+    searchFields?: ('device_kind_id' | 'device_kind_name' | 'place')[];
+  }): Promise<number> {
+    const { $cachedFetch } = useNuxtApp();
+    return (
+      await $cachedFetch('/api/receipts/admin/ready_borrowed_device', {
+        query: {
+          offset: 0,
+          length: 1,
+          search_text: searchText,
+          search_fields: searchFields,
+        },
+        ttl: 60,
+      })
+    ).totalPages;
+  },
+
+  async getReturnReceiptsByAdmin (
+    offset: number,
+    length: number,
+    {
+      searchText = undefined,
+      searchFields = [],
+      sortField = undefined,
+      desc = false,
+    }: {
+      searchText?: string;
+      searchFields?: (
+        | 'device_kind_id'
+        | 'device_kind_name'
+        | 'borrowed_place'
+        | 'returned_place'
+      )[];
+      sortField?:
+        | 'device_kind_name'
+        | 'quantity'
+        | 'borrowed_place'
+        | 'returned_place'
+        | 'borrowed_at'
+        | 'expected_returned_at'
+        | 'returned_at'
+        | 'status';
+      desc?: boolean;
+    },
+  ): Promise<ReturnedReceiptResourceDto> {
+    const { $cachedFetch } = useNuxtApp();
+    return await $cachedFetch('/api/receipts/admin/returned_device', {
+      query: {
+        offset,
+        length,
+        search_text: searchText,
+        search_fields: searchFields,
+        sort_field: sortField,
+        desc,
+      },
+      ttl: 60,
+    });
+  },
+
+  async getTotalReturnedItemsByAdmin ({
+    searchText = undefined,
+    searchFields = [],
+  }: {
+    searchText?: string;
+    searchFields?: (
+      | 'device_kind_id'
+      | 'device_kind_name'
+      | 'borrowed_place'
+      | 'returned_place'
+    )[];
+  }): Promise<number> {
+    const { $cachedFetch } = useNuxtApp();
+    return (
+      await $cachedFetch('/api/receipts/admin/returned_device', {
+        query: {
+          offset: 0,
+          length: 1,
+          search_text: searchText,
+          search_fields: searchFields,
+        },
+        ttl: 60,
+      })
+    ).totalPages;
+  },
+
   async submitBorrowRequest ({
     receiptId,
     deviceIds,
@@ -75,17 +265,17 @@ export const receiptService = {
     expectedReturnDate,
     expectedReturnLabId,
   }: {
-    receiptId: string | null,
-    deviceIds: string[],
-    borrowerId: string,
-    borrowDate: Date,
-    borrowLabId: string,
-    expectedReturnDate: Date,
-    expectedReturnLabId: string,
+    receiptId: string | null;
+    deviceIds: string[];
+    borrowerId: string;
+    borrowDate: Date;
+    borrowLabId: string;
+    expectedReturnDate: Date;
+    expectedReturnLabId: string;
   }) {
-    return (await $fetch('/api/receipts', {
+    return await $fetch('/api/receipts', {
       method: 'POST',
-      body: { 
+      body: {
         receipt_id: receiptId || undefined,
         device_ids: deviceIds,
         borrower_id: borrowerId,
@@ -94,6 +284,6 @@ export const receiptService = {
         expected_return_lab_id: expectedReturnLabId,
         expected_return_date: expectedReturnDate,
       },
-    }));
-  }
+    });
+  },
 };

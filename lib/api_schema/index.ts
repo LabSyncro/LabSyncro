@@ -48,6 +48,49 @@ export const ReceiptResourceDto = Type.Object({
 
 export type ReceiptResourceDto = Static<typeof ReceiptResourceDto>;
 
+export const ReadyBorrowedDevicesResourceDto = Type.Object({
+  devices: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      name: Type.String(),
+      mainImage: Type.String(),
+      subImages: Type.Array(Type.String()),
+      quantity: Type.Number(),
+      place: Type.String(),
+    }),
+  ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type ReadyBorrowedDevicesResourceDto = Static<
+  typeof ReadyBorrowedDevicesResourceDto
+>;
+
+export const ReturnedReceiptResourceDto = Type.Object({
+  receipts: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      name: Type.String(),
+      mainImage: Type.String(),
+      subImages: Type.Array(Type.String()),
+      quantity: Type.Number(),
+      borrowedPlace: Type.String(),
+      returnedPlace: Type.String(),
+      borrowedAt: Type.Date(),
+      expectedReturnedAt: Type.Date(),
+      returnedAt: Type.Date(),
+      status: Type.String(),
+    }),
+  ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type ReturnedReceiptResourceDto = Static<
+  typeof ReturnedReceiptResourceDto
+>;
+
 export const DeviceQuantityByLabDto = Type.Object({
   labs: Type.Array(
     Type.Object({
