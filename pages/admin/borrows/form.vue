@@ -15,7 +15,7 @@ const devicesInCart = ref<{
 
 const selectedDevices = computed(() => devicesInCart.value.flatMap((deviceKind) => deviceKind.deviceIds));
 
-function generateUniqueId(): string {
+function generateUniqueId (): string {
   const datePrefix = moment().format('YYYYMMDD');
   const randomSuffix = Math.floor(Math.random() * 1000000)
     .toString()
@@ -23,15 +23,15 @@ function generateUniqueId(): string {
   return `${datePrefix}/${randomSuffix}`;
 }
 
-function openModalForDeviceId(id: string) {
+function openModalForDeviceId (id: string) {
   currentDeviceKindId.value = id;
 }
 
-function closeModal() {
+function closeModal () {
   currentDeviceKindId.value = null;
 }
 
-async function addDevice({ kind, id }: { kind: string, id: string }) {
+async function addDevice ({ kind, id }: { kind: string, id: string }) {
   const deviceKind = devicesInCart.value.find(({ id }) => id === kind);
   if (deviceKind) {
     deviceKind.deviceIds.push(id);
@@ -45,7 +45,7 @@ async function addDevice({ kind, id }: { kind: string, id: string }) {
   });
 }
 
-function deleteDevice({ kind, id }: { kind: string, id: string }) {
+function deleteDevice ({ kind, id }: { kind: string, id: string }) {
   const deviceKind = devicesInCart.value.find(({ id }) => id === kind);
   if (!deviceKind) {
     return;
@@ -61,7 +61,7 @@ function deleteDevice({ kind, id }: { kind: string, id: string }) {
   }
 }
 
-function deleteDeviceKinds(kindIds: string[]) {
+function deleteDeviceKinds (kindIds: string[]) {
   kindIds.forEach((kindId) => {
     const index = devicesInCart.value.findIndex(({ id }) => kindId === id);
     if (index === -1) return;
@@ -101,11 +101,11 @@ const borrowLabId = ref<string | null>(null);
 const returnDateInput = ref('');
 const returnDate = computed(() => new Date(Date.parse(returnDateInput.value)));
 const returnLabId = ref<string | null>(null);
-function setReturnLabId(id: string) {
+function setReturnLabId (id: string) {
   returnLabId.value = id;
 }
 
-async function submitReceipt() {
+async function submitReceipt () {
   if (!receiptCodeInput.value || !borrowDate.value || !borrowLabId.value || !returnDate.value || !returnLabId.value || !userCodeInput.value || !devicesInCart.value.length) {
     return;
   }
@@ -157,10 +157,12 @@ onMounted(() => {
             <div class="flex gap-4 mb-6">
               <CheckoutDeviceSearchBox @device-select="openModalForDeviceId" />
               <CheckoutQrButton />
-              <CheckoutDeviceSelectModal :kind-id="currentDeviceKindId" :selected-devices="selectedDevices"
+              <CheckoutDeviceSelectModal
+:kind-id="currentDeviceKindId" :selected-devices="selectedDevices"
                 @close-modal="closeModal" @device-add="addDevice" @device-delete="deleteDevice" />
             </div>
-            <CheckoutDeviceKindTable :cart="devicesInCart" @device-kinds-delete="deleteDeviceKinds"
+            <CheckoutDeviceKindTable
+:cart="devicesInCart" @device-kinds-delete="deleteDeviceKinds"
               @device-kind-link-click="openModalForDeviceId" />
           </div>
         </div>
