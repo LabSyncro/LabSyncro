@@ -4,7 +4,8 @@ const { isOpen, closeSidebar } = useSidebar();
 
 <template>
   <div>
-    <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+    <div
+v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
       :class="{ 'opacity-100': isOpen, 'opacity-0 pointer-events-none': !isOpen }" @click="closeSidebar" />
 
     <aside
