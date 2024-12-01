@@ -3,6 +3,8 @@ import { deviceKindService } from '~/services';
 import { columns } from './column';
 import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
+const router = useRouter();
+
 async function deleteData (ids: string[]) {
   await deviceKindService.deleteByIds(ids);
 }
@@ -17,5 +19,8 @@ async function fetchData (offset: number, length: number, options: { desc?: bool
 </script>
 
 <template>
-  <DataTable :selectable="true" :searchable="true" :qrable="true" :add-trigger-fn="() => {}" :fetch-fn="fetchData" :delete-fn="deleteData" :columns="columns as AugmentedColumnDef<unknown>[]" />
+  <DataTable
+:selectable="true" :searchable="true" :qrable="true"
+    :add-trigger-fn="() => { router.push('/admin/devices/new') }" :fetch-fn="fetchData" :delete-fn="deleteData"
+    :columns="columns as AugmentedColumnDef<unknown>[]" />
 </template>
