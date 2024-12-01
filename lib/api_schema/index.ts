@@ -212,3 +212,11 @@ export const PrintQRCodeDto = Type.Object({
 });
 
 export type PrintQRCodeDto = Static<typeof PrintQRCodeDto>;
+
+export const DeviceCheckerResourceDto = Type.Object({
+  id: Type.String(),
+  status: Type.String(),
+  allowedBorrowRoles: Type.Array(Type.String()),
+});
+
+export type DeviceCheckerResourceDto = Static<typeof DeviceCheckerResourceDto>;

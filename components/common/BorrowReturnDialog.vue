@@ -35,13 +35,15 @@ const handleReturn = () => {
       </DialogHeader>
 
       <div class="grid grid-cols-1 gap-4 py-6" autofocus="false" tabindex="-1">
-        <Button autofocus="false" tabindex="-1" variant="outline"
+        <Button
+autofocus="false" tabindex="-1" variant="outline"
           class="w-full h-20 text-lg flex items-center justify-center gap-3" @click="handleBorrow">
           <Icon name="i-heroicons-arrow-up-tray" class="w-6 h-6" />
           Mượn thiết bị
         </Button>
 
-        <Button autofocus="false" tabindex="-1" variant="outline"
+        <Button
+autofocus="false" tabindex="-1" variant="outline"
           class="w-full h-20 text-lg flex items-center justify-center gap-3" @click="handleReturn">
           <Icon name="i-heroicons-arrow-down-tray" class="w-6 h-6" />
           Thu hồi thiết bị

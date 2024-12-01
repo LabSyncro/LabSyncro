@@ -26,7 +26,7 @@ const generateDevices = async (): Promise<{ id: string; url: string; name: strin
   return props.listDeviceIds.map(deviceId => {
     return {
       id: `${deviceKindId.toLowerCase()}/${deviceId}`,
-      url: `http://localhost:3000/devices/${deviceKindId.toLowerCase()}`,
+      url: `http://localhost:3000/devices/${deviceKindId.toLowerCase()}?id=${deviceId}`,
       name: deviceKindName,
     };
   });

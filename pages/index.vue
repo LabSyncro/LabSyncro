@@ -6,19 +6,28 @@ definePageMeta({
 
 const showDialog = ref(false);
 const userId = ref('');
+const deviceId = ref('');
 
-const handleVirtualKeyboardDetection = (input: string): void => {
-  showDialog.value = true;
-  userId.value = input;
+const handleVirtualKeyboardDetection = (input: string, type?: 'userId' | 'device'): void => {
+  if (type === 'userId') {
+    showDialog.value = true;
+    userId.value = input;
+  } else if (type === 'device') {
+    deviceId.value = input;
+    navigateTo(`/devices/${input}`);
+  }
 };
 
-useVirtualKeyboardDetection(handleVirtualKeyboardDetection);
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
+  userId: { length: 7, thresholdMs: 25 },
+  device: { thresholdMs: 25 }
+});
 
 </script>
 
 <template>
   <div>
-    <div @click="() => { showDialog = true }">
+    <div>
       <IntroBanner />
     </div>
     <div>
