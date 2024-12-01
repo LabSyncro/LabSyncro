@@ -4,59 +4,26 @@ definePageMeta({
   permission: 'home:own',
 });
 
-const router = useRouter();
+const showDialog = ref(false);
+const userId = ref('');
 
-const detectVirtualKeyboard = () => {
-  let currentInput = '';
-  const keyTimes = [];
-  let start = 0;
-
-  const handleKeyDown = (e) => {
-    start = new Date().getTime();
-  };
-
-  const handleKeyUp = (e) => {
-    const keyTime = new Date().getTime() - start;
-    keyTimes.push(keyTime);
-
-    // Capture the current key
-    currentInput += e.key;
-
-    // Check if we've reached 7 characters
-    if (currentInput.length === 7) {
-      const sumKeyTime = keyTimes.reduce((x, y) => x + y);
-      const avgKeyTime = sumKeyTime / keyTimes.length;
-
-      // If average key press time is less than 25ms, likely a virtual keyboard
-      if (avgKeyTime < 25) {
-        router.push({
-          path: '/admin/borrows/form',
-          query: { userId: currentInput }
-        });
-
-        // Remove event listeners
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
-      }
-    }
-  };
-
-  // Attach listeners to document
-  document.addEventListener('keydown', handleKeyDown);
-  document.addEventListener('keyup', handleKeyUp);
+const handleVirtualKeyboardDetection = (input: string): void => {
+  showDialog.value = true;
+  userId.value = input;
 };
 
-onMounted(() => {
-  detectVirtualKeyboard();
-});</script>
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection);
+
+</script>
 
 <template>
   <div>
-    <div>
+    <div @click="() => { showDialog = true }">
       <IntroBanner />
     </div>
     <div>
       <DeviceBorrowSection />
     </div>
+    <BorrowReturnDialog v-model:is-open="showDialog" :user-id="userId" />
   </div>
 </template>
