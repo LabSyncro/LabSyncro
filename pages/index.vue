@@ -14,13 +14,15 @@ const handleVirtualKeyboardDetection = (input: string, type?: 'userId' | 'device
     userId.value = input;
   } else if (type === 'device') {
     deviceId.value = input;
-    navigateTo(`/devices/${input}`);
+    navigateTo(`/device/${input}`);
   }
 };
 
 useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
-  userId: { length: 7, thresholdMs: 25 },
-  device: { thresholdMs: 25 }
+  userId: { length: 7 },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  scannerThresholdMs: 100,
+  maxInputTimeMs: 1000,
 });
 
 </script>

@@ -3,71 +3,104 @@ export function useVirtualKeyboardDetection (
   options: {
     userId?: {
       length?: number;
-      thresholdMs?: number;
     };
-    device?: { thresholdMs?: number };
+    device?: {
+      pattern?: RegExp;
+    };
+    scannerThresholdMs?: number;
+    maxInputTimeMs?: number;
   } = {},
 ) {
   let currentInput = '';
-  const keyTimes: number[] = [];
-  let start: number = 0;
-  let inputType: 'userId' | 'device' | null = null;
-  const deviceRegex = /^https?:\/\/[^\/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/;
+  let startTime: number = 0;
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  const defaultDeviceRegex =
+    /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/;
 
   const defaultOptions = {
-    userId: { length: 7, thresholdMs: 25 },
-    deviceId: { thresholdMs: 25 },
+    userId: {
+      length: 7,
+    },
+    device: {
+      pattern: defaultDeviceRegex,
+    },
+    scannerThresholdMs: 100,
+    maxInputTimeMs: 1000,
   };
 
   const mergedOptions = {
     userId: { ...defaultOptions.userId, ...options.userId },
-    deviceId: { ...defaultOptions.deviceId, ...options.device },
+    device: {
+      pattern: options.device?.pattern || defaultOptions.device.pattern,
+    },
+    scannerThresholdMs:
+      options.scannerThresholdMs ?? defaultOptions.scannerThresholdMs,
+    maxInputTimeMs: options.maxInputTimeMs ?? defaultOptions.maxInputTimeMs,
   };
 
-  const handleKeyDown = (_e: KeyboardEvent): void => {
-    start = new Date().getTime();
-  };
-
-  const handleKeyUp = (e: KeyboardEvent): void => {
-    const keyTime = new Date().getTime() - start;
-    keyTimes.push(keyTime);
-    currentInput += e.key;
-
-    if (currentInput.length === mergedOptions.userId.length) {
-      const avgKeyTime =
-        keyTimes.reduce((sum, time) => sum + time, 0) / keyTimes.length;
-
-      if (avgKeyTime < mergedOptions.userId.thresholdMs) {
-        inputType = 'userId';
-        onDetect(currentInput, inputType);
-        cleanupListeners();
-        return;
-      }
+  const handleKeyDown = (e: KeyboardEvent): void => {
+    if (currentInput.length === 0) {
+      startTime = new Date().getTime();
     }
 
-    if (deviceRegex.test(currentInput)) {
-      const avgKeyTime =
-        keyTimes.reduce((sum, time) => sum + time, 0) / keyTimes.length;
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
 
-      if (avgKeyTime < mergedOptions.deviceId.thresholdMs) {
-        inputType = 'device';
-        onDetect(currentInput, inputType);
-        cleanupListeners();
+    if (e.key.length === 1) {
+      currentInput += e.key;
+    }
+
+    timeoutId = setTimeout(() => {
+      const totalTime = new Date().getTime() - startTime;
+
+      if (totalTime > mergedOptions.maxInputTimeMs) {
+        resetDetection();
         return;
       }
+
+      if (mergedOptions.device.pattern.test(currentInput)) {
+        onDetect(currentInput, 'device');
+        resetDetection();
+        return;
+      }
+
+      if (
+        currentInput.length === mergedOptions.userId.length &&
+        /^\d+$/.test(currentInput)
+      ) {
+        onDetect(currentInput, 'userId');
+        resetDetection();
+        return;
+      }
+
+      resetDetection();
+    }, mergedOptions.scannerThresholdMs);
+  };
+
+  const resetDetection = (): void => {
+    currentInput = '';
+    startTime = 0;
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
     }
   };
 
   const setupListeners = (): void => {
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
   };
 
   const cleanupListeners = (): void => {
     document.removeEventListener('keydown', handleKeyDown);
-    document.removeEventListener('keyup', handleKeyUp);
+    resetDetection();
   };
 
   onMounted(setupListeners);
   onUnmounted(cleanupListeners);
+
+  return {
+    cleanup: cleanupListeners,
+  };
 }
