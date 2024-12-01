@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { deviceService } from '@/services';
+
 definePageMeta({
   middleware: ['permission'],
   permission: 'home:own',
@@ -8,13 +10,14 @@ const showDialog = ref(false);
 const userId = ref('');
 const deviceId = ref('');
 
-const handleVirtualKeyboardDetection = (input: string, type?: 'userId' | 'device'): void => {
+const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
   if (type === 'userId') {
     showDialog.value = true;
     userId.value = input;
   } else if (type === 'device') {
     deviceId.value = input;
-    navigateTo(`/device/${input}`);
+    const { id } = await deviceService.checkDevice(input.match(/[?&]id=([a-fA-F0-9]+)/)![1]);
+    navigateTo(`/device/${id}`);
   }
 };
 

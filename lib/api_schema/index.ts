@@ -220,3 +220,19 @@ export const DeviceCheckerResourceDto = Type.Object({
 });
 
 export type DeviceCheckerResourceDto = Static<typeof DeviceCheckerResourceDto>;
+
+export const AdminManagedLabsDto = Type.Object({
+  labs: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      branch: Type.String(),
+      timetable: Type.Record(Type.String(), Type.Array(Type.String())),
+      name: Type.String(),
+      room: Type.String(),
+    }),
+  ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type AdminManagedLabsDto = Static<typeof AdminManagedLabsDto>;

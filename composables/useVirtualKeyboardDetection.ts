@@ -1,5 +1,5 @@
 export function useVirtualKeyboardDetection (
-  onDetect: (input: string, type?: 'userId' | 'device') => void,
+  onDetect: (input: string, type?: 'userId' | 'device') => Promise<void> | void,
   options: {
     userId?: {
       length?: number;
@@ -14,7 +14,7 @@ export function useVirtualKeyboardDetection (
   let currentInput = '';
   let startTime: number = 0;
   let timeoutId: NodeJS.Timeout | null = null;
-
+  let isProcessing = false;
   const defaultDeviceRegex =
     /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/;
 
@@ -39,7 +39,22 @@ export function useVirtualKeyboardDetection (
     maxInputTimeMs: options.maxInputTimeMs ?? defaultOptions.maxInputTimeMs,
   };
 
+  const handleDetection = async (input: string, type: 'userId' | 'device') => {
+    if (isProcessing) return;
+
+    try {
+      isProcessing = true;
+      await onDetect(input, type);
+    } catch (error) {
+      throw new Error(`Error in virtual keyboard detection callback: ${error}`);
+    } finally {
+      isProcessing = false;
+    }
+  };
+
   const handleKeyDown = (e: KeyboardEvent): void => {
+    if (isProcessing) return;
+
     if (currentInput.length === 0) {
       startTime = new Date().getTime();
     }
@@ -61,7 +76,7 @@ export function useVirtualKeyboardDetection (
       }
 
       if (mergedOptions.device.pattern.test(currentInput)) {
-        onDetect(currentInput, 'device');
+        handleDetection(currentInput, 'device');
         resetDetection();
         return;
       }
@@ -70,7 +85,7 @@ export function useVirtualKeyboardDetection (
         currentInput.length === mergedOptions.userId.length &&
         /^\d+$/.test(currentInput)
       ) {
-        onDetect(currentInput, 'userId');
+        handleDetection(currentInput, 'userId');
         resetDetection();
         return;
       }
@@ -96,7 +111,6 @@ export function useVirtualKeyboardDetection (
     document.removeEventListener('keydown', handleKeyDown);
     resetDetection();
   };
-
   onMounted(setupListeners);
   onUnmounted(cleanupListeners);
 
