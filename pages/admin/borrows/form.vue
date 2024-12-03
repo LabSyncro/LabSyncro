@@ -4,7 +4,6 @@ import { deviceKindService, receiptService, userService } from '~/services';
 
 const route = useRoute();
 
-
 const currentDeviceKindId = ref<string | null>(null);
 
 const devicesInCart = ref<{
@@ -121,10 +120,38 @@ async function submitReceipt () {
   reloadNuxtApp();
 }
 
-onMounted(() => {
+const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
+  if (type === 'userId') {
+    userCodeInput.value = input;
+  } else if (type === 'device') {
+    const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
+    const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
+    const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
+    if (status === 'borrowing') {
+    } else if (status === 'healthy') {
+    }
+  }
+};
+
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
+  userId: { length: 7 },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  scannerThresholdMs: 100,
+  maxInputTimeMs: 1000,
+});
+
+
+onMounted(async () => {
   const userId = route.query.userId;
+  const deviceKindId = route.query.deviceKindId;
+  const deviceId = route.query.deviceId;
+
   if (userId && typeof userId === 'string') {
     userCodeInput.value = userId;
+  }
+
+  if (deviceKindId && deviceId && typeof deviceKindId === 'string' && typeof deviceId === 'string') {
+    await addDevice({ kind: deviceKindId, id: deviceId });
   }
 });
 </script>

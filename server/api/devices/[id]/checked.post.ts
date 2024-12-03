@@ -5,13 +5,26 @@ import {
   NOT_FOUND_CODE,
 } from '~/constants';
 import { dbPool } from '~/server/db';
-import { Type } from '@sinclair/typebox';
+import { Type, type Static } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { DeviceCheckerResourceDto } from '~/lib/api_schema';
 import { getToken } from '#auth';
 
+const BodyDto = Type.Object({
+  lab_id: Type.String(),
+});
+type BodyDto = Static<typeof BodyDto>;
+
 export default defineEventHandler<Promise<DeviceCheckerResourceDto>>(
   async (event) => {
+    const body = Value.Convert(BodyDto, await readBody(event));
+    if (!Value.Check(BodyDto, body)) {
+      throw createError({
+        statusCode: BAD_REQUEST_CODE,
+        message: 'Bad request: Invalid body',
+      });
+    }
+
     const deviceId = Value.Convert(Type.String(), getRouterParam(event, 'id'));
     const token = await getToken({ event });
     const userId = token?.id;
@@ -33,6 +46,25 @@ export default defineEventHandler<Promise<DeviceCheckerResourceDto>>(
       });
     }
 
+    const isDeviceInLab = await db.sql`
+      SELECT EXISTS (
+        SELECT 1 
+        FROM ${'devices'} d
+        JOIN ${'labs'} l ON d.${'lab_id'} = l.${'id'}
+        WHERE 
+          d.${'id'} = ${db.param(deviceId)}
+          AND l.${'admin_id'} = ${db.param(userId)}
+          AND d.${'lab_id'} = ${db.param(body.lab_id)}
+      ) AS is_device_in_lab;
+    `.run(dbPool);
+
+    if (!isDeviceInLab[0].is_device_in_lab) {
+      throw createError({
+        statusCode: BAD_REQUEST_CODE,
+        message: 'This device does not belong to your lab',
+      });
+    }
+
     const [device] = await db.sql`
       SELECT 
         d.${'id'}, 
@@ -44,6 +76,7 @@ export default defineEventHandler<Promise<DeviceCheckerResourceDto>>(
       WHERE 
         rd.${'device_id'} = ${db.param(deviceId)}
         AND d.${'status'} = 'borrowing'
+        AND d.${'lab_id'} = ${db.param(body.lab_id)}
       ORDER BY 
         rd.${'created_at'} DESC
       LIMIT 1;  
@@ -61,6 +94,7 @@ export default defineEventHandler<Promise<DeviceCheckerResourceDto>>(
         WHERE 
           d.${'id'} = ${db.param(deviceId)}
           AND l.${'admin_id'} = ${db.param(userId)}
+          AND d.${'lab_id'} = ${db.param(body.lab_id)}
         LIMIT 1;
       `.run(dbPool);
 

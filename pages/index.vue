@@ -6,18 +6,30 @@ definePageMeta({
   permission: 'home:own',
 });
 
+const { lab } = useLab();
+
 const showDialog = ref(false);
 const userId = ref('');
-const deviceId = ref('');
 
 const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
   if (type === 'userId') {
     showDialog.value = true;
     userId.value = input;
   } else if (type === 'device') {
-    deviceId.value = input;
-    const { id } = await deviceService.checkDevice(input.match(/[?&]id=([a-fA-F0-9]+)/)![1]);
-    navigateTo(`/device/${id}`);
+    const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
+    const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
+    const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
+    if (status === 'borrowing') {
+      navigateTo({
+        path: '/admin/returns/form',
+        query: { deviceKindId, deviceId }
+      });
+    } else if (status === 'healthy') {
+      navigateTo({
+        path: '/admin/borrows/form',
+        query: { deviceKindId, deviceId }
+      });
+    }
   }
 };
 

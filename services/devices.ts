@@ -20,6 +20,7 @@ export const deviceService = {
       sortField?: 'name' | 'id';
       desc?: boolean;
     },
+    labId?: string,
   ): Promise<ListOfDeviceResourceDto> {
     return await $fetch('/api/devices', {
       query: {
@@ -30,6 +31,7 @@ export const deviceService = {
         search_fields: searchFields,
         desc,
         sort_field: sortField,
+        lab_id: labId,
       },
     });
   },
@@ -68,7 +70,15 @@ export const deviceService = {
     });
   },
 
-  async checkDevice (deviceId: string): Promise<DeviceCheckerResourceDto> {
-    return await $fetch(`/api/devices/${deviceId}/checked`, {});
+  async checkDevice (
+    deviceId: string,
+    lab_id: string,
+  ): Promise<DeviceCheckerResourceDto> {
+    return await $fetch(`/api/devices/${deviceId}/checked`, {
+      method: 'POST',
+      body: {
+        lab_id,
+      },
+    });
   },
 };
