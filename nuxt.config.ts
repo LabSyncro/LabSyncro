@@ -17,7 +17,8 @@ export default defineNuxtConfig({
   auth: {
     isEnabled: true,
     disableServerSideAuth: false,
-    baseURL: 'http://localhost:3000/api/auth',
+    baseURL:
+      'https://scoring-sponsored-newark-driven.trycloudflare.com/api/auth',
     provider: {
       type: 'authjs',
     },
@@ -72,5 +73,8 @@ export default defineNuxtConfig({
       viewport: 'width=device-width, initial-scale=1',
       title: 'Labsyncro',
     },
+  },
+  devServer: {
+    host: '0.0.0.0',
   },
 });

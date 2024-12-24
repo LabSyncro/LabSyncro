@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import uuid4 from 'uuid4';
-import { deviceKindService, receiptService, } from '~/services';
+import moment from 'moment';
+import { deviceKindService, receiptService, userService, deviceService } from '~/services';
 
 const route = useRoute();
 
-const { data } = useAuth();
+const { lab } = useLab();
 
 const currentDeviceKindId = ref<string | null>(null);
 
@@ -15,6 +15,14 @@ const devicesInCart = ref<{
 }[]>([]);
 
 const selectedDevices = computed(() => devicesInCart.value.flatMap((deviceKind) => deviceKind.deviceIds));
+
+function generateUniqueId (): string {
+  const datePrefix = moment().format('YYYYMMDD');
+  const randomSuffix = Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, '0');
+  return `${datePrefix}/${randomSuffix}`;
+}
 
 function openModalForDeviceId (id: string) {
   currentDeviceKindId.value = id;
@@ -63,19 +71,30 @@ function deleteDeviceKinds (kindIds: string[]) {
 }
 
 const userCodeInput = ref('');
+const fullName = ref<null | string>(null);
 const role = ref<null | string>(null);
 const translatedRole = ref('Vai trò không hợp lệ');
 watch(userCodeInput, async () => {
-  if (!(['student', 'teacher', 'lab_admin'] as (string | undefined)[]).includes(data.value?.user.roles[0])) {
+  const isValidUserCode = /^\d{7}$/.test(userCodeInput.value);
+
+  if (isValidUserCode) {
+    const userMeta = await userService.getUserById(userCodeInput.value);
+    fullName.value = userMeta!.name || null;
+
+    if (!(['student', 'teacher', 'lab_admin'] as (string | undefined)[]).includes(userMeta!.role)) {
+      role.value = null;
+      translatedRole.value = 'Vai trò không hợp lệ';
+    } else {
+      role.value = userMeta!.role;
+      translatedRole.value = userMeta!.role === 'student' ? 'Sinh viên' : 'Giảng viên';
+    }
+  } else {
+    fullName.value = null;
     role.value = null;
     translatedRole.value = 'Vai trò không hợp lệ';
-  } else {
-    role.value = data.value?.user.roles[0] || null;
-    translatedRole.value = data.value?.user.roles[0] === 'student' ? 'Sinh viên' : 'Giảng viên';
   }
 });
-
-const receiptCodeInput = ref(uuid4());
+const receiptCodeInput = ref(generateUniqueId());
 const now = new Date(Date.now());
 const borrowDateInput = ref(now.toISOString().substr(0, 10));
 const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
@@ -103,10 +122,40 @@ async function submitReceipt () {
   reloadNuxtApp();
 }
 
-onMounted(() => {
+const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
+  if (type === 'userId') {
+    userCodeInput.value = input;
+  } else if (type === 'device') {
+    const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
+    const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
+    console.log(deviceKindId, deviceId);
+    const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
+    if (status === 'borrowing') {
+    } else if (status === 'healthy') {
+      await addDevice({ kind: deviceKindId!, id: deviceId });
+    }
+  }
+};
+
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
+  userId: { length: 7 },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  scannerThresholdMs: 100,
+  maxInputTimeMs: 1000,
+});
+
+
+onMounted(async () => {
   const userId = route.query.userId;
+  const deviceKindId = route.query.deviceKindId;
+  const deviceId = route.query.deviceId;
+
   if (userId && typeof userId === 'string') {
     userCodeInput.value = userId;
+  }
+
+  if (deviceKindId && deviceId && typeof deviceKindId === 'string' && typeof deviceId === 'string') {
+    await addDevice({ kind: deviceKindId, id: deviceId });
   }
 });
 </script>
@@ -125,7 +174,7 @@ onMounted(() => {
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <NuxtLink class="text-normal font-bold underline text-black" href="/admin/borrows/form">
-            Mượn thiết bị
+            Trả thiết bị
           </NuxtLink>
         </BreadcrumbItem>
       </BreadcrumbList>
@@ -135,7 +184,7 @@ onMounted(() => {
       <div class="flex flex-col xl:flex-row gap-8">
         <div class="flex-1">
           <div class="bg-white p-4">
-            <h2 class="text-lg mb-6">Danh sách mượn</h2>
+            <h2 class="text-lg mb-6">Danh sách trả</h2>
             <div class="flex gap-4 mb-6">
               <CheckoutDeviceSearchBox @device-select="openModalForDeviceId" />
               <CheckoutQrButton />
@@ -150,66 +199,61 @@ onMounted(() => {
         </div>
         <div class="flex flex-col gap-8 min-w-[350px]">
           <div class="bg-white p-4">
-            <div class="flex gap-2 justify-between items-center mb-8">
-              <h2 class="text-lg">Người mượn</h2>
+            <div class="flex gap-2 justify-between items-center mb-4">
+              <h2 class="text-xl">Người mượn</h2>
               <button
-                class="bg-slate-200 border border-slate-400 text-slate-dark rounded-md flex items-center gap-2 p-2">
+                class="bg-slate-100 border border-slate-400 text-slate-dark rounded-md flex items-center gap-2 p-2">
                 <Icon aria-hidden class="left-3 top-[13px] text-xl" name="i-heroicons-qr-code" />
-                <p class="hidden 2xl:block">Quét mã người mượn</p>
+                <p>Quét mã người mượn</p>
               </button>
             </div>
             <div role="form">
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Mã số *</label>
-                <input
-v-model="userCodeInput" type="text" required
-                  class="border-slate-300 rounded-md px-2 border w-[100%] p-1">
-              </div>
-              <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Họ và tên</label>
-                <input
-type="text" required class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100"
-                  :disabled="true" :value="data?.user.name ?? 'Không tìm thấy người dùng'">
-              </div>
-              <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Vai trò</label>
-                <input
-:value="translatedRole" required
-                  class="border-slate-300 rounded-md border w-[100%] p-1 px-2 bg-gray-100" :disable="true">
+                <div class="mb-2">
+                  <label class="text-sm text-gray-600">
+                    Mã số sinh viên <span class="text-red-500">*</span>
+                  </label>
+                  <Input v-model:model-value="userCodeInput" class="text-lg" />
+                </div>
+                <div v-if="/^\d{7}$/.test(userCodeInput)" class="text-lg">
+                  {{ fullName }} | {{ translatedRole }}
+                </div>
               </div>
             </div>
           </div>
           <div class="bg-white p-4">
-            <h2 class="text-lg mb-6">Thông tin mượn</h2>
+            <h2 class="text-xl mb-4">Thông tin mượn</h2>
             <div role="form">
               <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label>
-                <input
-type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1"
-                  :value="receiptCodeInput">
+                <div class="text-lg">
+                  <div>
+                    Mã đơn:
+                    <span class="font-semibold text-blue-600">{{ receiptCodeInput }}</span>
+                  </div>
+                  <div>
+                    Ngày mượn:
+                    <span class="font-semibold text-blue-600">{{ borrowDateInput }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Ngày mượn *</label>
-                <input
-v-model="borrowDateInput" type="date" required
-                  class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
-              </div>
-              <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Ngày hẹn trả *</label>
-                <input
-v-model="returnDateInput" type="date" required
-                  class="border-slate-300 rounded-md border w-[100%] px-2 p-1">
-              </div>
-              <div class="mb-4">
-                <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả * <span
-v-if="!returnLabId"
-                    class="text-red-500">(Không hợp lệ)</span></label>
-                <CheckoutLabSearchBox @select="setReturnLabId" />
+              <div class="space-y-4">
+                <div class="space-y-2">
+                  <label class="text-lg text-gray-600">
+                    Ngày hẹn trả <span class="text-red-500">*</span>
+                  </label>
+                  <Input v-model:model-value="returnDateInput" type="date" class="text-lg p-4 rounded-xl border-2" />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-lg text-gray-600">
+                    Địa điểm trả <span class="text-red-500">*</span>
+                  </label>
+                  <CheckoutLabSearchBox @select="setReturnLabId" />
+                </div>
               </div>
             </div>
           </div>
           <div class="flex justify-end">
-            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4" @click="submitReceipt">
+            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4 w-full" @click="submitReceipt">
               Xác nhận mượn
             </button>
           </div>
@@ -218,3 +262,4 @@ v-if="!returnLabId"
     </main>
   </div>
 </template>
+

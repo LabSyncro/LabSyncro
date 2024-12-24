@@ -50,7 +50,7 @@ export const deviceService = {
 
   async printQRCode ({ devices }: { devices: PrintQRCodeDto[] }): Promise<void> {
     return await $fetch(
-      'https://15c1-171-252-153-91.ngrok-free.app/print_labels',
+      'https://c1a5-42-115-188-242.ngrok-free.app/print_labels',
       {
         method: 'POST',
         body: { devices },

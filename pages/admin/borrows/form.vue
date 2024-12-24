@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import moment from 'moment';
-import { deviceKindService, receiptService, userService } from '~/services';
+import { deviceKindService, receiptService, userService, deviceService } from '~/services';
 
 const route = useRoute();
+
+const { lab } = useLab();
 
 const currentDeviceKindId = ref<string | null>(null);
 
 const devicesInCart = ref<{
   id: string;
   name: string;
+  category: string;
   deviceIds: string[];
 }[]>([]);
 
@@ -40,6 +43,7 @@ async function addDevice ({ kind, id }: { kind: string, id: string }) {
   devicesInCart.value.push({
     id: kind,
     name: deviceKindMeta.name,
+    category: deviceKindMeta.categoryName,
     deviceIds: [id],
   });
 }
@@ -126,9 +130,11 @@ const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | '
   } else if (type === 'device') {
     const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
     const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
+    console.log(deviceKindId, deviceId);
     const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
     if (status === 'borrowing') {
     } else if (status === 'healthy') {
+      await addDevice({ kind: deviceKindId!, id: deviceId });
     }
   }
 };

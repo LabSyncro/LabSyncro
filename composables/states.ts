@@ -1,6 +1,6 @@
 export const useLab = () => {
   const lab = useState<{ id: string }>('lab', () => ({
-    id: '015bd698-f8fb-4672-a43e-4e6fa64305ea',
+    id: '16824ad6-5ffd-4c90-80d2-a1d70f068cf1',
   }));
 
   return {
