@@ -22,7 +22,7 @@ export default defineNuxtConfig({
     disableServerSideAuth: false,
     // baseURL:
     //   'https://scoring-sponsored-newark-driven.trycloudflare.com/api/auth',
-    baseURL: 'http://localhost:3000/api/auth',
+    baseURL: 'http://0.0.0.0:3000/api/auth',
     provider: {
       type: 'authjs',
     },
