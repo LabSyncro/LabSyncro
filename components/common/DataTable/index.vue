@@ -129,13 +129,15 @@ v-if="addTriggerFn"
         </button>
       </div>
       <div>
-        <button
+        <slot name="custom-button">
+          <button
 v-if="addTriggerFn"
-          class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto"
-          @click="addTriggerFn">
-          <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
-          <span class="hidden md:block pl-8 pr-3">{{ addTitle ?? 'Thêm' }}</span>
-        </button>
+            class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto"
+            @click="addTriggerFn">
+            <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
+            <span class="hidden md:block pl-8 pr-3">{{ addTitle ?? 'Thêm' }}</span>
+          </button>
+        </slot>
       </div>
     </div>
     <DataTableCore

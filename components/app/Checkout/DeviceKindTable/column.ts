@@ -5,18 +5,14 @@ import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 export function createColumns ({
   onDeviceKindLinkClick,
 }: {
-  onDeviceKindLinkClick: (id: string) => void,
+  onDeviceKindLinkClick: (id: string) => void;
 }): AugmentedColumnDef<DeviceKindInCartList>[] {
   return [
     {
       id: 'id',
       title: 'Mã loại thiết bị',
       cell: ({ row }) =>
-        h(
-          'p',
-          { class: 'text-normal pl-3' },
-          [row.original.id.toUpperCase()],
-        ),
+        h('p', { class: 'text-normal pl-3' }, [row.original.id.toUpperCase()]),
     },
     {
       id: 'name',
@@ -24,8 +20,24 @@ export function createColumns ({
       cell: ({ row }) =>
         h(
           'p',
-          { class: 'line-clamp-2 text-slate-500 text-normal leading-6 font-normal' },
+          {
+            class:
+              'line-clamp-2 text-slate-500 text-normal leading-6 font-normal',
+          },
           row.original.name,
+        ),
+    },
+    {
+      id: 'category',
+      title: 'Phân nhóm',
+      cell: ({ row }) =>
+        h(
+          'p',
+          {
+            class:
+              'line-clamp-2 text-slate-500 text-normal leading-6 font-normal',
+          },
+          row.original.category,
         ),
     },
     {
@@ -34,7 +46,10 @@ export function createColumns ({
       cell: ({ row }) =>
         h(
           'p',
-          { class: 'line-clamp-2 text-slate-500 text-right text-normal leading-6 font-normal' },
+          {
+            class:
+              'line-clamp-2 text-slate-500 text-center text-normal leading-6 font-normal',
+          },
           row.original.quantity,
         ),
     },
@@ -44,7 +59,10 @@ export function createColumns ({
       cell: ({ row }) =>
         h(
           'div',
-          { class: 'flex justify-end items-center text-lg hover:cursor-pointer', onClick: () => onDeviceKindLinkClick(row.original.id) },
+          {
+            class: 'flex justify-end items-center text-lg hover:cursor-pointer',
+            onClick: () => onDeviceKindLinkClick(row.original.id),
+          },
           h(Icon, { name: 'i-heroicons-arrow-top-right-on-square' }),
         ),
     },

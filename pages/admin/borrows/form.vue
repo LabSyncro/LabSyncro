@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import moment from 'moment';
-import { deviceKindService, receiptService, userService } from '~/services';
+import { deviceKindService, receiptService, userService, deviceService } from '~/services';
 
 const route = useRoute();
 
+const { lab } = useLab();
 
 const currentDeviceKindId = ref<string | null>(null);
 
 const devicesInCart = ref<{
   id: string;
   name: string;
+  category: string;
   deviceIds: string[];
 }[]>([]);
 
@@ -41,6 +43,7 @@ async function addDevice ({ kind, id }: { kind: string, id: string }) {
   devicesInCart.value.push({
     id: kind,
     name: deviceKindMeta.name,
+    category: deviceKindMeta.categoryName,
     deviceIds: [id],
   });
 }
@@ -121,10 +124,40 @@ async function submitReceipt () {
   reloadNuxtApp();
 }
 
-onMounted(() => {
+const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
+  if (type === 'userId') {
+    userCodeInput.value = input;
+  } else if (type === 'device') {
+    const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
+    const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
+    console.log(deviceKindId, deviceId);
+    const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
+    if (status === 'borrowing') {
+    } else if (status === 'healthy') {
+      await addDevice({ kind: deviceKindId!, id: deviceId });
+    }
+  }
+};
+
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
+  userId: { length: 7 },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  scannerThresholdMs: 100,
+  maxInputTimeMs: 1000,
+});
+
+
+onMounted(async () => {
   const userId = route.query.userId;
+  const deviceKindId = route.query.deviceKindId;
+  const deviceId = route.query.deviceId;
+
   if (userId && typeof userId === 'string') {
     userCodeInput.value = userId;
+  }
+
+  if (deviceKindId && deviceId && typeof deviceKindId === 'string' && typeof deviceId === 'string') {
+    await addDevice({ kind: deviceKindId, id: deviceId });
   }
 });
 </script>
@@ -193,26 +226,6 @@ onMounted(() => {
           <div class="bg-white p-4">
             <h2 class="text-xl mb-4">Thông tin mượn</h2>
             <div role="form">
-              <!-- <div class="mb-4"> -->
-              <!--   <label class="text-normal text-slate-dark mb-2 block">Mã đơn mượn</label> -->
-              <!--   <input type="text" required class="border-slate-300 rounded-md border w-[100%] px-2 p-1" -->
-              <!--     :value="receiptCodeInput"> -->
-              <!-- </div> -->
-              <!-- <div class="mb-4"> -->
-              <!--   <label class="text-normal text-slate-dark mb-2 block">Ngày mượn *</label> -->
-              <!--   <input v-model="borrowDateInput" type="date" required -->
-              <!--     class="border-slate-300 rounded-md border w-[100%] px-2 p-1"> -->
-              <!-- </div> -->
-              <!-- <div class="mb-4"> -->
-              <!--   <label class="text-normal text-slate-dark mb-2 block">Ngày hẹn trả *</label> -->
-              <!--   <input v-model="returnDateInput" type="date" required -->
-              <!--     class="border-slate-300 rounded-md border w-[100%] px-2 p-1"> -->
-              <!-- </div> -->
-              <!-- <div class="mb-4"> -->
-              <!--   <label class="text-normal text-slate-dark mb-2 block">Địa điểm hẹn trả * <span v-if="!returnLabId" -->
-              <!--       class="text-red-500">(Không hợp lệ)</span></label> -->
-              <!--   <CheckoutLabSearchBox @select="setReturnLabId" /> -->
-              <!-- </div> -->
               <div class="mb-4">
                 <div class="text-lg">
                   <div>

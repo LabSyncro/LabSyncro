@@ -8,6 +8,7 @@ import { dbPool } from '~/server/db';
 
 const QueryDto = Type.Object({
   category_id: Type.Optional(Type.Number()),
+  lab_id: Type.Optional(Type.String()),
   offset: Type.Number(),
   length: Type.Number(),
   search_text: Type.Optional(Type.String()),
@@ -43,6 +44,7 @@ export default defineEventHandler<
   }
   const {
     category_id: categoryId,
+    lab_id: labId,
     offset,
     length,
     search_fields: searchFields,
@@ -69,7 +71,8 @@ export default defineEventHandler<
         JOIN ${'categories'}
         ON ${'categories'}.${'id'} = ${'device_kinds'}.${'category_id'}
       WHERE
-        ${categoryId !== undefined ? db.raw(`device_kinds.category_id = ${categoryId}`) : db.raw('TRUE')} AND
+        ${categoryId !== undefined ? db.raw(`device_kinds.category_id = ${categoryId}`) : db.raw('TRUE')} AND 
+        ${labId !== undefined ? db.raw(`devices.lab_id = '${labId}'`) : db.raw('TRUE')} AND
         ${'devices'}.${'deleted_at'} IS NULL
         ${
   searchText !== undefined
@@ -92,6 +95,7 @@ export default defineEventHandler<
     ON ${'device_kinds'}.${'id'} = ${'devices'}.${'kind'}
     WHERE
       ${categoryId !== undefined ? db.raw(`device_kinds.category_id = ${categoryId}`) : db.raw('TRUE')} AND
+      ${labId !== undefined ? db.raw(`devices.lab_id = '${labId}'`) : db.raw('TRUE')} AND
       ${'devices'}.${'deleted_at'} IS NULL AND
       ${'device_kinds'}.${'deleted_at'} IS NULL
       ${

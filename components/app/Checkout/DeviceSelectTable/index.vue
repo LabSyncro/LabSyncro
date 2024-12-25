@@ -13,8 +13,10 @@ const emits = defineEmits<{
   'device-delete': [string],
 }>();
 
+const { lab } = useLab();
+
 async function fetchData (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string, searchFields?: string[] }): Promise<{ data: unknown[], totalPages: number }> {
-  const res = await deviceService.getByKind(props.kindId, offset, length, { searchText: options.searchText, searchFields: ['device_id'], sortField: options.sortField as any, desc: options.desc });
+  const res = await deviceService.getByKind(props.kindId, offset, length, { searchText: options.searchText, searchFields: ['device_id'], sortField: options.sortField as any, desc: options.desc }, lab.value.id);
   return {
     data: res.devices,
     totalPages: res.totalPages,
@@ -31,5 +33,7 @@ async function borrowDevice (id: string) {
 </script>
 
 <template>
-  <DataTable :selectable="false" :searchable="true" :qrable="true" :fetch-fn="fetchData" :columns="createColumns(props.selectedDevices, { deleteDevice, borrowDevice }) as AugmentedColumnDef<unknown>[]" />
+  <DataTable
+:selectable="false" :searchable="true" :qrable="true" :fetch-fn="fetchData"
+    :columns="createColumns(props.selectedDevices, { deleteDevice, borrowDevice }) as AugmentedColumnDef<unknown>[]" />
 </template>

@@ -1,4 +1,8 @@
-import type { ListOfDeviceResourceDto, PrintQRCodeDto } from '~/lib/api_schema';
+import type {
+  DeviceCheckerResourceDto,
+  ListOfDeviceResourceDto,
+  PrintQRCodeDto,
+} from '~/lib/api_schema';
 
 export const deviceService = {
   async getByKind (
@@ -16,6 +20,7 @@ export const deviceService = {
       sortField?: 'name' | 'id';
       desc?: boolean;
     },
+    labId?: string,
   ): Promise<ListOfDeviceResourceDto> {
     return await $fetch('/api/devices', {
       query: {
@@ -26,6 +31,7 @@ export const deviceService = {
         search_fields: searchFields,
         desc,
         sort_field: sortField,
+        lab_id: labId,
       },
     });
   },
@@ -44,7 +50,7 @@ export const deviceService = {
 
   async printQRCode ({ devices }: { devices: PrintQRCodeDto[] }): Promise<void> {
     return await $fetch(
-      'https://531f-171-252-153-91.ngrok-free.app/print_labels',
+      'https://c1a5-42-115-188-242.ngrok-free.app/print_labels',
       {
         method: 'POST',
         body: { devices },
@@ -61,6 +67,18 @@ export const deviceService = {
         id: device.id,
         printed_at: device.printedAt,
       })),
+    });
+  },
+
+  async checkDevice (
+    deviceId: string,
+    lab_id: string,
+  ): Promise<DeviceCheckerResourceDto> {
+    return await $fetch(`/api/devices/${deviceId}/checked`, {
+      method: 'POST',
+      body: {
+        lab_id,
+      },
     });
   },
 };

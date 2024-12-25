@@ -27,7 +27,7 @@ v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-
             <SidebarLink to="/dashboard" icon="i-heroicons-chart-pie">
               Dashboard
             </SidebarLink>
-            <SidebarLink to="/devices" icon="i-heroicons-cpu-chip">
+            <SidebarLink to="/admin/devices" icon="i-heroicons-cpu-chip">
               Danh sách thiết bị
             </SidebarLink>
             <SidebarLink to="/labs" icon="i-heroicons-beaker">
@@ -35,7 +35,7 @@ v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-
             </SidebarLink>
           </SidebarSection>
           <SidebarSection title="VẬN HÀNH">
-            <SidebarLink to="/borrow" icon="i-heroicons-hand-raised">
+            <SidebarLink to="/admin/receipts" icon="i-heroicons-hand-raised">
               Mượn / Trả
             </SidebarLink>
           </SidebarSection>
@@ -51,4 +51,3 @@ v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-
   will-change: transform, opacity;
 }
 </style>
-
