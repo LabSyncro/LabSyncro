@@ -14,6 +14,9 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@sidebase/nuxt-auth',
   ],
+  nitro: {
+    preset: 'bun',
+  },
   auth: {
     isEnabled: true,
     disableServerSideAuth: false,
