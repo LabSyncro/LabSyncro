@@ -6,6 +6,7 @@ const props = defineProps<{
   deleteFn?: (ids: string[]) => Promise<void>;
   fetchFn: (offset: number, length: number, options: { desc?: boolean, sortField?: string, searchText?: string }) => Promise<{ data: unknown[], totalPages: number }>,
   addTriggerFn?: () => void,
+  addTitle?: string;
   columns: AugmentedColumnDef<unknown>[],
   qrable: boolean;
   searchable: boolean;
@@ -133,7 +134,7 @@ v-if="addTriggerFn"
           class="relative hidden md:block bg-tertiary-darker items-center text-white px-3 rounded-md w-11 h-11 md:w-auto"
           @click="addTriggerFn">
           <Icon aria-hidden class="absolute left-3 top-[12px] text-xl" name="i-heroicons-plus" />
-          <span class="hidden md:block pl-8 pr-3">Thêm</span>
+          <span class="hidden md:block pl-8 pr-3">{{ addTitle ?? 'Thêm' }}</span>
         </button>
       </div>
     </div>

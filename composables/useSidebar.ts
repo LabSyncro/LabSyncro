@@ -1,12 +1,17 @@
 export const useSidebar = () => {
-  const activeSidebar = useState<'simple' | 'detailed'>(
-    'sidebar-active',
-    () => 'simple',
-  );
-  const activeSection = useState<string>('sidebar-section', () => '');
+  const isOpen = useState<boolean>('sidebar-open', () => false);
+
+  const openSidebar = () => {
+    isOpen.value = true;
+  };
+
+  const closeSidebar = () => {
+    isOpen.value = false;
+  };
 
   return {
-    activeSidebar,
-    activeSection,
+    isOpen,
+    openSidebar,
+    closeSidebar,
   };
 };

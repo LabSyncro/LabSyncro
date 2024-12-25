@@ -11,7 +11,8 @@
           <p class="font-semibold">/</p>
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <NuxtLink class="text-normal font-bold underline text-black" href="/admin/devices">Danh sách loại thiết bị</NuxtLink>
+          <NuxtLink class="text-normal font-bold underline text-black" href="/admin/devices">Danh sách loại thiết bị
+          </NuxtLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

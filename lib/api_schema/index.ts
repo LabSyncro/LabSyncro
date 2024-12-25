@@ -48,6 +48,49 @@ export const ReceiptResourceDto = Type.Object({
 
 export type ReceiptResourceDto = Static<typeof ReceiptResourceDto>;
 
+export const ReadyBorrowedDevicesResourceDto = Type.Object({
+  devices: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      name: Type.String(),
+      mainImage: Type.String(),
+      subImages: Type.Array(Type.String()),
+      quantity: Type.Number(),
+      place: Type.String(),
+    }),
+  ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type ReadyBorrowedDevicesResourceDto = Static<
+  typeof ReadyBorrowedDevicesResourceDto
+>;
+
+export const ReturnedReceiptResourceDto = Type.Object({
+  receipts: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      name: Type.String(),
+      mainImage: Type.String(),
+      subImages: Type.Array(Type.String()),
+      quantity: Type.Number(),
+      borrowedPlace: Type.String(),
+      returnedPlace: Type.String(),
+      borrowedAt: Type.Date(),
+      expectedReturnedAt: Type.Date(),
+      returnedAt: Type.Date(),
+      status: Type.String(),
+    }),
+  ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type ReturnedReceiptResourceDto = Static<
+  typeof ReturnedReceiptResourceDto
+>;
+
 export const DeviceQuantityByLabDto = Type.Object({
   labs: Type.Array(
     Type.Object({
@@ -91,6 +134,15 @@ export const ListOfDeviceKindResourceDto = Type.Object({
       borrowableQuantity: Type.Number(),
       category: Type.String(),
       unit: Type.String(),
+      description: Type.Union([Type.String(), Type.Null()]),
+      meta: Type.Union([
+        Type.Record(
+          Type.String(),
+          Type.Union([Type.String(), Type.Number(), Type.Null()]),
+        ),
+        Type.Null(),
+      ]),
+      dataSheet: Type.Union([Type.String(), Type.Null()]),
     }),
   ),
   totalPages: Type.Number(),
@@ -109,6 +161,9 @@ export const ListOfDeviceResourceDto = Type.Object({
       status: Type.String(),
       room: Type.String(),
       branch: Type.String(),
+      price: Type.String(),
+      createdAt: Type.Date(),
+      printedAt: Type.Union([Type.Date(), Type.Null()]),
     }),
   ),
   totalPages: Type.Number(),
@@ -125,7 +180,7 @@ export const ListOfLabResourceDto = Type.Object({
       timetable: Type.Record(Type.String(), Type.Array(Type.String())),
       adminId: Type.String(),
       adminName: Type.String(),
-      adminTel: Type.String(),
+      adminTel: Type.Union([Type.Null(), Type.String()]),
       name: Type.String(),
       room: Type.String(),
     }),
@@ -137,7 +192,7 @@ export type ListOfLabResourceDto = Static<typeof ListOfLabResourceDto>;
 export const UserResourceDto = Type.Object({
   id: Type.String(),
   avatar: Type.Union([Type.String(), Type.Null()]),
-  tel: Type.String(),
+  tel: Type.Union([Type.String(), Type.Null()]),
   name: Type.String(),
   email: Type.String(),
   role: Type.Union([
@@ -149,3 +204,11 @@ export const UserResourceDto = Type.Object({
 });
 
 export type UserResourceDto = Static<typeof UserResourceDto>;
+
+export const PrintQRCodeDto = Type.Object({
+  id: Type.String(),
+  name: Type.String(),
+  url: Type.String(),
+});
+
+export type PrintQRCodeDto = Static<typeof PrintQRCodeDto>;

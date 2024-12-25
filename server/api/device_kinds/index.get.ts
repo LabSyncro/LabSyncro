@@ -11,17 +11,20 @@ const QueryDto = Type.Object({
   offset: Type.Number(),
   length: Type.Number(),
   search_text: Type.Optional(Type.String()),
-  search_fields: Type.Optional(Type.Array(Type.Union([
-    Type.Literal('device_id'),
-    Type.Literal('device_name'),
-  ]))),
-  sort_field: Type.Optional(Type.Union([
-    Type.Literal('name'),
-    Type.Literal('category'),
-    Type.Literal('brand'),
-    Type.Literal('borrowable_quantity'),
-    Type.Literal('quantity'),
-  ])),
+  search_fields: Type.Optional(
+    Type.Array(
+      Type.Union([Type.Literal('device_id'), Type.Literal('device_name')]),
+    ),
+  ),
+  sort_field: Type.Optional(
+    Type.Union([
+      Type.Literal('name'),
+      Type.Literal('category'),
+      Type.Literal('brand'),
+      Type.Literal('borrowable_quantity'),
+      Type.Literal('quantity'),
+    ]),
+  ),
   desc: Type.Optional(Type.Boolean()),
 });
 
@@ -38,17 +41,28 @@ export default defineEventHandler<
       message: 'Bad request: Invalid query string',
     });
   }
-  const { category_id: categoryId, offset, length, search_fields: searchFields, sort_field: sortField, desc } = query;
-  const searchText = query.search_text?.replaceAll('\'', '').replaceAll('%', '').replaceAll('?', '');
+  const {
+    category_id: categoryId,
+    offset,
+    length,
+    search_fields: searchFields,
+    sort_field: sortField,
+    desc,
+  } = query;
+  const searchText = query.search_text
+    ?.replaceAll('\'', '')
+    .replaceAll('%', '')
+    .replaceAll('?', '');
   if (searchText !== undefined && !searchFields) {
     throw createError({
       statusCode: BAD_REQUEST_CODE,
-      message: 'Bad request: Expect search_fields to be present when search_text is specified',
+      message:
+        'Bad request: Expect search_fields to be present when search_text is specified',
     });
   }
 
-  const deviceKinds = await (db.sql`
-      SELECT ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
+  const deviceKinds = await db.sql`
+      SELECT ${'device_kinds'}.${'meta'}, ${'device_kinds'}.${'datasheet'}, ${'device_kinds'}.${'description'}, ${'device_kinds'}.${'unit'}, ${'device_kinds'}.${'brand'}, ${'device_kinds'}.${'manufacturer'}, ${'device_kinds'}.${'image'}, ${'device_kinds'}.${'id'}, ${'device_kinds'}.${'name'}, count(*)::int as ${'quantity'}, sum(CASE WHEN ${'devices'}.${'status'} = 'healthy' THEN 1 ELSE 0 END)::int as borrowable_quantity, MAX(${'categories'}.${'name'}) as category
       FROM ${'devices'}
         JOIN ${'device_kinds'}
         ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'} AND ${'device_kinds'}.${'deleted_at'} IS NULL
@@ -57,17 +71,21 @@ export default defineEventHandler<
       WHERE
         ${categoryId !== undefined ? db.raw(`device_kinds.category_id = ${categoryId}`) : db.raw('TRUE')} AND
         ${'devices'}.${'deleted_at'} IS NULL
-        ${searchText !== undefined ? db.raw(`AND (
+        ${
+  searchText !== undefined
+    ? db.raw(`AND (
           (${searchFields?.includes('device_id') || false} AND strip_vietnamese_accents(devices.kind || '/' || devices.id) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
           (${searchFields?.includes('device_name') || false} AND strip_vietnamese_accents(CAST(device_kinds.name AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%'))
-        )`) : db.raw('')}
+        )`)
+    : db.raw('')
+}
       GROUP BY ${'device_kinds'}.${'id'}
       ORDER BY ${sortField ? db.raw(`${sortField}`) : db.raw('device_kinds.id')} ${desc ? db.raw('DESC') : db.raw('ASC')}
       LIMIT ${db.param(length)}
       OFFSET ${db.param(offset)}
-    `).run(dbPool);
+    `.run(dbPool);
 
-  const [{ quantity: totalRecords }] = await (db.sql`
+  const [{ quantity: totalRecords }] = await db.sql`
     SELECT COUNT (DISTINCT ${'device_kinds'}.${'id'}) as quantity
     FROM ${'devices'}
     JOIN ${'device_kinds'}
@@ -76,17 +94,50 @@ export default defineEventHandler<
       ${categoryId !== undefined ? db.raw(`device_kinds.category_id = ${categoryId}`) : db.raw('TRUE')} AND
       ${'devices'}.${'deleted_at'} IS NULL AND
       ${'device_kinds'}.${'deleted_at'} IS NULL
-      ${searchText !== undefined ? db.raw(`AND (
+      ${
+  searchText !== undefined
+    ? db.raw(`AND (
         (${searchFields?.includes('device_id') || false} AND strip_vietnamese_accents(CAST(devices.id AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
         (${searchFields?.includes('device_name') || false} AND strip_vietnamese_accents(CAST(device_kinds.name AS TEXT)) ILIKE strip_vietnamese_accents('%${searchText}%'))
-      )`) : db.raw('')}
-    `).run(dbPool);
+      )`)
+    : db.raw('')
+}
+    `.run(dbPool);
 
   const totalPages = Math.ceil(totalRecords / length);
   const currentPage = Math.floor(offset / length);
-  
+
   const output = {
-    deviceKinds: deviceKinds.map(({ id, name, quantity, brand, manufacturer, image: { main_image, sub_images }, unit, borrowable_quantity, category }) => ({ id, name, quantity, brand, manufacturer, mainImage: main_image, subImages: sub_images, unit, borrowableQuantity: borrowable_quantity, category })),
+    deviceKinds: deviceKinds.map(
+      ({
+        id,
+        name,
+        quantity,
+        brand,
+        manufacturer,
+        image: { main_image, sub_images },
+        unit,
+        borrowable_quantity,
+        category,
+        description,
+        meta,
+        datasheet,
+      }) => ({
+        id,
+        name,
+        quantity,
+        brand,
+        manufacturer,
+        mainImage: main_image,
+        subImages: sub_images,
+        unit,
+        borrowableQuantity: borrowable_quantity,
+        category,
+        description,
+        meta,
+        dataSheet: datasheet,
+      }),
+    ),
     totalPages,
     currentPage,
   };
@@ -94,7 +145,8 @@ export default defineEventHandler<
   if (!Value.Check(ListOfDeviceKindResourceDto, output)) {
     throw createError({
       statusCode: INTERNAL_SERVER_ERROR_CODE,
-      message: 'Internal server error: the returned output does not conform to the schema',
+      message:
+        'Internal server error: the returned output does not conform to the schema',
     });
   }
 

@@ -1,3 +1,4 @@
+export * from './receipts';
 export * from './faculty';
 export * from './deviceKinds';
 export * from './category';
