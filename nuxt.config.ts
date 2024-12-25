@@ -17,11 +17,8 @@ export default defineNuxtConfig({
   auth: {
     isEnabled: true,
     disableServerSideAuth: false,
-<<<<<<< Updated upstream
-=======
     // baseURL:
     //   'https://scoring-sponsored-newark-driven.trycloudflare.com/api/auth',
->>>>>>> Stashed changes
     baseURL: 'http://localhost:3000/api/auth',
     provider: {
       type: 'authjs',
