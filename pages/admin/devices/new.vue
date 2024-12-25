@@ -88,18 +88,20 @@ onMounted(async () => {
                 <Input v-model="deviceKindId" placeholder="ABC-DEF" />
               </div>
               <div class="space-y-2">
-                <label class="text-sm text-gray-600">Phân loại thiết bị</label>
-                <Select v-model="category">
+                <label class="text-sm text-gray-600">Trạng thái *</label>
+                <Select v-model="status">
                   <SelectTrigger>
-                    <SelectValue placeholder="Cảm biến" />
+                    <SelectValue placeholder="Nháp" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem v-for="category in categories" :key="category.id" :value="category.value">
-                      {{ category.label }}
-                    </SelectItem>
+                    <SelectItem value="active">Hoạt động</SelectItem>
+                    <SelectItem value="inactive">Không hoạt động</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
                 <label class="text-sm text-gray-600">Thương hiệu</label>
                 <Input v-model="brand" />
