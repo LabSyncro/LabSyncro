@@ -1,30 +1,30 @@
-import env from 'dotenv';
+import env from "dotenv";
 env.config();
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: false,
-  compatibilityDate: '2024-11-15',
+  compatibilityDate: "2024-11-15",
   devtools: { enabled: true },
   modules: [
-    '@nuxt/eslint',
-    '@nuxt/image',
-    '@nuxtjs/tailwindcss',
-    '@nuxt/icon',
-    'shadcn-nuxt',
-    '@sidebase/nuxt-auth',
+    "@nuxt/eslint",
+    "@nuxt/image",
+    "@nuxtjs/tailwindcss",
+    "@nuxt/icon",
+    "shadcn-nuxt",
+    "@sidebase/nuxt-auth",
   ],
   nitro: {
-    preset: 'bun',
+    preset: "bun",
   },
   auth: {
     isEnabled: true,
     disableServerSideAuth: false,
     // baseURL:
     //   'https://scoring-sponsored-newark-driven.trycloudflare.com/api/auth',
-    baseURL: 'http://localhost:3000/api/auth',
+    baseURL: process.env.AUTH_API_BASE_URL || "http://localhost:3000/api/auth",
     provider: {
-      type: 'authjs',
+      type: "authjs",
     },
     sessionRefresh: {
       enablePeriodically: true,
@@ -36,7 +36,7 @@ export default defineNuxtConfig({
     },
   },
   eslint: {},
-  css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
+  css: ["~/assets/css/fonts.css", "~/assets/css/main.css"],
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -45,22 +45,22 @@ export default defineNuxtConfig({
   },
   components: [
     {
-      path: './components/app',
+      path: "./components/app",
     },
     {
-      path: './components/common',
+      path: "./components/common",
     },
   ],
   shadcn: {
     /**
      * Prefix for all the imported component
      */
-    prefix: '',
+    prefix: "",
     /**
      * Directory that the component lives in.
      * @default "./components/ui"
      */
-    componentDir: './components/ui',
+    componentDir: "./components/ui",
   },
   runtimeConfig: {
     DATABASE_USER: process.env.DATABASE_USER,
@@ -77,12 +77,12 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
-      title: 'Labsyncro',
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+      title: "Labsyncro",
     },
   },
   devServer: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
   },
 });
