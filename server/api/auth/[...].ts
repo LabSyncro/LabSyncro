@@ -4,7 +4,8 @@ import { NuxtAuthHandler } from '#auth';
 import bcrypt from 'bcrypt';
 
 const providers = [];
-const { NODE_ENV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = useRuntimeConfig();
+const { NODE_ENV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, AUTH_SECRET } =
+  useRuntimeConfig();
 
 if (NODE_ENV === 'production') {
   providers.push(
@@ -126,7 +127,7 @@ if (NODE_ENV === 'production') {
 }
 
 export default NuxtAuthHandler({
-  secret: process.env.AUTH_SECRET,
+  secret: AUTH_SECRET,
   providers,
   callbacks: {
     async jwt ({ token, user }) {
