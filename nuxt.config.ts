@@ -17,6 +17,11 @@ export default defineNuxtConfig({
   auth: {
     isEnabled: true,
     disableServerSideAuth: false,
+<<<<<<< Updated upstream
+=======
+    // baseURL:
+    //   'https://scoring-sponsored-newark-driven.trycloudflare.com/api/auth',
+>>>>>>> Stashed changes
     baseURL: 'http://localhost:3000/api/auth',
     provider: {
       type: 'authjs',
@@ -65,6 +70,7 @@ export default defineNuxtConfig({
     DATABASE_PORT: process.env.DATABASE_PORT,
     JWT_SECRET: process.env.JWT_SECRET,
     NODE_ENV: process.env.NODE_ENV,
+    PRINT_LABELS_URL: process.env.PRINT_LABELS_URL,
   },
   app: {
     head: {
