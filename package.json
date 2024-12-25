@@ -13,6 +13,7 @@
     "db:schema": "dotenv -e .env -- zapatos"
   },
   "dependencies": {
+    "@sidebase/nuxt-auth": "^0.10.0",
     "@sinclair/typebox": "^0.33.11",
     "@tanstack/vue-table": "^8.20.5",
     "@vueuse/core": "^11.3.0",
@@ -40,7 +41,6 @@
     "@nuxt/icon": "^1.5.2",
     "@nuxt/image": "^1.8.1",
     "@nuxtjs/tailwindcss": "^6.12.1",
-    "@sidebase/nuxt-auth": "^0.9.4",
     "@types/bcrypt": "^5.0.2",
     "@types/folder-hash": "^4.0.4",
     "@types/jsonwebtoken": "^9.0.6",
