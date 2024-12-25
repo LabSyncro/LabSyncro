@@ -212,3 +212,27 @@ export const PrintQRCodeDto = Type.Object({
 });
 
 export type PrintQRCodeDto = Static<typeof PrintQRCodeDto>;
+
+export const DeviceCheckerResourceDto = Type.Object({
+  id: Type.String(),
+  status: Type.String(),
+  allowedBorrowRoles: Type.Array(Type.String()),
+});
+
+export type DeviceCheckerResourceDto = Static<typeof DeviceCheckerResourceDto>;
+
+export const AdminManagedLabsDto = Type.Object({
+  labs: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      branch: Type.String(),
+      timetable: Type.Record(Type.String(), Type.Array(Type.String())),
+      name: Type.String(),
+      room: Type.String(),
+    }),
+  ),
+  totalPages: Type.Number(),
+  currentPage: Type.Number(),
+});
+
+export type AdminManagedLabsDto = Static<typeof AdminManagedLabsDto>;

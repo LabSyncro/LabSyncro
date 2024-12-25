@@ -76,4 +76,7 @@ export default defineNuxtConfig({
       title: 'Labsyncro',
     },
   },
+  devServer: {
+    host: '0.0.0.0',
+  },
 });

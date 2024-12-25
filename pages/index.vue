@@ -1,54 +1,46 @@
 <script lang="ts" setup>
-definePageMeta({
-  middleware: ['permission'],
-  permission: 'home:own',
-});
+import { deviceService } from '@/services';
 
-const router = useRouter();
+//definePageMeta({
+//  middleware: ['permission'],
+//  permission: 'home:own',
+//});
 
-const detectVirtualKeyboard = () => {
-  let currentInput = '';
-  const keyTimes = [];
-  let start = 0;
+const { lab } = useLab();
 
-  const handleKeyDown = (e) => {
-    start = new Date().getTime();
-  };
+const showDialog = ref(false);
+const userId = ref('');
 
-  const handleKeyUp = (e) => {
-    const keyTime = new Date().getTime() - start;
-    keyTimes.push(keyTime);
-
-    // Capture the current key
-    currentInput += e.key;
-
-    // Check if we've reached 7 characters
-    if (currentInput.length === 7) {
-      const sumKeyTime = keyTimes.reduce((x, y) => x + y);
-      const avgKeyTime = sumKeyTime / keyTimes.length;
-
-      // If average key press time is less than 25ms, likely a virtual keyboard
-      if (avgKeyTime < 25) {
-        router.push({
-          path: '/admin/borrows/form',
-          query: { userId: currentInput }
-        });
-
-        // Remove event listeners
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
-      }
+const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
+  if (type === 'userId') {
+    showDialog.value = true;
+    userId.value = input;
+  } else if (type === 'device') {
+    const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
+    const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
+    const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
+    if (status === 'borrowing') {
+      navigateTo({
+        path: '/admin/returns/form',
+        query: { deviceKindId, deviceId }
+      });
+    } else if (status === 'healthy') {
+      navigateTo({
+        path: '/admin/borrows/form',
+        query: { deviceKindId, deviceId }
+      });
     }
-  };
-
-  // Attach listeners to document
-  document.addEventListener('keydown', handleKeyDown);
-  document.addEventListener('keyup', handleKeyUp);
+  }
 };
 
-onMounted(() => {
-  detectVirtualKeyboard();
-});</script>
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
+  userId: { length: 7 },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  scannerThresholdMs: 100,
+  maxInputTimeMs: 1000,
+});
+
+</script>
 
 <template>
   <div>
@@ -58,5 +50,6 @@ onMounted(() => {
     <div>
       <DeviceBorrowSection />
     </div>
+    <BorrowReturnDialog v-model:is-open="showDialog" :user-id="userId" />
   </div>
 </template>

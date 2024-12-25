@@ -1,4 +1,8 @@
-import type { ListOfDeviceResourceDto, PrintQRCodeDto } from '~/lib/api_schema';
+import type {
+  DeviceCheckerResourceDto,
+  ListOfDeviceResourceDto,
+  PrintQRCodeDto,
+} from '~/lib/api_schema';
 
 export const deviceService = {
   async getByKind (
@@ -16,6 +20,7 @@ export const deviceService = {
       sortField?: 'name' | 'id';
       desc?: boolean;
     },
+    labId?: string,
   ): Promise<ListOfDeviceResourceDto> {
     return await $fetch('/api/devices', {
       query: {
@@ -26,8 +31,6 @@ export const deviceService = {
         search_fields: searchFields,
         desc,
         sort_field: sortField,
-<<<<<<< Updated upstream
-=======
         lab_id: labId,
       },
     });
@@ -46,12 +49,13 @@ export const deviceService = {
   },
 
   async printQRCode ({ devices }: { devices: PrintQRCodeDto[] }): Promise<void> {
-    const { PRINT_LABELS_URL } = useRuntimeConfig();
-
-    return await $fetch(PRINT_LABELS_URL, {
-      method: 'POST',
-      body: { devices },
-    });
+    return await $fetch(
+      'https://c1a5-42-115-188-242.ngrok-free.app/print_labels',
+      {
+        method: 'POST',
+        body: { devices },
+      },
+    );
   },
 
   async updatePrintedAt (
@@ -74,42 +78,7 @@ export const deviceService = {
       method: 'POST',
       body: {
         lab_id,
->>>>>>> Stashed changes
       },
-    });
-  },
-
-  async createDevices (
-    devices: { deviceKindId: string; labId: string }[],
-  ): Promise<{ id: string }[]> {
-    return await $fetch('/api/devices', {
-      method: 'POST',
-      body: devices.map((device) => ({
-        kind: device.deviceKindId,
-        lab_id: device.labId,
-      })),
-    });
-  },
-
-  async printQRCode ({ devices }: { devices: PrintQRCodeDto[] }): Promise<void> {
-    return await $fetch(
-      'https://531f-171-252-153-91.ngrok-free.app/print_labels',
-      {
-        method: 'POST',
-        body: { devices },
-      },
-    );
-  },
-
-  async updatePrintedAt (
-    devices: { id: string; printedAt: Date }[],
-  ): Promise<void> {
-    return await $fetch('/api/devices/printed', {
-      method: 'PATCH',
-      body: devices.map((device) => ({
-        id: device.id,
-        printed_at: device.printedAt,
-      })),
     });
   },
 };

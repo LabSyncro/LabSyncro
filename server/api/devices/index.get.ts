@@ -4,10 +4,12 @@ import { BAD_REQUEST_CODE, INTERNAL_SERVER_ERROR_CODE } from '~/constants';
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
 import { ListOfDeviceResourceDto } from '~/lib/api_schema';
+
 const QueryDto = Type.Object({
   offset: Type.Number(),
   length: Type.Number(),
   device_kind_id: Type.Optional(Type.String()),
+  lab_id: Type.Optional(Type.String()),
   search_text: Type.Optional(Type.String()),
   search_fields: Type.Optional(
     Type.Array(Type.Union([Type.Literal('device_id')])),
@@ -35,6 +37,7 @@ export default defineEventHandler<
 
   const {
     device_kind_id: deviceKindId,
+    lab_id: labId,
     offset,
     length,
     search_fields: searchFields,
@@ -62,6 +65,7 @@ export default defineEventHandler<
       ON ${'devices'}.${'kind'} = ${'device_kinds'}.${'id'}
     WHERE TRUE AND
       (${deviceKindId !== undefined ? db.param(false) : db.param(true)} OR ${'devices'}.${'kind'} = ${db.param(deviceKindId)}) AND
+      ${labId !== undefined ? db.raw(`devices.lab_id = '${labId}'`) : db.raw('TRUE')} AND
       ${'devices'}.${'deleted_at'} IS NULL
       ${
   searchText !== undefined
@@ -80,6 +84,7 @@ export default defineEventHandler<
     FROM ${'devices'}
     WHERE 
       (${deviceKindId !== undefined ? db.param(false) : db.param(true)} OR ${'devices'}.${'kind'} = ${db.param(deviceKindId)}) AND
+      ${labId !== undefined ? db.raw(`devices.lab_id = '${labId}'`) : db.raw('TRUE')} AND
       ${'devices'}.${'deleted_at'} IS NULL
       ${
   searchText !== undefined

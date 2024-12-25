@@ -7,6 +7,7 @@ const props = defineProps<{
   cart: {
     id: string;
     name: string;
+    category: string;
     deviceIds: string[];
   }[],
 }>();
@@ -28,6 +29,7 @@ async function fetchData (offset: number, length: number, options: { desc?: bool
   let deviceKinds = props.cart.map((deviceKind) => ({
     id: deviceKind.id,
     name: deviceKind.name,
+    category: deviceKind.category,
     quantity: deviceKind.deviceIds.length,
   }));
   if (options.sortField) {
@@ -45,5 +47,8 @@ async function fetchData (offset: number, length: number, options: { desc?: bool
 </script>
 
 <template>
-  <DataTable :key="cart.flatMap(({ deviceIds }) => deviceIds).join('-')" :selectable="false" :searchable="false" :qrable="false" :fetch-fn="fetchData" :delete-fn="deleteData" :columns="createColumns({ onDeviceKindLinkClick }) as AugmentedColumnDef<unknown>[]" />
+  <DataTable
+:key="cart.flatMap(({ deviceIds }) => deviceIds).join('-')" :selectable="false" :searchable="false"
+    :qrable="false" :fetch-fn="fetchData" :delete-fn="deleteData"
+    :columns="createColumns({ onDeviceKindLinkClick }) as AugmentedColumnDef<unknown>[]" />
 </template>
