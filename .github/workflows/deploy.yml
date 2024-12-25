@@ -41,7 +41,6 @@ jobs:
           echo AUTH_SECRET=${{ secrets.AUTH_SECRET }} >> .env
           echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
           echo PRINT_LABELS_ENDPOINT=${{ secrets.PRINT_LABELS_ENDPOINT }} >> .env
-          echo NUXT_AUTH_ORIGIN=${{ secrets.NUXT_AUTH_ORIGIN }} >> .env
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
