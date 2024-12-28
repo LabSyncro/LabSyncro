@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { signIn } = useAuth();
+const router = useRouter();
 
 const handleLogin = async () => {
   await signIn('google', { callbackUrl: '/' });
