@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ArrowLeft, Home, Shield } from 'lucide-vue-next';
+import { getUserPermissions } from '@/server/utils/rbac';
 
 definePageMeta({
   layout: 'unauthorized',
-  auth: false
+  auth: false,
 });
 
 const router = useRouter();
 const route = useRoute();
-
+const { signOut } = useAuth();
 const errorType = computed(() => route.query.error as string);
 
 const errorContent = computed(() => {
@@ -31,15 +32,16 @@ const errorContent = computed(() => {
   }
 });
 
-const goBack = () => {
-  router.back();
+const goBack = async () => {
+  await signOut({ redirect: false });
+  router.push('/login');
 };
 
-const goHome = () => {
+const goHome = async () => {
+  await signOut({ redirect: false });
   router.push('/');
 };
 </script>
-
 <template>
   <div class="container px-4 md:px-6">
     <div class="flex flex-col items-center space-y-4 text-center">
@@ -53,7 +55,7 @@ const goHome = () => {
         </p>
       </div>
       <div class="flex flex-col sm:flex-row items-center gap-4">
-        <Button variant="outline" class="space-x-2" @click="goBack">
+        <Button v-if="errorType !== 'UNAUTHORIZED_DOMAIN'" variant="outline" class="space-x-2" @click="goBack">
           <ArrowLeft class="w-4 h-4" />
           <span>Go Back</span>
         </Button>
