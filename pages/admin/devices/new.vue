@@ -99,15 +99,11 @@ onMounted(async () => {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
                 <label class="text-sm text-gray-600">Thương hiệu</label>
                 <Input v-model="brand" />
               </div>
             </div>
-
             <div class="space-y-2">
               <label class="text-sm text-gray-600">Mô tả thiết bị</label>
               <Textarea v-model="description" placeholder="Nhập mô tả thiết bị..." class="h-40" />
@@ -118,10 +114,9 @@ onMounted(async () => {
               <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
                 <div class="flex flex-col items-center">
                   <div class="flex flex-wrap gap-4">
-                    <div
-v-for="(image, index) in imagePreview" :key="index"
+                    <div v-for="(image, index) in imagePreview" :key="index"
                       class="w-32 h-32 flex justify-center items-center border rounded-lg overflow-hidden">
-                      <img :src="image" alt="Preview" class="w-full h-full object-cover" >
+                      <img :src="image" alt="Preview" class="w-full h-full object-cover">
                     </div>
                   </div>
                   <Button class="bg-tertiary-dark hover:bg-tertiary-darker mt-4" @click="triggerFileInput">
@@ -140,8 +135,7 @@ v-for="(image, index) in imagePreview" :key="index"
 
       <section class="bg-white mt-8 p-4 py-8 pb-8">
         <h1 class="font-bold text-2xl mb-8"> Tồn kho thiết bị </h1>
-        <DeviceNewInventoryTable
-:key="deviceKindId" :kind-id="deviceKindId" :kind-name="deviceName"
+        <DeviceNewInventoryTable :key="deviceKindId" :kind-id="deviceKindId" :kind-name="deviceName"
           @device-kind-link-click="handleDeviceKindLinkClick" />
       </section>
 
