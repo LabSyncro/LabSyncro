@@ -6,9 +6,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (status.value === 'authenticated') {
-    const requiredPermission = to.meta.permission as string;
-    if (requiredPermission && !data.value?.user?.permissions?.includes(requiredPermission)) {
+    const userPermissions = data.value.user.permissions;
+    
+    const requiredPermission = `${to.path}:own`;
+
+    if (requiredPermission && !userPermissions.includes(requiredPermission)) {
       return navigateTo('/unauthorized?error=PERMISSION_DENIED');
+    }
+
+    if (to.path === '/' && data.value.user.defaultRoute !== '/') {
+      return navigateTo(data.value.user.defaultRoute);
     }
   }
 });

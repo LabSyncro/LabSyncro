@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['permission']
+});
+
 import { debounce } from 'lodash-es';
 import { categoryService } from '~/services';
 

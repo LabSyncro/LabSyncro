@@ -1,9 +1,12 @@
 <script setup lang="ts">
-const { signIn } = useAuth();
+const { signIn, data } = useAuth();
 const router = useRouter();
 
 const handleLogin = async () => {
-  await signIn('google', { callbackUrl: '/' });
+  await signIn('google');
+  if (data.value?.user?.defaultRoute) {
+    router.push(data.value.user.defaultRoute);
+  }
 };
 </script>
 

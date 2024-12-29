@@ -29,8 +29,7 @@ class="w-3 h-3 absolute bg-safe-darker rounded-full z-50 border-white border-[2p
           </div>
           <div class="flex flex-col">
             <span class="text-md font-medium">{{ data?.user?.name }}</span>
-            <span class="text-normal text-gray-500">{{ data?.user?.roles.includes('Quản trị viên') && 'Quản trị viên'
-              }}</span>
+            <span class="text-normal text-gray-500">{{ data?.user?.roles.map(role => role.name).join(', ') }}</span>
           </div>
         </div>
 

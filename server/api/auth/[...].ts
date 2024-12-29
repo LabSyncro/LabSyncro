@@ -57,6 +57,7 @@ export default NuxtAuthHandler({
         token.id = user.id;
         token.permissions = user.permissions;
         token.roles = user.roles;
+        token.defaultRoute = await getDefaultRouteByUserId(user.id);
       }
       return token;
     },
@@ -64,7 +65,8 @@ export default NuxtAuthHandler({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.permissions = token.permissions as string[];
-        session.user.roles = token.roles as string[];
+        session.user.roles = token.roles;
+        session.user.defaultRoute = token.defaultRoute as string;
       }
       return session;
     },

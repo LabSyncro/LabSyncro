@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['permission']
+});
+
 import { Search, Monitor, ChevronDown } from 'lucide-vue-next';
 
 definePageMeta({

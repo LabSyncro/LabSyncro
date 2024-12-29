@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['permission']
+});
+
 import { Lock, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 

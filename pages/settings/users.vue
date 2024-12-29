@@ -1,4 +1,8 @@
 <script setup lang='ts'>
+definePageMeta({
+  middleware: ['permission']
+});
+
 import {
   Check,
   ChevronDown,

@@ -2,8 +2,7 @@
 import { deviceService } from '@/services';
 
 definePageMeta({
- middleware: ['permission'],
- permission: 'home:own',
+  middleware: ['permission']
 });
 
 const { lab } = useLab();

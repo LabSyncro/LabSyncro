@@ -1,3 +1,9 @@
+<script setup lang="ts">
+definePageMeta({
+  middleware: ['permission']
+});
+</script>
+
 <template>
   <div class="mx-6 sm:mx-16 my-10">
     <Breadcrumb>

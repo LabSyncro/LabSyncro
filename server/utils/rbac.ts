@@ -25,13 +25,36 @@ export async function getUserPermissions (userId: string) {
 
 export async function getUserRoles (userId: string) {
   const result = await db.sql`
-    SELECT ro.name as role_name
+    SELECT ro.name as role_name, ro.key as role_key
     FROM user_roles ur
     JOIN roles ro ON ur.role_id = ro.id
     WHERE ur.user_id = ${db.param(userId)}
   `.run(dbPool);
 
-  return result.map((row) => row.role_name);
+  return result.map((row) => ({
+    name: row.role_name,
+    key: row.role_key,
+  }));
+}
+
+export async function getDefaultRouteByUserId(userId: string): Promise<string> {
+  const result = await db.sql`
+    SELECT route
+    FROM (
+      SELECT DISTINCT r.name AS route, p.priority
+      FROM user_roles ur
+      JOIN roles ro ON ur.role_id = ro.id
+      JOIN permissions p ON p.role_id = ro.id
+      JOIN resources r ON p.resource_id = r.id
+      JOIN actions a ON p.action_id = a.id
+      WHERE ur.user_id = ${db.param(userId)}
+      ORDER BY p.priority
+    ) subquery
+    ORDER BY subquery.priority
+    LIMIT 1;
+  `.run(dbPool);
+
+  return result[0]?.route ?? '/unauthorized?error=PERMISSION_DENIED';
 }
 
 export async function createOrUpdateUser (
