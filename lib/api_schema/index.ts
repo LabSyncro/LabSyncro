@@ -242,3 +242,20 @@ export const RoleWithStatsDto = Type.Object({
 });
 
 export type RoleWithStatsDto = Static<typeof RoleWithStatsDto>;
+
+export const RoleDetailDto = Type.Object({
+  name: Type.String(),
+  key: Type.String(),
+  users: Type.Array(Type.Object({
+    id: Type.String(),
+    name: Type.String(),
+    email: Type.String(),
+    avatar: Type.Union([Type.String(), Type.Null()]),
+  })),
+  permissions: Type.Array(Type.Object({
+    resource: Type.String(),
+    actions: Type.Array(Type.String()),
+  })),
+});
+
+export type RoleDetailDto = Static<typeof RoleDetailDto>;

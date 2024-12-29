@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { ChevronLeft, Lock } from 'lucide-vue-next';
+import { userService } from '@/services';
+import type { RoleWithStatsDto } from '~/lib/api_schema';
 
 const { activeSidebar, activeSection } = useSidebarSettings();
 const { data, signOut } = useAuth();
 
-const sections = [{ name: 'Tất cả người dùng', key: 'all-users' }, { name: 'Quản trị viên', key: 'admin' }];
+const sections = ref<RoleWithStatsDto[]>([]);
 const router = useRouter();
 const route = useRoute();
+
+onMounted(async () => {
+  sections.value = await userService.getRoles();
+});
 
 const activeSidebarType = computed(() => {
   const simplePaths = ['/settings/users', '/settings/permissions', '/settings/account'];

@@ -1,4 +1,4 @@
-import type { UserResourceDto, RoleWithStatsDto } from '~/lib/api_schema';
+import type { UserResourceDto, RoleWithStatsDto, RoleDetailDto } from '~/lib/api_schema';
 
 export const userService = {
   async getUserById (id: string): Promise<UserResourceDto | undefined> {
@@ -32,6 +32,15 @@ export const userService = {
       return res;
     } catch {
       return [];
+    }
+  },
+  async getRole (key: string): Promise<RoleDetailDto | undefined> {
+    try {
+      const { $cachedFetch } = useNuxtApp();
+      const res = await $cachedFetch(`/api/users/roles/${key}`);
+      return res;
+    } catch {
+      return undefined;
     }
   },
 };

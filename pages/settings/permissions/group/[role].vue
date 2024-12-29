@@ -5,66 +5,79 @@ definePageMeta({
 });
 
 import { Search, Monitor, ChevronDown } from 'lucide-vue-next';
+import { userService } from '@/services';
+import type { RoleDetailDto } from '@/lib/api_schema';
   
 const route = useRoute();
+const roleKey = route.params.role as string;
 
-const roleTitles: { [key: string]: string } = {
-  'all-users': 'Tất cả người dùng',
-  'admin': 'Quản trị viên',
+const formatResourceTitle = (path: string) => {
+  if (path === '/') {
+    return 'Home';
+  }
+  return path
+    .split('/')
+    .filter(Boolean)
+    .map(segment => {
+      if (segment.startsWith(':')) {
+        return 'Details';
+      }
+      return segment.split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    })
+    .join(' - ');
 };
 
+const selectedPermissions = ref<string[]>([]);
+const roleDetail = ref<RoleDetailDto | undefined>(undefined);
 
-const apps = ref([
-  'Home Page',
-  'Restocking Page',
-  'Tracking Devices Page',
-  'Category Management Page',
-  'Import Page',
-  'Inventory Page',
-  'Performance Monitor Page',
-  'Repricing Page',
-  'User Management Page',
-  'Warehouse Page'
-]);
+onMounted(async () => {
+  roleDetail.value = await userService.getRole(roleKey);
 
-const selectedApps = ref<string[]>([]);
-
-const headingTitle = computed(() => {
-  const role = route.params?.role?.toString();
-  return roleTitles[role] || 'Không xác định';
+  if (roleDetail.value?.permissions) {
+    selectedPermissions.value = roleDetail.value.permissions
+      .flatMap(p => p.actions.map(a => `${p.resource}-${a}`));
+  }
 });
 
-
-const toggleApp = (app: string, column: number) => {
-  const key = `${app}-${column}`;
-  const index = selectedApps.value.indexOf(key);
+const togglePermission = (resource: string, action: string) => {
+  const key = `${resource}-${action}`;
+  const index = selectedPermissions.value.indexOf(key);
   if (index === -1) {
-    selectedApps.value.push(key);
+    selectedPermissions.value.push(key);
   } else {
-    selectedApps.value.splice(index, 1);
+    selectedPermissions.value.splice(index, 1);
   }
+};
+
+const handleSave = async () => {
+  // TODO: Implement save functionality
+  console.log('Saving permissions:', selectedPermissions.value);
 };
 </script>
 
 <template>
   <div class="flex min-h-screen">
-    <!-- Main Content -->
     <div class="flex-1 p-6">
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold">{{ headingTitle }}</h1>
-        <Button class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" size="sm">
+        <h1 class="text-2xl font-semibold">{{ roleDetail?.name }}</h1>
+        <Button 
+          class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" 
+          size="sm"
+          @click="handleSave"
+        >
           Lưu thay đổi
         </Button>
       </div>
 
-      <!-- Tabs -->
       <Tabs default-value="members" class="mb-6">
         <TabsList>
           <TabsTrigger value="members">
-            Thành viên (1)
+            Thành viên ({{ roleDetail?.users?.length || 0 }})
           </TabsTrigger>
           <TabsTrigger value="apps">
-            Tài nguyên (Tất cả)
+            Tài nguyên ({{ roleDetail?.permissions?.filter(p => p.actions.length > 0).length || 0 }})
           </TabsTrigger>
         </TabsList>
 
@@ -72,7 +85,8 @@ const toggleApp = (app: string, column: number) => {
         <TabsContent value="members">
           <div class="flex justify-between items-center mb-4">
             <p class="text-muted-foreground text-sm">
-              Hiển thị 1 người dùng đã được kích hoạt. </p>
+              Hiển thị {{ roleDetail?.users?.length || 0 }} người dùng đã được kích hoạt.
+            </p>
             <div class="flex space-x-2">
               <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -97,23 +111,25 @@ const toggleApp = (app: string, column: number) => {
           </div>
 
           <!-- User List -->
-          <Card>
-            <CardContent class="p-4">
-              <div class="flex items-center space-x-4">
-                <Avatar>
-                  <AvatarImage src="https://avatars.githubusercontent.com/u/111476687?v=4" />
-                  <AvatarFallback>PN</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 class="font-medium">PHÚ NGUYÊN NGỌC</h3>
-                  <p class="text-sm text-muted-foreground">phu.nguyen2310@hcmut.edu.vn</p>
+          <div class="space-y-4">
+              <Card v-for="user in roleDetail?.users" :key="user.id">
+              <CardContent class="p-4">
+                <div class="flex items-center space-x-4">
+                  <Avatar>
+                    <AvatarImage :src="user.avatar || ''" />
+                    <AvatarFallback>{{ user.name.substring(0, 2) }}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 class="font-medium">{{ user.name }}</h3>
+                    <p class="text-sm text-muted-foreground">{{ user.email }}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        <!-- Apps Tab -->
+        <!-- Resources Tab -->
         <TabsContent value="apps">
           <div class="ml-4 mb-4">
             <div class="flex justify-between items-center">
@@ -151,13 +167,20 @@ const toggleApp = (app: string, column: number) => {
               <div />
             </div>
             <ul class="space-y-2">
-              <li v-for="app in apps" :key="app" class="grid grid-cols-[repeat(3,40px)_1fr] gap-x-2 items-center">
-                <Checkbox :checked="selectedApps.includes(`${app}-0`)" @click="toggleApp(app, 0)" />
-                <Checkbox :checked="selectedApps.includes(`${app}-1`)" @click="toggleApp(app, 1)" />
-                <Checkbox :checked="selectedApps.includes(`${app}-2`)" @click="toggleApp(app, 2)" />
+              <li 
+                v-for="perm in roleDetail?.permissions" 
+                :key="perm.resource"
+                class="grid grid-cols-[repeat(3,40px)_1fr] gap-x-2 items-center"
+              >
+                <Checkbox 
+                  v-for="action in ['use', 'edit', 'own']" 
+                  :key="action"
+                  :checked="perm.actions.includes(action)"
+                  @click="togglePermission(perm.resource, action)" 
+                />
                 <div class="flex items-center space-x-2">
                   <Monitor class="h-5 w-5 text-blue-500" />
-                  <span>{{ app }}</span>
+                  <span>{{ formatResourceTitle(perm.resource) }}</span>
                 </div>
               </li>
             </ul>
