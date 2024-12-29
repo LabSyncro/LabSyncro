@@ -8,7 +8,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (status.value === 'authenticated') {
     const userPermissions = data.value.user.permissions;
     
-    const requiredPermission = `${to.path}:own`;
+    const normalizedPath = to.matched.map(route => {
+      return route.path.replace(/:[^/]+/g, ':id');
+    }).join('');
+    const requiredPermission = `${normalizedPath}:own`;
 
     if (requiredPermission && !userPermissions.includes(requiredPermission)) {
       return navigateTo('/unauthorized?error=PERMISSION_DENIED');

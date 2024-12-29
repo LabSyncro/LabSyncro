@@ -1,14 +1,11 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['permission']
+  middleware: ['permission'],
+  layout: 'setting'
 });
 
 import { Search, Monitor, ChevronDown } from 'lucide-vue-next';
-
-definePageMeta({
-  layout: 'setting',
-});
-
+  
 const route = useRoute();
 
 const roleTitles: { [key: string]: string } = {

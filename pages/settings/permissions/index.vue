@@ -1,31 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['permission']
+  middleware: ['permission'],
+  layout: 'setting'
 });
 
-import { Lock, Search } from 'lucide-vue-next';
-import { ref } from 'vue';
-
-definePageMeta({
-  layout: 'setting',
-});
-
-const permissions = ref([
-  {
-    name: 'Tất cả người dùng',
-    key: 'all-users',
-    resources: '21 (Tất cả)',
-    users: 1,
-    avatarUrl: 'https://avatars.githubusercontent.com/u/111476687?v=4'
-  },
-  {
-    name: 'Quản trị viên',
-    key: 'admin',
-    resources: '21 (Tất cả)',
-    users: 1,
-    avatarUrl: 'https://avatars.githubusercontent.com/u/111476687?v=4'
-  }
-]);
+import { Search } from 'lucide-vue-next';
+import { userService } from '@/services';
+import type { RoleWithStatsDto } from '@/lib/api_schema';
 
 const { activeSection, activeSidebar } = useSidebarSettings();
 const router = useRouter();
@@ -40,6 +21,12 @@ const handleRowClick = (rowKey: string, openNewTab: boolean) => {
     router.push(newRoute);
   }
 };
+
+const permissions = ref<RoleWithStatsDto[]>([]);
+
+onMounted(async () => {
+  permissions.value = await userService.getRoles();
+});
 </script>
 
 <template>
@@ -65,23 +52,29 @@ const handleRowClick = (rowKey: string, openNewTab: boolean) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="row in permissions" :key="row.name">
+        <TableRow v-for="row in permissions" :key="row.key">
           <TableCell
-class="font-medium cursor-pointer hover:text-tertiary-darker"
-            @click="(event) => handleRowClick(row.key, !!event.ctrlKey)">
-            <div class="flex items-center space-x-2">
-              <span>{{ row.name }}</span>
-              <Lock class="h-4 w-4 text-muted-foreground" />
-            </div>
+            class="font-medium cursor-pointer hover:text-tertiary-darker"
+            @click="(event) => handleRowClick(row.key, !!event.ctrlKey)"
+          >
+          <span>{{ row.name }}</span>
           </TableCell>
           <TableCell class="text-muted-foreground">{{ row.resources }}</TableCell>
           <TableCell>
             <div class="flex items-center space-x-2">
               <span class="text-blue-600">{{ row.users }}</span>
-              <Avatar class="h-6 w-6">
-                <AvatarImage :src="row.avatarUrl" />
-                <AvatarFallback>UN</AvatarFallback>
-              </Avatar>
+              <div class="flex -space-x-2">
+                <Avatar v-for="(avatar, index) in row.avatarUrl.slice(0,3)" 
+                       :key="index"
+                       class="h-6 w-6 ring-2 ring-background">
+                  <AvatarImage :src="avatar" />
+                  <AvatarFallback>UN</AvatarFallback>
+                </Avatar>
+                <Avatar v-if="row.avatarUrl.length > 3"
+                       class="h-6 w-6 bg-tertiary-darker text-white ring-2 ring-background">
+                  <AvatarFallback>+{{ row.avatarUrl.length - 3 }}</AvatarFallback>
+                </Avatar>
+              </div>
             </div>
           </TableCell>
         </TableRow>

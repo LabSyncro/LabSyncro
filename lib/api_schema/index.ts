@@ -195,12 +195,8 @@ export const UserResourceDto = Type.Object({
   tel: Type.Union([Type.String(), Type.Null()]),
   name: Type.String(),
   email: Type.String(),
-  role: Type.Union([
-    Type.Literal('student'),
-    Type.Literal('teacher'),
-    Type.Literal('sysadmin'),
-    Type.Literal('lab_admin'),
-  ]),
+  last_active_at: Type.Date(),
+  roles: Type.Array(Type.Object({ name: Type.String(), key: Type.String() })),
 });
 
 export type UserResourceDto = Static<typeof UserResourceDto>;
@@ -236,3 +232,13 @@ export const AdminManagedLabsDto = Type.Object({
 });
 
 export type AdminManagedLabsDto = Static<typeof AdminManagedLabsDto>;
+
+export const RoleWithStatsDto = Type.Object({
+  name: Type.String(),
+  key: Type.String(),
+  resources: Type.String(),
+  users: Type.Number(),
+  avatarUrl: Type.Array(Type.String()),
+});
+
+export type RoleWithStatsDto = Static<typeof RoleWithStatsDto>;
