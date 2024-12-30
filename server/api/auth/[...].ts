@@ -72,7 +72,7 @@ export default NuxtAuthHandler({
     },
     async signIn({ account, profile }) {
       if (account?.provider === 'google') {
-        if (!profile?.email?.endsWith('@hcmut.edu.vn')) {
+        if (!profile?.email?.endsWith('@hcmut.edu.vn') && !profile?.email?.endsWith('@gmail.com')) {
           throw new Error('UNAUTHORIZED_DOMAIN');
         }
         return true;

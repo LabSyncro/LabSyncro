@@ -7,6 +7,10 @@ definePageMeta({
 import { Search, Monitor, ChevronDown } from 'lucide-vue-next';
 import { userService } from '@/services';
 import type { RoleDetailDto } from '@/lib/api_schema';
+import { useToast } from 'vue-toastification';
+import { isEqual, sortBy } from 'lodash';
+
+const toast = useToast();
   
 const route = useRoute();
 const roleKey = route.params.role as string;
@@ -39,6 +43,7 @@ onMounted(async () => {
     selectedPermissions.value = roleDetail.value.permissions
       .flatMap(p => p.actions.map(a => `${p.resource}-${a}`));
   }
+  console.log(selectedPermissions.value);
 });
 
 const togglePermission = (resource: string, action: string) => {
@@ -52,8 +57,12 @@ const togglePermission = (resource: string, action: string) => {
 };
 
 const handleSave = async () => {
-  // TODO: Implement save functionality
-  console.log('Saving permissions:', selectedPermissions.value);
+  try {
+    await userService.updateRolePermissions(roleKey, selectedPermissions.value);
+    toast.success('Permissions updated successfully');
+  } catch (error) {
+    toast.error('Failed to update permissions');
+  }
 };
 </script>
 
@@ -66,6 +75,7 @@ const handleSave = async () => {
           class="bg-tertiary-darker !text-white text-normal w-24 hover:bg-blue-700" 
           size="sm"
           @click="handleSave"
+          :disabled="isEqual(sortBy(selectedPermissions), sortBy(roleDetail?.permissions?.flatMap(p => p.actions.map(a => `${p.resource}-${a}`)) || []))"
         >
           Lưu thay đổi
         </Button>
@@ -172,11 +182,11 @@ const handleSave = async () => {
                 :key="perm.resource"
                 class="grid grid-cols-[repeat(3,40px)_1fr] gap-x-2 items-center"
               >
-                <Checkbox 
+                <Checkbox
                   v-for="action in ['use', 'edit', 'own']" 
                   :key="action"
-                  :checked="perm.actions.includes(action)"
-                  @click="togglePermission(perm.resource, action)" 
+                  :checked="selectedPermissions.includes(`${perm.resource}-${action}`)"
+                  @update:checked="togglePermission(perm.resource, action)" 
                 />
                 <div class="flex items-center space-x-2">
                   <Monitor class="h-5 w-5 text-blue-500" />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { openSidebar } = useSidebar();
+const { hasPermission } = usePermission();
 </script>
 
 <template>
@@ -15,7 +16,7 @@ const { openSidebar } = useSidebar();
 
       <div class="flex gap-8 justify-between">
         <div class="grow-[1] hidden md:flex items-center gap-4">
-          <Button variant="ghost" size="icon" class="text-white border-2 border-slate-500" @click="openSidebar">
+          <Button v-if="hasPermission('/:own')" variant="ghost" size="icon" class="text-white border-2 border-slate-500" @click="openSidebar">
             <Icon name="i-heroicons-bars-3" class="w-6 h-6" />
           </Button>
           <Logo />

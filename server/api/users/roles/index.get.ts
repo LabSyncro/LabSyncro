@@ -4,7 +4,9 @@ import { RoleWithStatsDto } from '~/lib/api_schema';
 import { Value } from '@sinclair/typebox/value';
 import { INTERNAL_SERVER_ERROR_CODE } from '~/constants';
 
-export default defineEventHandler<Promise<RoleWithStatsDto[]>>(async (_event) => {
+export default defineEventHandler<Promise<RoleWithStatsDto[]>>(async (event) => {
+  await requirePermission(event, '/settings/permissions:own');
+
   const roles = await db.sql<RoleWithStatsDto[]>`
     WITH role_stats AS (
       SELECT 

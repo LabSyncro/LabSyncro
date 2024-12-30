@@ -4,7 +4,9 @@ import { Value } from '@sinclair/typebox/value';
 import { UserResourceDto } from '~/lib/api_schema';
 import { INTERNAL_SERVER_ERROR_CODE } from '~/constants';
 
-export default defineEventHandler<Promise<UserResourceDto[]>>(async (_event) => {
+export default defineEventHandler<Promise<UserResourceDto[]>>(async (event) => {
+  await requirePermission(event, '/settings/users:own');
+
   const users = await db.sql<UserResourceDto[]>`
     SELECT 
       u.id,

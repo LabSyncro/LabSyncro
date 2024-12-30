@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ArrowLeft, Home, Shield } from 'lucide-vue-next';
-import { getUserPermissions } from '@/server/utils/rbac';
 
 definePageMeta({
   layout: 'unauthorized',

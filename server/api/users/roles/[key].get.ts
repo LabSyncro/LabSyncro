@@ -5,6 +5,8 @@ import { Value } from '@sinclair/typebox/value';
 import { INTERNAL_SERVER_ERROR_CODE } from '~/constants';
 
 export default defineEventHandler<Promise<RoleDetailDto>>(async (event) => {
+  await requirePermission(event, '/settings/permissions/group/:id:own');
+
   const key = event.context.params?.key;
   if (!key) {
     throw createError({

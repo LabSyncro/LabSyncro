@@ -43,4 +43,13 @@ export const userService = {
       return undefined;
     }
   },
+  async updateRolePermissions (key: string, permissions: string[]): Promise<void> {
+    const { $cachedFetch } = useNuxtApp();
+    await $cachedFetch(`/api/users/roles/${key}`, {
+      method: 'PUT',
+      body: {
+        permissions
+      }
+    });
+  }
 };
