@@ -1,15 +1,24 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { data } = useAuth();
+  const { status, data } = useAuth();
 
   if (!data.value?.user) {
     return navigateTo('/login');
   }
 
-  const requiredPermission = to.meta.permission as string;
-  if (!requiredPermission) return;
+  if (status.value === 'authenticated') {
+    const userPermissions = data.value.user.permissions;
+    
+    const normalizedPath = to.matched.map(route => {
+      return route.path.replace(/:[^/]+/g, ':id');
+    }).join('');
+    const requiredPermission = `${normalizedPath}:edit`;
 
-  const userPermissions = data.value.user.permissions || [];
-  if (!userPermissions.includes(requiredPermission)) {
-    return navigateTo('/unauthorized');
+    if (requiredPermission && !userPermissions.includes(requiredPermission)) {
+      return navigateTo('/unauthorized?error=PERMISSION_DENIED');
+    }
+
+    if (to.path === '/' && data.value.user.defaultRoute !== '/') {
+      return navigateTo(data.value.user.defaultRoute);
+    }
   }
 });

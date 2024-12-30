@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['permission']
+});
+
 import { receiptService } from '~/services';
 
 const totalBorrowedDevices = ref(0);
