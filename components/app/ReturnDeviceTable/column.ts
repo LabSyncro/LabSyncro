@@ -72,7 +72,7 @@ export const columns: AugmentedColumnDef<ReturnDevice>[] = [
     id: 'borrowedAt',
     title: 'Ngày mượn',
     cell: ({ row }) => {
-      const value = row.original.borrowedAt.toString();
+      const value = row.original.borrowedAt?.toString();
       return h(
         'span',
         { class: 'text-slate-500 text-sm font-normal leading-tight' },

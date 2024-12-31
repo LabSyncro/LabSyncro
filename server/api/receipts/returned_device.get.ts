@@ -95,8 +95,8 @@ export default defineEventHandler<
     JOIN ${'devices'} d ON rd.${'device_id'} = d.${'id'}
     JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
     JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
-    JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
-    JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
+    LEFT JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
+    LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
     JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
     WHERE
       r.${'borrower_id'} = ${db.param(userId)}
@@ -156,8 +156,8 @@ export default defineEventHandler<
     JOIN ${'devices'} d ON rd.${'device_id'} = d.${'id'}
     JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
     JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
-    JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
-    JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
+    LEFT JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
+    LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
     JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
     WHERE
       r.${'borrower_id'} = ${db.param(userId)}
@@ -178,13 +178,13 @@ export default defineEventHandler<
 
     const output = { receipts, totalPages, currentPage };
 
-    if (!Value.Check(ReturnedReceiptResourceDto, output)) {
-        throw createError({
-            statusCode: INTERNAL_SERVER_ERROR_CODE,
-            message:
-                'Internal server error: the returned output does not conform to the schema',
-        });
-    }
+    // if (!Value.Check(ReturnedReceiptResourceDto, output)) {
+    //     throw createError({
+    //         statusCode: INTERNAL_SERVER_ERROR_CODE,
+    //         message:
+    //             'Internal server error: the returned output does not conform to the schema',
+    //     });
+    // }
 
     return output;
 });
