@@ -27,7 +27,7 @@ export const FacultyResourceDto = Type.Object({
 
 export type FacultyResourceDto = Static<typeof FacultyResourceDto>;
 
-export const ReceiptResourceDto = Type.Object({
+export const BorrowedReceiptResourceDto = Type.Object({
   receipts: Type.Array(
     Type.Object({
       id: Type.String(),
@@ -46,7 +46,9 @@ export const ReceiptResourceDto = Type.Object({
   currentPage: Type.Number(),
 });
 
-export type ReceiptResourceDto = Static<typeof ReceiptResourceDto>;
+export type BorrowedReceiptResourceDto = Static<
+  typeof BorrowedReceiptResourceDto
+>;
 
 export const ReadyBorrowedDevicesResourceDto = Type.Object({
   devices: Type.Array(
@@ -74,13 +76,14 @@ export const ReturnedReceiptResourceDto = Type.Object({
       name: Type.String(),
       mainImage: Type.String(),
       subImages: Type.Array(Type.String()),
-      quantity: Type.Number(),
       borrowedPlace: Type.String(),
       returnedPlace: Type.String(),
       borrowedAt: Type.Date(),
       expectedReturnedAt: Type.Date(),
       returnedAt: Type.Date(),
       status: Type.String(),
+      deviceStatus: Type.String(),
+      note: Type.Union([Type.String(), Type.Null()]),
     }),
   ),
   totalPages: Type.Number(),
