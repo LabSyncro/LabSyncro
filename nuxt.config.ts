@@ -14,6 +14,9 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@sidebase/nuxt-auth',
   ],
+  build: { 
+    transpile: ['vue-toastification'] 
+  },
   nitro: {
     preset: 'bun',
   },
@@ -34,7 +37,7 @@ export default defineNuxtConfig({
     },
   },
   eslint: {},
-  css: ['~/assets/css/fonts.css', '~/assets/css/main.css'],
+  css: ['~/assets/css/fonts.css', '~/assets/css/main.css', 'vue-toastification/dist/index.css'],
   postcss: {
     plugins: {
       tailwindcss: {},

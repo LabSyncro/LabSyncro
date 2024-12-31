@@ -5,23 +5,71 @@ definePageMeta({
 
 import moment from 'moment';
 import { deviceKindService, receiptService, userService, deviceService } from '~/services';
+import { useToast } from 'vue-toastification';
+import type { ToastInterface } from 'vue-toastification';
 
-const route = useRoute();
-
-const { lab } = useLab();
-
-const currentDeviceKindId = ref<string | null>(null);
-
-const devicesInCart = ref<{
+// Types
+interface DeviceInCart {
   id: string;
-  name: string;
+  name: string; 
   category: string;
   deviceIds: string[];
-}[]>([]);
+}
 
-const selectedDevices = computed(() => devicesInCart.value.flatMap((deviceKind) => deviceKind.deviceIds));
+interface BorrowFormState {
+  userId: string;
+  receiptCode: string;
+  borrowDate: Date;
+  borrowLabId: string | null;
+  returnDate?: string;
+  returnLabId: string | null;
+}
 
-function generateUniqueId (): string {
+// Setup
+const route = useRoute();
+const { lab } = useLab();
+const toast: ToastInterface = useToast();
+
+// Cart state
+const currentDeviceKindId = ref<string | null>(null);
+const devicesInCart = ref<DeviceInCart[]>([]);
+const selectedDevices = computed(() => devicesInCart.value.flatMap(deviceKind => deviceKind.deviceIds));
+
+// Form state
+const formState = reactive<BorrowFormState>({
+  userId: '',
+  receiptCode: generateUniqueId(),
+  borrowDate: new Date(),
+  borrowLabId: lab.value?.id || null,
+  returnDate: '',
+  returnLabId: null
+});
+
+// User info state
+const userInfo = reactive({
+  fullName: '',
+  role: '',
+  translatedRole: 'Vai trò không hợp lệ'
+});
+
+// Validation
+const VALID_ROLES = ['student', 'teacher', 'lab_admin'] as const;
+type ValidRole = typeof VALID_ROLES[number];
+
+const isValidForm = computed(() => {
+  return (
+    formState.userId &&
+    formState.receiptCode &&
+    formState.borrowDate &&
+    formState.borrowLabId &&
+    formState.returnDate &&
+    formState.returnLabId &&
+    devicesInCart.value.length > 0
+  );
+});
+
+// Utilities
+function generateUniqueId(): string {
   const datePrefix = moment().format('YYYYMMDD');
   const randomSuffix = Math.floor(Math.random() * 1000000)
     .toString()
@@ -29,140 +77,171 @@ function generateUniqueId (): string {
   return `${datePrefix}/${randomSuffix}`;
 }
 
-function openModalForDeviceId (id: string) {
-  currentDeviceKindId.value = id;
+function translateRole(role: ValidRole): string {
+  const roleMap: Record<ValidRole, string> = {
+    student: 'Sinh viên',
+    teacher: 'Giảng viên',
+    lab_admin: 'Quản lý phòng lab'
+  };
+  return roleMap[role] || 'Vai trò không hợp lệ';
 }
 
-function closeModal () {
+// Cart handlers
+async function addDevice({ kind, id }: { kind: string; id: string }) {
+  try {
+    const deviceKind = devicesInCart.value.find(item => item.id === kind);
+    if (deviceKind) {
+      if (!deviceKind.deviceIds.includes(id)) {
+        deviceKind.deviceIds.push(id);
+      }
+      return;
+    }
+
+    const deviceKindMeta = await deviceKindService.getById(kind);
+    devicesInCart.value.push({
+      id: kind,
+      name: deviceKindMeta.name,
+      category: deviceKindMeta.categoryName,
+      deviceIds: [id]
+    });
+  } catch (error) {
+    toast.error('Không thể thêm thiết bị');
+  }
+}
+
+function deleteDevice({ kind, id }: { kind: string; id: string }) {
+  const deviceKind = devicesInCart.value.find(item => item.id === kind);
+  if (!deviceKind) return;
+
+  deviceKind.deviceIds = deviceKind.deviceIds.filter(deviceId => deviceId !== id);
+  
+  if (deviceKind.deviceIds.length === 0) {
+    devicesInCart.value = devicesInCart.value.filter(item => item.id !== kind);
+  }
+}
+
+function deleteDeviceKinds(kindIds: string[]) {
+  devicesInCart.value = devicesInCart.value.filter(item => !kindIds.includes(item.id));
+}
+
+function openModalForDeviceId(kind: string) {
+  currentDeviceKindId.value = kind;
+}
+
+function closeModal() {
   currentDeviceKindId.value = null;
 }
 
-async function addDevice ({ kind, id }: { kind: string, id: string }) {
-  const deviceKind = devicesInCart.value.find(({ id }) => id === kind);
-  if (deviceKind) {
-    deviceKind.deviceIds.push(id);
+// User handlers
+async function handleUserCodeChange(userId: string) {
+  const isValidUserCode = /^\d{7}$/.test(userId);
+  
+  if (!isValidUserCode) {
+    userInfo.fullName = '';
+    userInfo.role = '';
+    userInfo.translatedRole = 'Vai trò không hợp lệ';
     return;
   }
-  const deviceKindMeta = await deviceKindService.getById(kind);
-  devicesInCart.value.push({
-    id: kind,
-    name: deviceKindMeta.name,
-    category: deviceKindMeta.categoryName,
-    deviceIds: [id],
-  });
-}
 
-function deleteDevice ({ kind, id }: { kind: string, id: string }) {
-  const deviceKind = devicesInCart.value.find(({ id }) => id === kind);
-  if (!deviceKind) {
-    return;
-  }
-  const index = deviceKind.deviceIds.indexOf(id);
-  if (index === -1) {
-    return;
-  }
-  deviceKind.deviceIds.splice(index, 1);
-  if (deviceKind.deviceIds.length === 0) {
-    const index = devicesInCart.value.findIndex(({ id }) => id === kind);
-    devicesInCart.value.splice(index, 1);
-  }
-}
+  try {
+    const userMeta = await userService.getUserById(userId);
+    if (!userMeta) throw new Error('User not found');
 
-function deleteDeviceKinds (kindIds: string[]) {
-  kindIds.forEach((kindId) => {
-    const index = devicesInCart.value.findIndex(({ id }) => kindId === id);
-    if (index === -1) return;
-    devicesInCart.value.splice(index, 1);
-  });
-}
-
-const userCodeInput = ref('');
-const fullName = ref<null | string>(null);
-const role = ref<null | string>(null);
-const translatedRole = ref('Vai trò không hợp lệ');
-watch(userCodeInput, async () => {
-  const isValidUserCode = /^\d{7}$/.test(userCodeInput.value);
-
-  if (isValidUserCode) {
-    const userMeta = await userService.getUserById(userCodeInput.value);
-    fullName.value = userMeta!.name || null;
-
-    if (!(['student', 'teacher', 'lab_admin'] as (string | undefined)[]).includes(userMeta!.role)) {
-      role.value = null;
-      translatedRole.value = 'Vai trò không hợp lệ';
+    userInfo.fullName = userMeta.name || '';
+    
+    // Get the first role from roles array
+    const userRole = userMeta.roles[0]?.key;
+    if (userRole && VALID_ROLES.includes(userRole as ValidRole)) {
+      userInfo.role = userRole;
+      userInfo.translatedRole = translateRole(userRole as ValidRole);
     } else {
-      role.value = userMeta!.role;
-      translatedRole.value = userMeta!.role === 'student' ? 'Sinh viên' : 'Giảng viên';
+      console.log(userMeta.roles);
+      userInfo.role = '';
+      userInfo.translatedRole = 'Vai trò không hợp lệ';
     }
-  } else {
-    fullName.value = null;
-    role.value = null;
-    translatedRole.value = 'Vai trò không hợp lệ';
+  } catch (error) {
+    toast.error('Không thể tìm thấy thông tin người dùng');
   }
-});
-const receiptCodeInput = ref(generateUniqueId());
-const now = new Date(Date.now());
-const borrowDateInput = ref(now.toISOString().substr(0, 10));
-const borrowDate = computed(() => new Date(Date.parse(borrowDateInput.value)));
-const borrowLabId = ref<string | null>(null);
-const returnDateInput = ref('');
-const returnDate = computed(() => new Date(Date.parse(returnDateInput.value)));
-const returnLabId = ref<string | null>(null);
-function setReturnLabId (id: string) {
-  returnLabId.value = id;
 }
 
-async function submitReceipt () {
-  if (!receiptCodeInput.value || !borrowDate.value || !borrowLabId.value || !returnDate.value || !returnLabId.value || !userCodeInput.value || !devicesInCart.value.length) {
+// Form submission
+async function submitBorrowForm() {
+  console.log(formState);
+  if (!isValidForm.value) {
+    toast.error('Vui lòng điền đầy đủ thông tin');
     return;
   }
-  await receiptService.submitBorrowRequest({
-    receiptId: receiptCodeInput.value,
-    borrowDate: borrowDate.value,
-    borrowLabId: borrowLabId.value,
-    expectedReturnLabId: returnLabId.value,
-    expectedReturnDate: returnDate.value,
-    borrowerId: userCodeInput.value,
-    deviceIds: devicesInCart.value.flatMap(({ deviceIds }) => deviceIds),
-  });
-  reloadNuxtApp();
+
+  try {
+    await receiptService.submitBorrowRequest({
+      receiptId: formState.receiptCode,
+      borrowDate: formState.borrowDate,
+      borrowLabId: formState.borrowLabId!,
+      expectedReturnLabId: formState.returnLabId!,
+      expectedReturnDate: new Date(formState.returnDate!),
+      borrowerId: formState.userId,
+      deviceIds: selectedDevices.value
+    });
+
+    toast.success('Tạo phiếu mượn thành công');
+  } catch (error) {
+    toast.error('Không thể tạo phiếu mượn');
+  }
 }
 
+// QR code scanning
 const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
   if (type === 'userId') {
-    userCodeInput.value = input;
+    formState.userId = input;
+    await handleUserCodeChange(input);
   } else if (type === 'device') {
     const deviceKindId = input.match(/\/devices\/([a-fA-F0-9]+)/)?.[1];
     const deviceId = input.match(/[?&]id=([a-fA-F0-9]+)/)![1];
-    console.log(deviceKindId, deviceId);
-    const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
-    if (status === 'borrowing') {
-    } else if (status === 'healthy') {
-      await addDevice({ kind: deviceKindId!, id: deviceId });
+    
+    if (!deviceKindId || !deviceId) {
+      toast.error('Mã QR không hợp lệ');
+      return;
+    }
+
+    try {
+      const { id, status } = await deviceService.checkDevice(deviceId, lab.value.id);
+      
+      if (status === 'borrowing') {
+        toast.error('Thiết bị đang được mượn');
+      } else if (status === 'healthy') {
+        await addDevice({ kind: deviceKindId, id: deviceId });
+        toast.success('Thêm thiết bị thành công');
+      } else {
+        toast.error('Thiết bị không khả dụng');
+      }
+    } catch (error) {
+      toast.error('Không thể kiểm tra thiết bị');
     }
   }
 };
 
-useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
-  userId: { length: 7 },
-  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
-  scannerThresholdMs: 100,
-  maxInputTimeMs: 1000,
-});
-
-
+// Initialize from route query params
 onMounted(async () => {
-  const userId = route.query.userId;
-  const deviceKindId = route.query.deviceKindId;
-  const deviceId = route.query.deviceId;
+  const { userId, deviceKindId, deviceId } = route.query;
 
   if (userId && typeof userId === 'string') {
-    userCodeInput.value = userId;
+    formState.userId = userId;
+    await handleUserCodeChange(userId);
   }
 
   if (deviceKindId && deviceId && typeof deviceKindId === 'string' && typeof deviceId === 'string') {
     await addDevice({ kind: deviceKindId, id: deviceId });
   }
+});
+
+// Watch for user input changes
+watch(() => formState.userId, handleUserCodeChange);
+
+useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
+  userId: { length: 7 },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  scannerThresholdMs: 100,
+  maxInputTimeMs: 1000
 });
 </script>
 
@@ -219,10 +298,10 @@ onMounted(async () => {
                   <label class="text-sm text-gray-600">
                     Mã số sinh viên <span class="text-red-500">*</span>
                   </label>
-                  <Input v-model:model-value="userCodeInput" class="text-lg" />
+                  <Input v-model:model-value="formState.userId" class="text-lg" />
                 </div>
-                <div v-if="/^\d{7}$/.test(userCodeInput)" class="text-lg">
-                  {{ fullName }} | {{ translatedRole }}
+                <div v-if="/^\d{7}$/.test(formState.userId)" class="text-lg">
+                  {{ userInfo.fullName }} | {{ userInfo.translatedRole }}
                 </div>
               </div>
             </div>
@@ -234,11 +313,11 @@ onMounted(async () => {
                 <div class="text-lg">
                   <div>
                     Mã đơn:
-                    <span class="font-semibold text-blue-600">{{ receiptCodeInput }}</span>
+                    <span class="font-semibold text-blue-600">{{ formState.receiptCode }}</span>
                   </div>
                   <div>
                     Ngày mượn:
-                    <span class="font-semibold text-blue-600">{{ borrowDateInput }}</span>
+                    <span class="font-semibold text-blue-600">{{ formState.borrowDate.toISOString().substr(0, 10) }}</span>
                   </div>
                 </div>
               </div>
@@ -247,19 +326,19 @@ onMounted(async () => {
                   <label class="text-lg text-gray-600">
                     Ngày hẹn trả <span class="text-red-500">*</span>
                   </label>
-                  <Input v-model:model-value="returnDateInput" type="date" class="text-lg p-4 rounded-xl border-2" />
+                  <Input v-model:model-value="formState.returnDate" type="date" class="text-lg p-4 rounded-xl border-2" />
                 </div>
                 <div class="space-y-2">
                   <label class="text-lg text-gray-600">
                     Địa điểm trả <span class="text-red-500">*</span>
                   </label>
-                  <CheckoutLabSearchBox @select="setReturnLabId" />
+                  <CheckoutLabSearchBox @select="formState.returnLabId = $event" />
                 </div>
               </div>
             </div>
           </div>
           <div class="flex justify-end">
-            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4 w-full" @click="submitReceipt">
+            <button class="bg-tertiary-darker text-normal text-white rounded-md p-2 px-4 w-full" @click="submitBorrowForm">
               Xác nhận mượn
             </button>
           </div>

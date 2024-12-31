@@ -104,7 +104,7 @@ export default defineEventHandler<
       VALUES ('borrow', ${db.param(borrowDate)}) RETURNING id;
     `.run(dbClient);
 
-    const [{ id: receiptId }] = await db.sql`
+    const [{ receipt_id: receiptId }] = await db.sql`
       INSERT INTO ${'receipts'} (id, borrower_id, borrowed_lab_id, borrow_checker_id)
       VALUES (${_receiptId ? db.param(_receiptId) : db.Default}, ${db.param(borrowerId)}, ${db.param(borrowLabId)}, ${db.param(checkerId)})
       RETURNING id;
