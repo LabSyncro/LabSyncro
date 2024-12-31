@@ -1,11 +1,11 @@
 import type {
   ReadyBorrowedDevicesResourceDto,
-  ReceiptResourceDto,
+  BorrowedReceiptResourceDto,
   ReturnedReceiptResourceDto,
 } from '~/lib/api_schema';
 
 export const receiptService = {
-  async getReceipts (
+  async getBorrowReceipts(
     offset: number,
     length: number,
     {
@@ -22,18 +22,18 @@ export const receiptService = {
         | 'returned_place'
       )[];
       sortField?:
-        | 'device_kind_name'
-        | 'quantity'
-        | 'borrowed_place'
-        | 'returned_place'
-        | 'borrowed_at'
-        | 'expected_returned_at'
-        | 'status';
+      | 'device_kind_name'
+      | 'quantity'
+      | 'borrowed_place'
+      | 'returned_place'
+      | 'borrowed_at'
+      | 'expected_returned_at'
+      | 'status';
       desc?: boolean;
     },
-  ): Promise<ReceiptResourceDto> {
+  ): Promise<BorrowedReceiptResourceDto> {
     const { $cachedFetch } = useNuxtApp();
-    return await $cachedFetch('/api/receipts', {
+    return await $cachedFetch('/api/receipts/borrowed_device', {
       query: {
         offset,
         length,
@@ -45,7 +45,49 @@ export const receiptService = {
       ttl: 60,
     });
   },
-  async getTotalItems ({
+  async getReturnReceipts(
+    offset: number,
+    length: number,
+    {
+      searchText = undefined,
+      searchFields = [],
+      sortField = undefined,
+      desc = false,
+    }: {
+      searchText?: string;
+      searchFields?: (
+        | 'device_kind_id'
+        | 'device_kind_name'
+        | 'borrowed_place'
+        | 'returned_place'
+        | 'device_status'
+        | 'note'
+      )[];
+      sortField?:
+      | 'device_kind_name'
+      | 'borrowed_place'
+      | 'returned_place'
+      | 'borrowed_at'
+      | 'expected_returned_at'
+      | 'returned_at'
+      | 'status';
+      desc?: boolean;
+    },
+  ): Promise<ReturnedReceiptResourceDto> {
+    const { $cachedFetch } = useNuxtApp();
+    return await $cachedFetch('/api/receipts/returned_device', {
+      query: {
+        offset,
+        length,
+        search_text: searchText,
+        search_fields: searchFields,
+        sort_field: sortField,
+        desc,
+      },
+      ttl: 60,
+    });
+  },
+  async getTotalBorrowedItems({
     searchText = undefined,
     searchFields = [],
   }: {
@@ -59,7 +101,7 @@ export const receiptService = {
   }): Promise<number> {
     const { $cachedFetch } = useNuxtApp();
     return (
-      await $cachedFetch('/api/receipts', {
+      await $cachedFetch('/api/receipts/borrowed_device', {
         query: {
           offset: 0,
           length: 1,
@@ -70,8 +112,32 @@ export const receiptService = {
       })
     ).totalPages;
   },
+  async getTotalReturnedItems({
+    searchText = undefined,
+    searchFields = [],
+  }: {
+    searchText?: string;
+    searchFields?: (
+      | 'device_kind_id'
+      | 'device_kind_name'
+      | 'borrowed_place'
+      | 'returned_place'
+    )[];
+  }): Promise<number> {
+    const { $cachedFetch } = useNuxtApp();
+    return (
+      await $cachedFetch('/api/receipts/returned_device', {
+        query: {
+          offset: 0,
+          length: 1,
+          search_text: searchText,
+          search_fields: searchFields,
+        },
+      })
+    ).totalPages;
+  },
 
-  async getBorrowReceiptsByAdmin (
+  async getBorrowReceiptsByAdmin(
     offset: number,
     length: number,
     {
@@ -88,16 +154,16 @@ export const receiptService = {
         | 'returned_place'
       )[];
       sortField?:
-        | 'device_kind_name'
-        | 'quantity'
-        | 'borrowed_place'
-        | 'returned_place'
-        | 'borrowed_at'
-        | 'expected_returned_at'
-        | 'status';
+      | 'device_kind_name'
+      | 'quantity'
+      | 'borrowed_place'
+      | 'returned_place'
+      | 'borrowed_at'
+      | 'expected_returned_at'
+      | 'status';
       desc?: boolean;
     },
-  ): Promise<ReceiptResourceDto> {
+  ): Promise<BorrowedReceiptResourceDto> {
     const { $cachedFetch } = useNuxtApp();
     return await $cachedFetch('/api/receipts/admin/borrowed_device', {
       query: {
@@ -112,7 +178,7 @@ export const receiptService = {
     });
   },
 
-  async getTotalBorrowedItemsByAdmin ({
+  async getTotalBorrowedItemsByAdmin({
     searchText = undefined,
     searchFields = [],
   }: {
@@ -138,7 +204,7 @@ export const receiptService = {
     ).totalPages;
   },
 
-  async getReadyBorrowedDevicesByAdmin (
+  async getReadyBorrowedDevicesByAdmin(
     offset: number,
     length: number,
     {
@@ -167,7 +233,7 @@ export const receiptService = {
     });
   },
 
-  async getTotalReadyBorrowedItemsByAdmin ({
+  async getTotalReadyBorrowedItemsByAdmin({
     searchText = undefined,
     searchFields = [],
   }: {
@@ -188,7 +254,7 @@ export const receiptService = {
     ).totalPages;
   },
 
-  async getReturnReceiptsByAdmin (
+  async getReturnReceiptsByAdmin(
     offset: number,
     length: number,
     {
@@ -205,14 +271,14 @@ export const receiptService = {
         | 'returned_place'
       )[];
       sortField?:
-        | 'device_kind_name'
-        | 'quantity'
-        | 'borrowed_place'
-        | 'returned_place'
-        | 'borrowed_at'
-        | 'expected_returned_at'
-        | 'returned_at'
-        | 'status';
+      | 'device_kind_name'
+      | 'quantity'
+      | 'borrowed_place'
+      | 'returned_place'
+      | 'borrowed_at'
+      | 'expected_returned_at'
+      | 'returned_at'
+      | 'status';
       desc?: boolean;
     },
   ): Promise<ReturnedReceiptResourceDto> {
@@ -230,7 +296,7 @@ export const receiptService = {
     });
   },
 
-  async getTotalReturnedItemsByAdmin ({
+  async getTotalReturnedItemsByAdmin({
     searchText = undefined,
     searchFields = [],
   }: {
@@ -256,7 +322,7 @@ export const receiptService = {
     ).totalPages;
   },
 
-  async submitBorrowRequest ({
+  async submitBorrowRequest({
     receiptId,
     deviceIds,
     borrowerId,

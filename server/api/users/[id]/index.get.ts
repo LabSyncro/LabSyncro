@@ -6,6 +6,8 @@ import { Value } from '@sinclair/typebox/value';
 import { UserResourceDto } from '~/lib/api_schema';
 
 export default defineEventHandler<Promise<UserResourceDto>>(async (event) => {
+  await requirePermission(event, ['/admin/borrows/form:own', '/admin/returns/form:own']);
+  
   const userId = Value.Convert(Type.String(), getRouterParam(event, 'id'));
 
   const [user] = await db.sql`

@@ -1,4 +1,4 @@
-import type { BorrowReturnDevice } from './schema';
+import type { ReturnDevice } from './schema';
 import { formatDate } from '~/lib/utils';
 import type { AugmentedColumnDef } from '~/components/common/DataTable/column';
 
@@ -7,7 +7,21 @@ const statusMap = {
   on_time: 'Đúng hạn',
 };
 
-export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
+const deviceStatusMap = {
+  healthy: 'Tốt',
+  broken: 'Hư hỏng',
+  assessing: 'Đang kiểm tra',
+  lost: 'Mất',
+};
+
+const deviceStatusColorMap = {
+  healthy: 'bg-green-100 text-green-800',
+  broken: 'bg-red-100 text-red-800',
+  assessing: 'bg-yellow-100 text-yellow-800',
+  lost: 'bg-gray-100 text-gray-800',
+};
+
+export const columns: AugmentedColumnDef<ReturnDevice>[] = [
   {
     id: 'name',
     title: 'Tên thiết bị',
@@ -29,17 +43,6 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
             row.original.name,
           ),
         ],
-      ),
-    enableSorting: true,
-  },
-  {
-    id: 'quantity',
-    title: 'Số lượng',
-    cell: ({ row }) =>
-      h(
-        'span',
-        { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.original.quantity,
       ),
     enableSorting: true,
   },
@@ -92,8 +95,21 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
     enableSorting: true,
   },
   {
+    id: 'returnedAt',
+    title: 'Ngày thực trả',
+    cell: ({ row }) => {
+      const value = row.original.returnedAt.toString();
+      return h(
+        'span',
+        { class: 'text-slate-500 text-sm font-normal leading-tight' },
+        formatDate(value),
+      );
+    },
+    enableSorting: true,
+  },
+  {
     id: 'status',
-    title: 'Tiến độ',
+    title: 'Tiến độ trả',
     cell: ({ row }) =>
       h(
         'span',
@@ -107,5 +123,30 @@ export const columns: AugmentedColumnDef<BorrowReturnDevice>[] = [
         statusMap[row.original.status],
       ),
     enableSorting: true,
+  },
+  {
+    id: 'deviceStatus',
+    title: 'Trạng thái thiết bị',
+    cell: ({ row }) =>
+      h(
+        'span',
+        {
+          class: `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            deviceStatusColorMap[row.original.deviceStatus]
+          }`,
+        },
+        deviceStatusMap[row.original.deviceStatus],
+      ),
+    enableSorting: true,
+  },
+  {
+    id: 'note',
+    title: 'Ghi chú',
+    cell: ({ row }) =>
+      h(
+        'span',
+        { class: 'text-slate-500 text-sm font-normal leading-tight' },
+        row.original.note,
+      ),
   },
 ];
