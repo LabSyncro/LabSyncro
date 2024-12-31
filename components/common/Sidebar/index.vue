@@ -28,7 +28,7 @@ v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-
               Dashboard
             </SidebarLink>
             <SidebarLink to="/admin/devices" icon="i-heroicons-cpu-chip">
-              Danh sách thiết bị
+              Tuỳ chỉnh thiết bị
             </SidebarLink>
             <SidebarLink to="/labs" icon="i-heroicons-beaker">
               Danh sách phòng thí nghiệm
@@ -40,7 +40,6 @@ v-if="isOpen" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-
             </SidebarLink>
           </SidebarSection>
         </div>
-        <SidebarProfile />
       </div>
     </aside>
   </div>

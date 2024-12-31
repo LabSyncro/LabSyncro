@@ -1,6 +1,6 @@
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
-import { ReceiptResourceDto } from '~/lib/api_schema';
+import { BorrowedReceiptResourceDto } from '~/lib/api_schema';
 import { Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import type { Static } from '@sinclair/typebox';
@@ -39,7 +39,7 @@ type QueryDto = Static<typeof QueryDto>;
 
 export default defineEventHandler<
   { query: QueryDto },
-  Promise<ReceiptResourceDto>
+  Promise<BorrowedReceiptResourceDto>
 >(async (event) => {
   const token = await getToken({ event });
   const query = Value.Convert(QueryDto, getQuery(event));
@@ -197,7 +197,7 @@ export default defineEventHandler<
 
   const output = { receipts, totalPages, currentPage };
 
-  if (!Value.Check(ReceiptResourceDto, output)) {
+  if (!Value.Check(BorrowedReceiptResourceDto, output)) {
     throw createError({
       statusCode: INTERNAL_SERVER_ERROR_CODE,
       message:

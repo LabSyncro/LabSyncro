@@ -14,12 +14,13 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@sidebase/nuxt-auth',
   ],
+  nitro: {
+    preset: 'bun',
+  },
   auth: {
     isEnabled: true,
     disableServerSideAuth: false,
-    // baseURL:
-    //   'https://scoring-sponsored-newark-driven.trycloudflare.com/api/auth',
-    baseURL: 'http://localhost:3000/api/auth',
+    baseURL: process.env.AUTH_API_BASE_URL || 'http://localhost:3000/api/auth',
     provider: {
       type: 'authjs',
     },
@@ -68,6 +69,9 @@ export default defineNuxtConfig({
     JWT_SECRET: process.env.JWT_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     PRINT_LABELS_URL: process.env.PRINT_LABELS_URL,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    AUTH_SECRET: process.env.AUTH_SECRET,
   },
   app: {
     head: {

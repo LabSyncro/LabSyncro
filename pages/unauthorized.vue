@@ -3,41 +3,64 @@ import { ArrowLeft, Home, Shield } from 'lucide-vue-next';
 
 definePageMeta({
   layout: 'unauthorized',
+  auth: false,
 });
 
-
 const router = useRouter();
+const route = useRoute();
+const { signOut } = useAuth();
+const errorType = computed(() => route.query.error as string);
 
-const goBack = () => {
-  router.back();
+const errorContent = computed(() => {
+  switch (errorType.value) {
+    case 'UNAUTHORIZED_DOMAIN':
+      return {
+        title: 'Invalid Email Domain',
+        message: 'Only HCMUT email addresses (@hcmut.edu.vn) are allowed to access this application. Please sign in with your HCMUT account.'
+      };
+    case 'PERMISSION_DENIED':
+      return {
+        title: 'Access Denied',
+        message: 'You don\'t have permission to access this resource. Please contact your administrator if you believe this is a mistake.'
+      };
+    default:
+      return {
+        title: 'Access Denied',
+        message: 'You don\'t have permission to access this page. Please contact your administrator if you believe this is a mistake.'
+      };
+  }
+});
+
+const goBack = async () => {
+  await signOut({ redirect: false });
+  router.push('/login');
 };
 
-const goHome = () => {
+const goHome = async () => {
+  await signOut({ redirect: false });
   router.push('/');
 };
 </script>
-
 <template>
   <div class="container px-4 md:px-6">
     <div class="flex flex-col items-center space-y-4 text-center">
       <div class="space-y-2 grid items-center justify-items-center">
         <Shield class="h-24 w-24 text-muted-foreground opacity-50" />
         <h1 class="text-4xl font-bold tracking-tighter sm:text-5xl">
-          Access Denied
+          {{ errorContent.title }}
         </h1>
         <p class="max-w-[600px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-          Sorry, you don't have permission to access this page. Please contact your administrator if you believe this is
-          a mistake.
+          {{ errorContent.message }}
         </p>
       </div>
       <div class="flex flex-col sm:flex-row items-center gap-4">
-        <Button variant="outline" class="space-x-2" @click="goBack">
+        <Button v-if="errorType !== 'UNAUTHORIZED_DOMAIN'" variant="outline" class="space-x-2" @click="goBack">
           <ArrowLeft class="w-4 h-4" />
           <span>Go Back</span>
         </Button>
-        <Button class="space-x-2 bg-tertiary-darker " @click="goHome">
+        <Button class="space-x-2 bg-tertiary-darker" @click="goHome">
           <Home class="w-4 h-4 text-white" />
-          <span class="text-white"> Return Home</span>
+          <span class="text-white">Return Home</span>
         </Button>
       </div>
     </div>

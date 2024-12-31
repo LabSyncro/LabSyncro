@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['permission']
+});
+
 import moment from 'moment';
 import { deviceKindService, receiptService, userService, deviceService } from '~/services';
 

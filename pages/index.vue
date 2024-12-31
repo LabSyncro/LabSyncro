@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { deviceService } from '@/services';
 
-//definePageMeta({
-//  middleware: ['permission'],
-//  permission: 'home:own',
-//});
+definePageMeta({
+  middleware: ['permission']
+});
 
 const { lab } = useLab();
 

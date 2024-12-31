@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import type { Row } from '@tanstack/vue-table';
 import { MoreHorizontal } from 'lucide-vue-next';
-import { BorrowReturnDeviceSchema, type BorrowReturnDevice } from './schema';
+import { BorrowDeviceSchema, type BorrowDevice } from './schema';
 import { Value } from '@sinclair/typebox/value';
 
 interface DataTableRowActionsProps {
-  row: Row<BorrowReturnDevice>
+  row: Row<BorrowDevice>
 }
 const props = defineProps<DataTableRowActionsProps>();
 
 computed(() => {
   const data = props.row.original;
 
-  if (Value.Check(BorrowReturnDeviceSchema, data)) {
-    return data as BorrowReturnDevice;
+  if (Value.Check(BorrowDeviceSchema, data)) {
+    return data as BorrowDevice;
   } else {
-    throw new Error('Invalid Borrow Return Table Data Schema');
+    throw new Error('Invalid Borrow Table Data Schema');
   }
 });
 </script>

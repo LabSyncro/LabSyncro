@@ -1,16 +1,13 @@
 import * as db from 'zapatos/db';
-import { INTERNAL_SERVER_ERROR_CODE, NOT_FOUND_CODE } from '~/constants';
 import { dbPool } from '~/server/db';
-import { Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { UserResourceDto } from '~/lib/api_schema';
+import { INTERNAL_SERVER_ERROR_CODE } from '~/constants';
 
-export default defineEventHandler<Promise<UserResourceDto>>(async (event) => {
-  await requirePermission(event, ['/admin/borrows/form:own', '/admin/returns/form:own']);
-  
-  const userId = Value.Convert(Type.String(), getRouterParam(event, 'id'));
+export default defineEventHandler<Promise<UserResourceDto[]>>(async (event) => {
+  await requirePermission(event, '/settings/users:own');
 
-  const [user] = await db.sql`
+  const users = await db.sql<UserResourceDto[]>`
     SELECT 
       u.id,
       u.name,
@@ -30,23 +27,17 @@ export default defineEventHandler<Promise<UserResourceDto>>(async (event) => {
     FROM users u
     LEFT JOIN user_roles ur ON u.id = ur.user_id
     LEFT JOIN roles r ON ur.role_id = r.id
-    WHERE u.deleted_at IS NULL AND ${db.param(userId)} = u.id
+    WHERE u.deleted_at IS NULL
     GROUP BY u.id, u.name, u.email, u.image, u.last_active_at
+    ORDER BY u.last_active_at DESC NULLS LAST
   `.run(dbPool);
 
-  if (!user) {
-    throw createError({
-      statusCode: NOT_FOUND_CODE,
-      message: 'User not found!',
-    });
-  }
-
-  if (!Value.Check(UserResourceDto, user)) {
+  if (!users.every(user => Value.Check(UserResourceDto, user))) {
     throw createError({
       statusCode: INTERNAL_SERVER_ERROR_CODE,
-      message: 'Internal server error: the returned output does not conform to the schema',
+      message: 'Internal server error: some users do not conform to the schema',
     });
   }
 
-  return user;
-});
+  return users;
+}); 

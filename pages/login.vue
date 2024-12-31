@@ -9,24 +9,26 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full space-y-8 p-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
+  <div class="min-h-screen flex items-center justify-center bg-gray-200 p-4">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-sm">
+      <div class="space-y-2">
+        <h2 class="text-center text-2xl font-bold tracking-tight text-gray-900">
+          Welcome to LabSyncro
         </h2>
+        <p class="text-center text-sm text-gray-500">
+          Sign in with your HCMUT account to continue
+        </p>
       </div>
-      <div class="mt-8 space-y-6">
-        <AuthLoginForm />
-        <div class="relative">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-300" />
-          </div>
-          <div class="relative flex justify-center text-sm">
-            <span class="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-          </div>
-        </div>
+
+      <div class="pt-4">
         <AuthLoginButton />
+      </div>
+
+      <div class="mt-4 text-center text-xs text-gray-500">
+        By signing in, you agree to our
+        <a href="#" class="text-tertiary-darker hover:underline">Terms of Service</a>
+        and
+        <a href="#" class="text-tertiary-darker hover:underline">Privacy Policy</a>
       </div>
     </div>
   </div>

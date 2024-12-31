@@ -1,33 +1,63 @@
 <script setup lang='ts'>
-import {
-  Check,
-  ChevronDown,
-  Search,
-  MoreVertical
-} from 'lucide-vue-next';
-
 definePageMeta({
-  layout: 'setting',
+  middleware: ['permission'],
+  layout: 'setting'
 });
 
-const users = ref([
-  {
-    id: 1,
-    name: 'PHÚ NGUYỄN NG...',
-    email: 'phu.nguyen2310@hcmut.edu...',
-    avatar: 'https://avatars.githubusercontent.com/u/111476687?v=4',
-    permissions: ['admin', 'All Users'],
-    lastActive: '5 ngày trước'
-  }
-]);
+import { Check, ChevronDown, Search, MoreVertical } from 'lucide-vue-next';
+import type { UserResourceDto } from '@/lib/api_schema';
+import { userService } from '@/services';
+
+const formatLastActive = (date: Date) => {
+  if (!date) return 'Chưa hoạt động';
+  
+  const lastActive = new Date(date);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - lastActive.getTime());
+  const diffSeconds = Math.floor(diffTime / 1000);
+  const diffMinutes = Math.floor(diffTime / (1000 * 60));
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffSeconds < 60) return 'Vừa xong';
+  if (diffMinutes < 60) return `${diffMinutes} phút trước`;
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  if (diffDays === 0) return 'Hôm nay';
+  if (diffDays === 1) return 'Hôm qua';
+  if (diffDays < 30) return `${diffDays} ngày trước`;
+  return lastActive.toLocaleDateString('vi-VN');
+};
 
 const getUserInitials = (name: string) => {
-  return name
-    .split(' ')
-    .map(word => word[0])
-    .join('')
-    .substring(0, 2);
+  if (!name) return '??';
+  
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) {
+    return words[0].substring(0, 2).toUpperCase();
+  }
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 };
+
+const getRoleBadgeStyle = (roleKey: string) => {
+  switch (roleKey) {
+    case 'admin':
+      return 'bg-green-100 text-green-600 hover:bg-green-600 hover:text-white';
+    case 'lab_admin':
+      return 'bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white';
+    case 'teacher':
+      return 'bg-purple-100 text-purple-600 hover:bg-purple-600 hover:text-white';
+    case 'student':
+      return 'bg-orange-100 text-orange-600 hover:bg-orange-600 hover:text-white';
+    default:
+      return 'bg-gray-200 text-gray-600 hover:bg-gray-600 hover:text-white';
+  }
+};
+
+const users = ref<UserResourceDto[]>([]);
+
+onMounted(async () => {
+  users.value = await userService.getUsers();
+});
 </script>
 
 <template>
@@ -39,7 +69,7 @@ const getUserInitials = (name: string) => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button variant="outline">
-              Tất cả người dùng: ({{ users.length }})
+              Tất cả người dùng: ({{ users?.length || 0 }})
               <ChevronDown class="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -51,7 +81,6 @@ const getUserInitials = (name: string) => {
             <DropdownMenuItem class="flex items-center justify-between">
               <span>Ẩn người dùng bị vô hiệu hóa</span>
               <Check class="h-4 w-4 text-gray-500 ml-2" />
-
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -90,7 +119,7 @@ const getUserInitials = (name: string) => {
     </div>
 
     <div class="text-sm text-gray-500 mb-4">
-      Hiện {{ users.length }} người dùng đang hoạt động.
+      Hiện {{ users?.length || 0 }} người dùng đang hoạt động.
     </div>
 
     <Table>
@@ -106,7 +135,7 @@ const getUserInitials = (name: string) => {
           <TableCell>
             <div class="flex items-center gap-3">
               <Avatar>
-                <AvatarImage :src="user.avatar" />
+                <AvatarImage :src="user.avatar || ''" />
                 <AvatarFallback>{{ getUserInitials(user.name) }}</AvatarFallback>
               </Avatar>
               <div>
@@ -117,13 +146,17 @@ const getUserInitials = (name: string) => {
           </TableCell>
           <TableCell>
             <div class="flex gap-2">
-              <Badge class="bg-green-100 text-green-600 hover:bg-green-600 hover:text-white cursor-pointer">Quản trị
-                viên</Badge>
-              <Badge class="bg-gray-200 text-gray-600 hover:bg-gray-600 hover:text-white cursor-pointer">Tất cả người
-                dùng</Badge>
+              <Badge 
+                v-for="role in user.roles" 
+                :key="role.key"
+                :class="getRoleBadgeStyle(role.key)"
+                class="cursor-pointer"
+              >
+                {{ role.name }}
+              </Badge>
             </div>
           </TableCell>
-          <TableCell>{{ user.lastActive }}</TableCell>
+          <TableCell>{{ formatLastActive(user.last_active_at) }}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

@@ -1,4 +1,4 @@
-import { FacultyResourceDto, type FacultyResourceDto } from '~/lib/api_schema';
+import { FacultyResourceDto } from '~/lib/api_schema';
 import * as db from 'zapatos/db';
 import { dbPool } from '~/server/db';
 import { Value } from '@sinclair/typebox/value';
