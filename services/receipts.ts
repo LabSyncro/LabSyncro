@@ -352,4 +352,28 @@ export const receiptService = {
       },
     });
   },
+  async submitReturnRequest({
+    receiptId,
+    deviceIds,
+    returnerId,
+    returnDate,
+    returnLabId,
+  }: {
+    receiptId: string | null;
+    deviceIds: string[];
+    returnerId: string;
+    returnDate: Date;
+    returnLabId: string;
+  }) {
+    return await $fetch('/api/receipts/return', {
+      method: 'POST',
+      body: {
+        receipt_id: receiptId || undefined,
+        device_ids: deviceIds,
+        returner_id: returnerId,
+        return_date: returnDate,
+        return_lab_id: returnLabId,
+      },
+    });
+  },
 };

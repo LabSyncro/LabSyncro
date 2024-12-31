@@ -21,14 +21,24 @@ export function formatDate (value: string, isRelative: boolean = true): string {
   const now = new Date();
 
   if (isRelative) {
+    if (date > now) {
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit', 
+        year: 'numeric'
+      });
+    }
+
     const diffInMinutes = Math.floor(
       (now.getTime() - date.getTime()) / (1000 * 60),
     );
     const diffInHours = Math.floor(diffInMinutes / 60);
     const diffInDays = Math.floor(diffInHours / 24);
 
-    if (diffInMinutes < 60) {
-      return 'a minute ago';
+    if (diffInMinutes < 5) {
+      return 'just now';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
     } else if (diffInHours < 24) {
       return `${diffInHours} hours ago`;
     } else if (diffInDays < 30) {

@@ -12,6 +12,13 @@ export const ReturnedReceiptDeviceSchema = Type.Object({
   expectedReturnedAt: Type.Date(),
   returnedAt: Type.Date(),
   status: Type.Union([Type.Literal('on_time'), Type.Literal('late')]),
+  deviceStatus: Type.Union([
+    Type.Literal('healthy'),
+    Type.Literal('broken'),
+    Type.Literal('assessing'),
+    Type.Literal('lost'),
+  ]),
+  note: Type.Optional(Type.String()),
 });
 
 export type ReturnedReceiptDevice = Static<typeof ReturnedReceiptDeviceSchema>;

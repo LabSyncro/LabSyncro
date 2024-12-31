@@ -99,6 +99,7 @@ export default defineEventHandler<
       LEFT JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
       WHERE
         r.${'borrower_id'} = ${db.param(userId)}
+        AND rd.${'return_id'} IS NULL
       GROUP BY 
         dk.${'id'},
         dk.${'name'},
@@ -182,6 +183,7 @@ export default defineEventHandler<
     LEFT JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
     WHERE 
       r.${'borrower_id'} = ${db.param(userId)}
+      AND rd.${'return_id'} IS NULL
       ${
   searchText !== undefined
     ? db.raw(`AND (

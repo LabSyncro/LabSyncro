@@ -7,6 +7,19 @@ const statusMap = {
   on_time: 'Đúng hạn',
 };
 
+const deviceStatusMap = {
+  healthy: 'Không hư hỏng',
+  broken: 'Hư hỏng',
+  assessing: 'Đang đánh giá',
+  lost: 'Mất',
+};
+
+const deviceStatusColorMap = {
+  healthy: 'bg-green-100 text-green-800',
+  broken: 'bg-red-100 text-red-800',
+  assessing: 'bg-yellow-100 text-yellow-800',
+  lost: 'bg-gray-100 text-gray-800',
+};
 export const columns: AugmentedColumnDef<ReturnedReceiptDevice>[] = [
   {
     id: 'name',
@@ -29,17 +42,6 @@ export const columns: AugmentedColumnDef<ReturnedReceiptDevice>[] = [
             row.original.name,
           ),
         ],
-      ),
-    enableSorting: true,
-  },
-  {
-    id: 'quantity',
-    title: 'Số lượng',
-    cell: ({ row }) =>
-      h(
-        'span',
-        { class: 'text-slate-500 text-sm font-normal leading-tight' },
-        row.original.quantity,
       ),
     enableSorting: true,
   },
@@ -119,5 +121,30 @@ export const columns: AugmentedColumnDef<ReturnedReceiptDevice>[] = [
         statusMap[row.original.status],
       ),
     enableSorting: true,
+  },
+  {
+    id: 'deviceStatus',
+    title: 'Trạng thái thiết bị',
+    cell: ({ row }) =>
+      h(
+        'span',
+        {
+          class: `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            deviceStatusColorMap[row.original.deviceStatus]
+          }`,
+        },
+        deviceStatusMap[row.original.deviceStatus],
+      ),
+    enableSorting: true,
+  },
+  {
+    id: 'note',
+    title: 'Ghi chú',
+    cell: ({ row }) =>
+      h(
+        'span',
+        { class: 'text-slate-500 text-sm font-normal leading-tight' },
+        row.original.note,
+      ),
   },
 ];

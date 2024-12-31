@@ -73,13 +73,11 @@ export default defineEventHandler<
 
   const receipts = (
     await db.sql`
-    WITH borrowed_devices AS (
       SELECT 
         dk.${'id'} as device_kind_id,
         dk.${'name'} as device_kind_name,
         dk.${'image'}->'main_image' as main_image,
         dk.${'image'}->'sub_images' as sub_images,
-        COUNT(*)::INT as ${'quantity'},
         CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'}) as borrowed_place,
         CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'}) as returned_place,
         a_borrow.${'created_at'} as borrowed_at,
@@ -88,7 +86,9 @@ export default defineEventHandler<
         CASE 
             WHEN a_return.${'created_at'} <= rd.${'expected_returned_at'} THEN 'on_time'
             ELSE 'late'
-        END as status
+        END as status,
+        rd.${'status'} as device_status,
+        rd.${'note'} as note
       FROM ${'receipts_devices'} rd
       JOIN ${'receipts'} r ON rd.${'receipt_id'} = r.${'id'}
       JOIN ${'devices'} d ON rd.${'device_id'} = d.${'id'}
@@ -100,32 +100,6 @@ export default defineEventHandler<
       WHERE
         l_borrow.${'admin_id'} = ${db.param(userId)}
         AND rd.${'return_id'} IS NOT NULL
-      GROUP BY 
-        dk.${'id'},
-        dk.${'name'},
-        dk.${'image'}->'main_image',
-        dk.${'image'}->'sub_images',
-        l_borrow.${'room'},
-        l_borrow.${'branch'},
-        l_expected.${'room'},
-        l_expected.${'branch'},
-        a_borrow.${'created_at'},
-        a_return.${'created_at'},
-        rd.${'expected_returned_at'}
-    )
-    SELECT 
-      device_kind_id,
-      device_kind_name,
-      main_image,
-      sub_images,
-      quantity,
-      borrowed_place,
-      returned_place,
-      borrowed_at,
-      expected_returned_at,
-      returned_at,
-      status
-    FROM borrowed_devices
     ${
     searchText !== undefined && searchFields?.length
       ? db.raw(`WHERE (
@@ -153,25 +127,27 @@ export default defineEventHandler<
       device_kind_name,
       main_image,
       sub_images,
-      quantity,
       borrowed_place,
       returned_place,
       borrowed_at,
       expected_returned_at,
       returned_at,
       status,
+      device_status,
+      note,
     }) => ({
       id: device_kind_id,
       name: device_kind_name,
       mainImage: main_image,
       subImages: sub_images,
-      quantity,
       borrowedPlace: borrowed_place,
       returnedPlace: returned_place,
       borrowedAt: borrowed_at,
       expectedReturnedAt: expected_returned_at,
       returnedAt: returned_at,
       status,
+      deviceStatus: device_status,
+      note,
     }),
   );
 
