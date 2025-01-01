@@ -226,7 +226,7 @@ watch(() => formState.userId, handleUserCodeChange);
 
 useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
   userId: { length: 7 },
-  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/[a-fA-F0-9]{8}\?id=[a-fA-F0-9]+$/ },
   scannerThresholdMs: 100,
   maxInputTimeMs: 1000,
 });

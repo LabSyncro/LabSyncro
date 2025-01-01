@@ -16,7 +16,7 @@ export function useVirtualKeyboardDetection (
   let timeoutId: NodeJS.Timeout | null = null;
   let isProcessing = false;
   const defaultDeviceRegex =
-    /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/;
+    /^https?:\/\/[^/]+\/devices\/[a-fA-F0-9]{8}\?id=[a-fA-F0-9]+$/;
 
   const defaultOptions = {
     userId: {
@@ -53,6 +53,7 @@ export function useVirtualKeyboardDetection (
   };
 
   const handleKeyDown = (e: KeyboardEvent): void => {
+
     if (isProcessing) return;
 
     if (currentInput.length === 0) {
@@ -74,7 +75,6 @@ export function useVirtualKeyboardDetection (
         resetDetection();
         return;
       }
-
       if (mergedOptions.device.pattern.test(currentInput)) {
         handleDetection(currentInput, 'device');
         resetDetection();

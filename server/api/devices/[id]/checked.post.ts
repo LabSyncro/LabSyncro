@@ -105,6 +105,8 @@ export default defineEventHandler<Promise<DeviceCheckerResourceDto>>(
         });
       }
 
+      
+
       return {
         id: returnedDevice[0].id,
         status: returnedDevice[0].status,

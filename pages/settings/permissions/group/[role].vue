@@ -43,7 +43,6 @@ onMounted(async () => {
     selectedPermissions.value = roleDetail.value.permissions
       .flatMap(p => p.actions.map(a => `${p.resource}-${a}`));
   }
-  console.log(selectedPermissions.value);
 });
 
 const togglePermission = (resource: string, action: string) => {
