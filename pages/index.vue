@@ -21,7 +21,7 @@ const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | '
     if (status === 'borrowing') {
       navigateTo({
         path: '/admin/returns/form',
-        query: { deviceKindId, deviceId }
+        query: { deviceKindId, deviceId, userId: '2114417' }
       });
     } else if (status === 'healthy') {
       navigateTo({
@@ -34,7 +34,7 @@ const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | '
 
 useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
   userId: { length: 7 },
-  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/[a-fA-F0-9]{8}\?id=[a-fA-F0-9]+$/ },
   scannerThresholdMs: 100,
   maxInputTimeMs: 1000,
 });

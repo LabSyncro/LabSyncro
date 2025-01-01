@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { deviceService } from '@/services';
 
+const router = useRouter();
+
 interface DeviceData {
   quantity: string
   location: string
@@ -26,18 +28,18 @@ const generateDevices = async (): Promise<{ id: string; url: string; name: strin
   return props.listDeviceIds.map(deviceId => {
     return {
       id: `${deviceKindId.toLowerCase()}/${deviceId}`,
-      url: `http://localhost:3000/devices/${deviceKindId.toLowerCase()}?id=${deviceId}`,
+      url: `https://labsyncro.tickflow.net/devices/${deviceKindId.toLowerCase()}?id=${deviceId}`,
       name: deviceKindName,
     };
   });
 };
 const handlePrint = async () => {
   const devices = await generateDevices();
-  console.log(devices);
   await deviceService.printQRCode({ devices });
   await deviceService.updatePrintedAt(props.listDeviceIds.map(id => ({ id, printedAt: new Date() })));
   emit('print');
   emit('update:isOpen', false);
+  router.push(`/devices/${props.deviceData.deviceKindId.toLowerCase()}`);
 };
 
 const handleSkip = () => {

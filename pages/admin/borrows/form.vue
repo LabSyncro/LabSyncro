@@ -91,9 +91,8 @@ async function addDevice({ kind, id }: { kind: string; id: string }) {
   try {
     const deviceKind = devicesInCart.value.find(item => item.id === kind);
     if (deviceKind) {
-      if (!deviceKind.deviceIds.includes(id)) {
-        deviceKind.deviceIds.push(id);
-      }
+      deviceKind.deviceIds.push(id);
+      console.log(selectedDevices.value);
       return;
     }
 
@@ -107,6 +106,7 @@ async function addDevice({ kind, id }: { kind: string; id: string }) {
   } catch (error) {
     toast.error('Không thể thêm thiết bị');
   }
+  console.log(selectedDevices.value);
 }
 
 function deleteDevice({ kind, id }: { kind: string; id: string }) {
@@ -155,7 +155,6 @@ async function handleUserCodeChange(userId: string) {
       userInfo.role = userRole;
       userInfo.translatedRole = translateRole(userRole as ValidRole);
     } else {
-      console.log(userMeta.roles);
       userInfo.role = '';
       userInfo.translatedRole = 'Vai trò không hợp lệ';
     }
@@ -166,7 +165,6 @@ async function handleUserCodeChange(userId: string) {
 
 // Form submission
 async function submitBorrowForm() {
-  console.log(formState);
   if (!isValidForm.value) {
     toast.error('Vui lòng điền đầy đủ thông tin');
     return;
@@ -239,7 +237,7 @@ watch(() => formState.userId, handleUserCodeChange);
 
 useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
   userId: { length: 7 },
-  device: { pattern: /^https?:\/\/[^/]+\/devices\/\d{8}\?id=[a-fA-F0-9]+$/ },
+  device: { pattern: /^https?:\/\/[^/]+\/devices\/[a-fA-F0-9]{8}\?id=[a-fA-F0-9]+$/ },
   scannerThresholdMs: 100,
   maxInputTimeMs: 1000
 });

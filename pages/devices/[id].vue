@@ -77,27 +77,27 @@ watch(searchText, async () => {
         <div class="flex-1">
           <section class="bg-white p-10 flex flex-col md:flex-row gap-8 md:gap-16">
             <div class="w-[100%] md:max-w-[300px]">
-              <NuxtImg :src="deviceKindMeta.mainImage" class="border-[1px] border-gray-200" />
+              <NuxtImg :src="deviceKindMeta?.mainImage" class="border-[1px] border-gray-200" />
               <div class="grid grid-cols-4 gap-2 mt-5">
                 <NuxtImg
-                  v-for="img in deviceKindMeta.subImages" :key="img" :src="img"
+                  v-for="img in deviceKindMeta?.subImages" :key="img" :src="img"
                   class="border-[1px] border-gray-200" />
               </div>
             </div>
             <div class="flex-1 flex flex-col">
               <div class="text-normal md:text-sm">
-                <h2 class="text-lg mb-3">{{ deviceKindMeta.name }}</h2>
+                <h2 class="text-lg mb-3">{{ deviceKindMeta?.name }}</h2>
                 <div class="grid grid-cols-2 mb-1">
                   <p class="font-bold text-slate-dark">Phân loại</p>
-                  <p>{{ deviceKindMeta.categoryName }}</p>
+                  <p>{{ deviceKindMeta?.categoryName }}</p>
                 </div>
                 <div class="grid grid-cols-2 mb-1">
                   <p class="font-bold text-slate-dark">Thương hiệu</p>
-                  <p>{{ deviceKindMeta.brand || 'Không rõ' }}</p>
+                  <p>{{ deviceKindMeta?.brand || 'Không rõ' }}</p>
                 </div>
                 <div class="mt-8 font-semibold">
                   <span
-                    v-if="deviceKindMeta.borrowableQuantity > 0"
+                    v-if="deviceKindMeta?.borrowableQuantity > 0"
                     class="border-[1px] border-safe-darker bg-green-50 text-green-500 p-1.5 rounded-sm">
                     Sẵn có
                   </span>
@@ -107,7 +107,7 @@ watch(searchText, async () => {
                 </div>
                 <div class="mt-10 mb-10">
                   <h3 class="font-bold text-slate-dark">Mô tả thiết bị</h3>
-                  <p class="mt-2 overflow-auto">{{ deviceKindMeta.description }}</p>
+                  <p class="mt-2 overflow-auto">{{ deviceKindMeta?.description }}</p>
                 </div>
               </div>
               <button

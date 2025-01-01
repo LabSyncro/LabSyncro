@@ -4,6 +4,8 @@ import type {
   PrintQRCodeDto,
 } from '~/lib/api_schema';
 
+const { PRINT_LABELS_URL } = useRuntimeConfig();
+
 export const deviceService = {
   async getByKind (
     kindId: string,
@@ -50,7 +52,7 @@ export const deviceService = {
 
   async printQRCode ({ devices }: { devices: PrintQRCodeDto[] }): Promise<void> {
     return await $fetch(
-      'https://c1a5-42-115-188-242.ngrok-free.app/print_labels',
+      'https://3875-2001-ee0-5201-5e90-a258-30a3-e438-3ece.ngrok-free.app/print_labels',
       {
         method: 'POST',
         body: { devices },
