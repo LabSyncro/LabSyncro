@@ -1,10 +1,13 @@
 export function useVirtualKeyboardDetection (
-  onDetect: (input: string, type?: 'userId' | 'device') => Promise<void> | void,
+  onDetect: (input: string, type?: 'userId' | 'device' | 'oneTimeQr') => Promise<void> | void,
   options: {
     userId?: {
       length?: number;
     };
     device?: {
+      pattern?: RegExp;
+    };
+    oneTimeQr?: {
       pattern?: RegExp;
     };
     scannerThresholdMs?: number;
@@ -25,6 +28,9 @@ export function useVirtualKeyboardDetection (
     device: {
       pattern: defaultDeviceRegex,
     },
+    oneTimeQr: {
+      pattern: /^\{"token":"[0-9]{6}","userId":"[0-9]{7}"/,
+    },
     scannerThresholdMs: 100,
     maxInputTimeMs: 1000,
   };
@@ -34,12 +40,15 @@ export function useVirtualKeyboardDetection (
     device: {
       pattern: options.device?.pattern || defaultOptions.device.pattern,
     },
+    oneTimeQr: {
+      pattern: options.oneTimeQr?.pattern || defaultOptions.oneTimeQr.pattern,
+    },
     scannerThresholdMs:
       options.scannerThresholdMs ?? defaultOptions.scannerThresholdMs,
     maxInputTimeMs: options.maxInputTimeMs ?? defaultOptions.maxInputTimeMs,
   };
 
-  const handleDetection = async (input: string, type: 'userId' | 'device') => {
+  const handleDetection = async (input: string, type: 'userId' | 'device' | 'oneTimeQr') => {
     if (isProcessing) return;
 
     try {
@@ -86,6 +95,12 @@ export function useVirtualKeyboardDetection (
         /^\d+$/.test(currentInput)
       ) {
         handleDetection(currentInput, 'userId');
+        resetDetection();
+        return;
+      }
+
+      if (mergedOptions.oneTimeQr.pattern.test(currentInput)) {
+        handleDetection(currentInput, 'oneTimeQr');
         resetDetection();
         return;
       }
