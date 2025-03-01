@@ -7,6 +7,7 @@ import moment from 'moment';
 import { deviceKindService, receiptService, userService, deviceService } from '~/services';
 import { useToast } from 'vue-toastification';
 import type { ToastInterface } from 'vue-toastification';
+import OneTimeQrModal from '~/components/app/OneTimeQrModal.vue';
 
 // Types
 interface DeviceInCart {
@@ -185,8 +186,16 @@ async function submitReturnForm() {
   }
 }
 
+// QR code state
+const showQrModal = ref(false);
+
+// Handle scan QR code button click
+function handleScanQrClick() {
+  toast.info('Quét mã QR một lần của người dùng');
+}
+
 // Scanner handlers
-const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device') => {
+const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | 'device' | 'oneTimeQr') => {
   if (type === 'userId') {
     formState.userId = input;
     await handleUserCodeChange(input);
@@ -203,6 +212,22 @@ const handleVirtualKeyboardDetection = async (input: string, type?: 'userId' | '
       }
     } catch (error) {
       toast.error('Không thể kiểm tra thiết bị');
+    }
+  } else if (type === 'oneTimeQr') {
+    try {
+      const { verifyScannedQrCode } = useOneTimeQrCode();
+      
+      const result = verifyScannedQrCode(input);
+      if (result) {
+        const { userId } = result;
+        formState.userId = userId;
+        await handleUserCodeChange(userId);
+        toast.success('Xác thực người dùng thành công');
+      } else {
+        toast.error('Mã QR không hợp lệ hoặc đã hết hạn');
+      }
+    } catch (error) {
+      toast.error('Không thể xác thực mã QR');
     }
   }
 };
@@ -227,6 +252,7 @@ watch(() => formState.userId, handleUserCodeChange);
 useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
   userId: { length: 7 },
   device: { pattern: /^https?:\/\/[^/]+\/devices\/[a-fA-F0-9]{8}\?id=[a-fA-F0-9]+$/ },
+  oneTimeQr: { pattern: /^\{"token":"[0-9]{6}","userId":"[0-9]{7}"/ },
   scannerThresholdMs: 100,
   maxInputTimeMs: 1000,
 });
@@ -274,10 +300,17 @@ useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
             <div class="flex gap-2 justify-between items-center mb-4">
               <h2 class="text-xl">Người trả</h2>
               <button
-                class="bg-slate-100 border border-slate-400 text-slate-dark rounded-md flex items-center gap-2 p-2">
+                class="bg-slate-100 border border-slate-400 text-slate-dark rounded-md flex items-center gap-2 p-2"
+                @click="handleScanQrClick">
                 <Icon aria-hidden class="left-3 top-[13px] text-xl" name="i-heroicons-qr-code" />
                 <p>Quét mã người trả</p>
               </button>
+              
+              <!-- One-time QR code modal -->
+              <OneTimeQrModal 
+                :is-open="showQrModal"
+                :user-id="formState.userId" 
+                @close="showQrModal = false" />
             </div>
             <div role="form">
               <div class="mb-4">
@@ -285,7 +318,11 @@ useVirtualKeyboardDetection(handleVirtualKeyboardDetection, {
                   <label class="text-sm text-gray-600">
                     Mã số sinh viên <span class="text-red-500">*</span>
                   </label>
-                  <Input v-model:model-value="formState.userId" class="text-lg" />
+                  <Input 
+                  :model-value="formState.userId" 
+                  @update:model-value="value => formState.userId = value.toString()"
+                  class="text-lg" 
+                />
                 </div>
                 <div v-if="/^\d{7}$/.test(formState.userId)" class="text-lg">
                   {{ userInfo.fullName }} | {{ userInfo.translatedRole }}
