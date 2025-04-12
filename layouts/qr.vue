@@ -11,7 +11,7 @@
       ></div>
     </div>
 
-    <div class="relative z-10 w-full">
+    <div class="relative z-10 w-full h-screen md:h-auto">
       <div class="container mx-auto max-w-lg mb-6">
         <div class="flex items-center justify-center gap-2 text-primary-darker">
           <div class="h-8 w-8">
