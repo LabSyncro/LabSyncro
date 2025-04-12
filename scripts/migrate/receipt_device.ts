@@ -93,7 +93,7 @@ async function writeReceiptDevicesToFile (receiptDevices: ReceiptDevice[]) {
   fileStream.end();
 
   return new Promise((resolve, reject) => {
-    fileStream.on('finish', resolve);
+    fileStream.on('finish', () => resolve(undefined));
     fileStream.on('error', reject);
   });
 }

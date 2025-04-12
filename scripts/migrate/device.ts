@@ -60,7 +60,7 @@ async function insertMockDevicesData () {
   fileStream.end();
 
   await new Promise((resolve, reject) => {
-    fileStream.on('finish', resolve);
+    fileStream.on('finish', () => resolve(undefined));
     fileStream.on('error', reject);
   });
 

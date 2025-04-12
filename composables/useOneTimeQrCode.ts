@@ -1,10 +1,11 @@
 import QRCode from 'qrcode';
-import { ref, onUnmounted } from 'vue';
+import { useToast } from 'vue-toastification';
 
-// TOTP configuration
+const toast = useToast();
+
 const TOTP_CONFIG = {
   digits: 6,
-  timeStep: 30, // seconds
+  timeStep: 60,
 };
 
 export function useOneTimeQrCode() {
@@ -14,16 +15,10 @@ export function useOneTimeQrCode() {
   const isLoading = ref<boolean>(false);
   let intervalId: NodeJS.Timeout | null = null;
 
-  /**
-   * Convert string to Uint8Array
-   */
   const stringToBytes = (str: string): Uint8Array => {
     return new TextEncoder().encode(str);
   };
 
-  /**
-   * Generate HMAC using Web Crypto API
-   */
   const generateHMAC = async (key: Uint8Array, message: Uint8Array): Promise<ArrayBuffer> => {
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
@@ -46,7 +41,6 @@ export function useOneTimeQrCode() {
       const userSecret = secret || `LabSyncro-${userId}-${new Date().toISOString().split('T')[0]}`;
       const counter = Math.floor(Date.now() / 1000 / TOTP_CONFIG.timeStep);
       
-      // Convert counter to 8-byte buffer
       const counterBytes = new Uint8Array(8);
       let tempCounter = counter;
       for (let i = counterBytes.length - 1; i >= 0; i--) {
@@ -67,13 +61,11 @@ export function useOneTimeQrCode() {
         (hmacArray[offset + 2] << 8) |
         hmacArray[offset + 3];
 
-      // Get last n digits
       code = code % Math.pow(10, TOTP_CONFIG.digits);
-      
-      // Pad with leading zeros if needed
-      return code.toString().padStart(TOTP_CONFIG.digits, '0');
+
+      return code.toString().padStart(TOTP_CONFIG.digits, "0");
     } catch (error) {
-      console.error('Error generating token:', error);
+      toast.error(`Lỗi khi tạo mã QR: ${error}`);
       throw error;
     }
   };
@@ -90,7 +82,7 @@ export function useOneTimeQrCode() {
       const currentToken = await generateToken(userId, secret);
       return token === currentToken;
     } catch (error) {
-      console.error('Error verifying token:', error);
+      toast.error(`Lỗi khi xác thực mã QR: ${error}`);
       return false;
     }
   };
@@ -102,55 +94,67 @@ export function useOneTimeQrCode() {
    */
   const generateQrCode = async (userId: string, extraData?: Record<string, any>) => {
     try {
-      isLoading.value = true;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
       
-      // Generate token
+      isLoading.value = true;
       const token = await generateToken(userId);
       
-      // Calculate token expiry time
-      const now = Math.floor(Date.now() / 1000);
-      const step = TOTP_CONFIG.timeStep;
-      expiryTimestamp.value = (Math.floor(now / step) + 1) * step * 1000;
+      const now = Date.now();
+      const newExpiryTimestamp = now + (TOTP_CONFIG.timeStep * 1000);
       
-      // Create data object to be encoded in QR code 
       const qrData = JSON.stringify({
         token,
         userId,
-        timestamp: Date.now(),
-        expiry: expiryTimestamp.value,
+        timestamp: now,
+        expiry: newExpiryTimestamp,
         ...extraData,
       });
       
-      // Generate QR code as data URL
       qrDataUrl.value = await QRCode.toDataURL(qrData);
+      expiryTimestamp.value = newExpiryTimestamp;
+      timeLeft.value = TOTP_CONFIG.timeStep;
       
-      // Start the countdown
-      startCountdown();
     } catch (error) {
-      console.error('Error generating QR code:', error);
+      toast.error(`Lỗi khi tạo mã QR: ${error}`);
+      qrDataUrl.value = '';
+      expiryTimestamp.value = 0;
+      timeLeft.value = 0;
     } finally {
       isLoading.value = false;
     }
   };
 
-  /**
-   * Start countdown for token expiry 
-   */
   const startCountdown = () => {
-    // Clear any existing interval
-    if (intervalId) clearInterval(intervalId);
-    
-    // Update time left on interval
-    intervalId = setInterval(() => {
-      const now = Date.now();
-      if (now >= expiryTimestamp.value) {
-        // Token expired, regenerate
-        timeLeft.value = 0;
-        if (intervalId) clearInterval(intervalId);
-      } else {
-        timeLeft.value = Math.floor((expiryTimestamp.value - now) / 1000);
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    if (expiryTimestamp.value > Date.now()) {
+      const initialTimeLeft = Math.max(0, Math.floor((expiryTimestamp.value - Date.now()) / 1000));
+      if (timeLeft.value !== initialTimeLeft) {
+        timeLeft.value = initialTimeLeft;
       }
-    }, 1000);
+
+      intervalId = setInterval(() => {
+        const now = Date.now();
+        if (now >= expiryTimestamp.value) {
+          timeLeft.value = 0;
+          clearInterval(intervalId!);
+          intervalId = null;
+        } else {
+          const newTimeLeft = Math.max(0, Math.floor((expiryTimestamp.value - now) / 1000));
+          if (timeLeft.value !== newTimeLeft) {
+            timeLeft.value = newTimeLeft;
+          }
+        }
+      }, 1000);
+    } else {
+      timeLeft.value = 0;
+    }
   };
 
   /**
@@ -160,43 +164,43 @@ export function useOneTimeQrCode() {
    */
   const verifyScannedQrCode = async (scannedQrData: string): Promise<{ userId: string; extraData?: any } | null> => {
     try {
-      // Parse the QR data
       const qrData = JSON.parse(scannedQrData);
       const { token, userId, timestamp, expiry, ...extraData } = qrData;
       
-      // Check if token has expired
       if (Date.now() > expiry) {
-        console.error('Token has expired');
+        toast.error("Mã QR đã hết hạn");
         return null;
       }
-      
-      // Verify the token
+
       const isValid = await verifyToken(token, userId);
       if (!isValid) {
-        console.error('Invalid token');
+        toast.error("Mã QR không hợp lệ hoặc đã hết hạn");
         return null;
       }
-      
-      // Token is valid, return user ID and any extra data
+
       return { userId, extraData };
     } catch (error) {
-      console.error('Error verifying QR code:', error);
+      toast.error(`Lỗi khi xác thực mã QR: ${error}`);
       return null;
     }
   };
 
-  /**
-   * Clean up resources when component unmounts
-   */
   const cleanUp = () => {
-    if (intervalId) clearInterval(intervalId);
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
     qrDataUrl.value = '';
     expiryTimestamp.value = 0;
     timeLeft.value = 0;
+    isLoading.value = false;
   };
 
   onUnmounted(() => {
-    cleanUp();
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
   });
 
   return {
@@ -207,6 +211,7 @@ export function useOneTimeQrCode() {
     verifyToken,
     generateQrCode,
     verifyScannedQrCode,
+    startCountdown,
     cleanUp,
   };
 }
