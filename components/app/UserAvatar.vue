@@ -44,8 +44,11 @@ const { hasPermission, hasRole } = usePermission();
           </div>
         </div>
 
-        <DropdownMenuItem v-if="hasRole(['student', 'teacher'])" as-child>
-          <UserQrButton class="w-full h-auto px-2 hover:bg-transparent" />
+        <DropdownMenuItem
+          v-if="hasRole(['student', 'teacher'])"
+          class="cursor-pointer"
+        >
+          <UserQrButton class="w-full h-auto" />
         </DropdownMenuItem>
 
         <NuxtLink

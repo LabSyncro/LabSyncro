@@ -210,7 +210,7 @@ function shareQR() {
             <span v-if="!isMobile">Chia sẻ</span>
           </Button>
         </div>
-        <Button variant="outline" @click="$router.back()">
+        <Button variant="outline" @click="$router.push('/')">
           <ArrowLeft class="h-4 w-4 mr-2" />
           Quay lại
         </Button>

@@ -17,10 +17,7 @@ function handleClick() {
 </script>
 
 <template>
-  <button
-    @click="handleClick"
-    class="cursor-pointer h-16 px-2.5 sm:px-5 hover:bg-primary-darker flex items-center"
-  >
+  <button @click="handleClick" class="cursor-pointer h-40 flex items-center text-md">
     <Icon aria-hidden name="i-heroicons-qr-code" class="mr-1.5" />
     QR của tôi
   </button>
