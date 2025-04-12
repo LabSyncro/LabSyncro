@@ -1,30 +1,24 @@
 <script setup lang="ts">
-import { useToast } from 'vue-toastification';
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
+const router = useRouter();
 const { userId } = usePermission();
-const showQrModal = ref(false);
 
-function openQrModal() {
+function handleClick() {
   if (!userId.value) {
-    // User not logged in, handle this case
     const toast = useToast();
-    toast.error('Vui lòng đăng nhập để sử dụng tính năng này');
+    toast.error("Vui lòng đăng nhập để sử dụng tính năng này");
     return;
   }
-  
-  showQrModal.value = true;
+
+  router.push("/qr");
 }
 </script>
 
 <template>
-  <button @click="openQrModal" class="cursor-pointer h-16 px-2.5 sm:px-5 hover:bg-primary-darker flex items-center">
+  <button @click="handleClick" class="cursor-pointer h-40 flex items-center text-md">
     <Icon aria-hidden name="i-heroicons-qr-code" class="mr-1.5" />
     QR của tôi
   </button>
-  
-  <OneTimeQrModal
-    :is-open="showQrModal"
-    :user-id="userId || ''" 
-    @close="showQrModal = false" 
-  />
 </template>

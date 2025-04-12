@@ -7,3 +7,6 @@ build/
 .env
 zapatos/
 .DS_Store
+.cursor
+docs
+tasks
