@@ -19,5 +19,19 @@ export const authService = {
         timestamp
       }
     });
+  },
+
+  async authenticateDevice(hmiCode: string): Promise<{
+    success: boolean;
+    user: {
+      id: string;
+      name: string;
+      email: string;  
+    }
+  }> {
+    return await $fetch('/api/auth/hmi/authenticate', {
+      method: 'POST',
+      body: { hmiCode }
+    });
   }
 }; 

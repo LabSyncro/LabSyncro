@@ -6,3 +6,4 @@ export * from './laboratory';
 export * from './user';
 export * from './devices';
 export * from './receipts';
+export * from './auth';

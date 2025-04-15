@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'auth',
+  layout: "auth",
   auth: {
     unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/',
-  }
+    navigateAuthenticatedTo: "/",
+  },
 });
 </script>
 
 <template>
-  <div class="md:min-h-screen flex items-center justify-center bg-gray-200 p-0 md:p-4">
+  <div
+    class="md:min-h-screen flex items-center justify-center bg-gray-200 p-0 md:p-4"
+  >
     <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-sm">
       <div class="space-y-2">
         <h2 class="text-center text-2xl font-bold tracking-tight text-gray-900">
@@ -26,9 +28,13 @@ definePageMeta({
 
       <div class="mt-4 text-center text-xs text-gray-500">
         By signing in, you agree to our
-        <a href="#" class="text-tertiary-darker hover:underline">Terms of Service</a>
+        <a href="#" class="text-tertiary-darker hover:underline"
+          >Terms of Service</a
+        >
         and
-        <a href="#" class="text-tertiary-darker hover:underline">Privacy Policy</a>
+        <a href="#" class="text-tertiary-darker hover:underline"
+          >Privacy Policy</a
+        >
       </div>
     </div>
   </div>

@@ -9,10 +9,7 @@ import {
 import { useToast } from "vue-toastification";
 
 definePageMeta({
-  //   auth: {
-  //     authenticated: true,
-  //     navigateUnauthenticatedTo: "/login",
-  //   },
+  middleware: ["permission"],
   layout: "qr",
 });
 

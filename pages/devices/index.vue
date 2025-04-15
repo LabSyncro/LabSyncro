@@ -82,7 +82,7 @@ v-if="categoryId === category.id" aria-hidden name="i-heroicons-check"
               <input
 :value="searchText" type="search" placeholder="Nhập tên thiết bị"
                 class="border-gray-300 border rounded-sm p-2 pl-10 md:w-[350px] lg:w-[400px]"
-                @input="(e) => updateSearchText(e.target.value)">
+                @input="(e) => updateSearchText(e.target?.value)">
               <Icon
 aria-hidden class="absolute left-3 top-[12px] text-xl text-primary-dark"
                 name="i-heroicons-magnifying-glass" />
