@@ -250,8 +250,6 @@ const handleVirtualKeyboardDetection = async (
         formState.userId = userId;
         await handleUserCodeChange(userId);
         toast.success("Xác thực người dùng thành công");
-      } else {
-        toast.error("Mã QR không hợp lệ hoặc đã hết hạn");
       }
     } catch (error) {
       toast.error("Không thể xác thực mã QR");

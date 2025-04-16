@@ -19,6 +19,17 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: 'bun',
+    routeRules: {
+      '/api/**': {
+        cors: true,
+        headers: {
+          'Access-Control-Allow-Origin': process.env.CORS_ALLOWED_ORIGIN || '',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Credentials': 'true'
+        }
+      }
+    }
   },
   auth: {
     isEnabled: true,
@@ -75,6 +86,7 @@ export default defineNuxtConfig({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     AUTH_SECRET: process.env.AUTH_SECRET,
+    CORS_ALLOWED_ORIGIN: process.env.CORS_ALLOWED_ORIGIN,
   },
   app: {
     head: {

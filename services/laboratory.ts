@@ -67,4 +67,14 @@ export const laboratoryService = {
       })
     ).totalPages;
   },
+
+  async setHmiLab(hmiCode: string, labId: string): Promise<{ success: boolean; message: string }> {
+    return await $fetch('/api/auth/hmi/lab', {
+      method: 'POST',
+      body: {
+        hmiCode,
+        labId,
+      },
+    });
+  },
 };

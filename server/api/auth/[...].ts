@@ -79,5 +79,14 @@ export default NuxtAuthHandler({
       }
       return false;
     },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      }
+      else if (url.startsWith('http')) {
+        return url;
+      }
+      return baseUrl;
+    }
   },
 });

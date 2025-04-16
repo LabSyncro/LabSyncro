@@ -1,5 +1,6 @@
 import QRCode from 'qrcode';
 import { useToast } from 'vue-toastification';
+import { authService } from '~/services/auth';
 
 const toast = useToast();
 
@@ -160,9 +161,21 @@ export function useOneTimeQrCode() {
   /**
    * Handle a scanned QR code to verify the token inside
    * @param scannedQrData The data from the scanned QR code
-   * @returns The user ID and any extra data if verification succeeds, null otherwise
+   * @returns The user information and any extra data if verification succeeds, null otherwise
    */
-  const verifyScannedQrCode = async (scannedQrData: string): Promise<{ userId: string; extraData?: any } | null> => {
+  const verifyScannedQrCode = async (scannedQrData: string): Promise<{
+    userId: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      tel?: string;
+      avatar?: string;
+      last_active_at?: string;
+      roles: Array<{ name: string; key: string; }>;
+    };
+    extraData?: Record<string, any>;
+  } | null> => {
     try {
       const qrData = JSON.parse(scannedQrData);
       const { token, userId, timestamp, expiry, ...extraData } = qrData;
@@ -174,11 +187,25 @@ export function useOneTimeQrCode() {
 
       const isValid = await verifyToken(token, userId);
       if (!isValid) {
-        toast.error("Mã QR không hợp lệ hoặc đã hết hạn");
+        toast.error("Mã QR không hợp lệ");
         return null;
       }
 
-      return { userId, extraData };
+      try {
+        const result = await authService.verifyQrToken(token, userId, timestamp);
+        return {
+          userId,
+          user: result.user,
+          extraData: Object.keys(extraData).length > 0 ? extraData : undefined
+        };
+      } catch (error: any) {
+        if (error.statusCode === 403) {
+          toast.error("Mã QR đã được sử dụng");
+        } else {
+          toast.error("Lỗi khi xác thực mã QR");
+        }
+        return null;
+      }
     } catch (error) {
       toast.error(`Lỗi khi xác thực mã QR: ${error}`);
       return null;

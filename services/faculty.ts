@@ -8,6 +8,6 @@ export interface Faculty {
 export const facultyService = {
   async getAllFaculties (): Promise<Faculty[]> {
     const { $cachedFetch } = useNuxtApp();
-    return sortBy((await $cachedFetch('/api/faculties')).faculties, ({ name }) => name);
+    return sortBy((await $cachedFetch('/api/faculties')).faculties, ({ name }: { name: string }) => name);
   },
 };
