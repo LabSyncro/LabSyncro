@@ -75,39 +75,40 @@ export default defineEventHandler<
 
     const receipts = (await db.sql`
     SELECT
-      dk.${'id'} as device_kind_id,
-      dk.${'name'} as device_kind_name,
-      dk.${'image'}->'main_image' as main_image,
-      dk.${'image'}->'sub_images' as sub_images,
-      CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'}) as borrowed_place,
-      CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'}) as returned_place,
-      a_borrow.${'created_at'} as borrowed_at,
-      a_return.${'created_at'} as returned_at,
-      rd.${'expected_returned_at'},
+      dk.id as device_kind_id,
+      dk.name as device_kind_name,
+      dk.image->'main_image' as main_image,
+      dk.image->'sub_images' as sub_images,
+      CONCAT(l_borrow.room, ', ', l_borrow.branch) as borrowed_place,
+      CONCAT(l_expected.room, ', ', l_expected.branch) as returned_place,
+      a_borrow.created_at as borrowed_at,
+      a_return.created_at as returned_at,
+      rd.expected_returned_at,
       CASE 
-          WHEN a_return.${'created_at'} <= rd.${'expected_returned_at'} THEN 'on_time'
+          WHEN a_return.created_at <= rd.expected_returned_at THEN 'on_time'
           ELSE 'late'
       END as status,
-      rd.${'status'} as device_status,
-      rd.${'note'} as note
+      rd.after_quality as device_status,
+      a_return.note as note
     FROM ${'receipts_devices'} rd
-    JOIN ${'receipts'} r ON rd.${'receipt_id'} = r.${'id'}
-    JOIN ${'devices'} d ON rd.${'device_id'} = d.${'id'}
-    JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
-    JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
-    LEFT JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
-    LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
-    JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
+    JOIN ${'receipts'} r_borrow ON rd.borrowed_receipt_id = r_borrow.id
+    JOIN ${'devices'} d ON rd.device_id = d.id
+    JOIN ${'device_kinds'} dk ON d.kind = dk.id
+    JOIN ${'labs'} l_borrow ON r_borrow.lab_id = l_borrow.id
+    JOIN ${'activities'} a_borrow ON rd.borrow_id = a_borrow.id
+    JOIN ${'activities'} a_return ON rd.return_id = a_return.id
+    JOIN ${'labs'} l_expected ON rd.expected_returned_lab_id = l_expected.id
     WHERE
-      r.${'borrower_id'} = ${db.param(userId)}
-      AND rd.${'return_id'} IS NOT NULL
-      ${searchText !== undefined && searchFields?.length
-        ? db.raw(`AND (
-          (${searchFields.includes('device_kind_id')} AND dk.${'id'} ILIKE '%${searchText}%') OR
-          (${searchFields.includes('device_kind_name')} AND strip_vietnamese_accents(dk.${'name'}) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
-          (${searchFields.includes('borrowed_place')} AND strip_vietnamese_accents(CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
-          (${searchFields.includes('returned_place')} AND strip_vietnamese_accents(CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%'))
-        )`)
+      r_borrow.actor_id = ${db.param(userId)}
+      AND rd.return_id IS NOT NULL
+      ${
+    searchText !== undefined && searchFields?.length
+        ? db.sql`AND (
+          (${db.param(searchFields.includes('device_kind_id'))} AND dk.id ILIKE ${db.param(`%${searchText}%`)}) OR
+          (${db.param(searchFields.includes('device_kind_name'))} AND strip_vietnamese_accents(dk.name) ILIKE strip_vietnamese_accents(${db.param(`%${searchText}%`)})) OR
+          (${db.param(searchFields.includes('borrowed_place'))} AND strip_vietnamese_accents(CONCAT(l_borrow.room, ', ', l_borrow.branch)) ILIKE strip_vietnamese_accents(${db.param(`%${searchText}%`)})) OR
+          (${db.param(searchFields.includes('returned_place'))} AND l_expected.id IS NOT NULL AND strip_vietnamese_accents(CONCAT(l_expected.room, ', ', l_expected.branch)) ILIKE strip_vietnamese_accents(${db.param(`%${searchText}%`)}))
+        )`
         : db.raw('')
       }
     ORDER BY 
@@ -152,23 +153,24 @@ export default defineEventHandler<
     const [{ total_records: totalRecords }] = await db.sql`
     SELECT COUNT(*) as total_records
     FROM ${'receipts_devices'} rd
-    JOIN ${'receipts'} r ON rd.${'receipt_id'} = r.${'id'}
-    JOIN ${'devices'} d ON rd.${'device_id'} = d.${'id'}
-    JOIN ${'device_kinds'} dk ON d.${'kind'} = dk.${'id'}
-    JOIN ${'labs'} l_borrow ON r.${'borrowed_lab_id'} = l_borrow.${'id'}
-    LEFT JOIN ${'activities'} a_borrow ON rd.${'borrow_id'} = a_borrow.${'id'}
-    LEFT JOIN ${'activities'} a_return ON rd.${'return_id'} = a_return.${'id'}
-    JOIN ${'labs'} l_expected ON rd.${'expected_returned_lab_id'} = l_expected.${'id'}
+    JOIN ${'receipts'} r_borrow ON rd.borrowed_receipt_id = r_borrow.id
+    JOIN ${'devices'} d ON rd.device_id = d.id
+    JOIN ${'device_kinds'} dk ON d.kind = dk.id
+    JOIN ${'labs'} l_borrow ON r_borrow.lab_id = l_borrow.id
+    JOIN ${'activities'} a_borrow ON rd.borrow_id = a_borrow.id
+    JOIN ${'activities'} a_return ON rd.return_id = a_return.id
+    JOIN ${'labs'} l_expected ON rd.expected_returned_lab_id = l_expected.id
     WHERE
-      r.${'borrower_id'} = ${db.param(userId)}
-      AND rd.${'return_id'} IS NOT NULL
-      ${searchText !== undefined
-        ? db.raw(`AND (
-          (${searchFields?.includes('device_kind_id') || false} AND dk.${'id'} ILIKE '%${searchText}%') OR
-          (${searchFields?.includes('device_kind_name') || false} AND strip_vietnamese_accents(dk.${'name'}) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
-          (${searchFields?.includes('borrowed_place') || false} AND strip_vietnamese_accents(CONCAT(l_borrow.${'room'}, ', ', l_borrow.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%')) OR
-          (${searchFields?.includes('returned_place') || false} AND strip_vietnamese_accents(CONCAT(l_expected.${'room'}, ', ', l_expected.${'branch'})) ILIKE strip_vietnamese_accents('%${searchText}%'))
-        )`)
+      r_borrow.actor_id = ${db.param(userId)}
+      AND rd.return_id IS NOT NULL
+      ${
+    searchText !== undefined && searchFields?.length
+        ? db.sql`AND (
+          (${db.param(searchFields.includes('device_kind_id'))} AND dk.id ILIKE ${db.param(`%${searchText}%`)}) OR
+          (${db.param(searchFields.includes('device_kind_name'))} AND strip_vietnamese_accents(dk.name) ILIKE strip_vietnamese_accents(${db.param(`%${searchText}%`)})) OR
+          (${db.param(searchFields.includes('borrowed_place'))} AND strip_vietnamese_accents(CONCAT(l_borrow.room, ', ', l_borrow.branch)) ILIKE strip_vietnamese_accents(${db.param(`%${searchText}%`)})) OR
+          (${db.param(searchFields.includes('returned_place'))} AND l_expected.id IS NOT NULL AND strip_vietnamese_accents(CONCAT(l_expected.room, ', ', l_expected.branch)) ILIKE strip_vietnamese_accents(${db.param(`%${searchText}%`)}))
+        )`
         : db.raw('')
       }
     `.run(dbPool);
